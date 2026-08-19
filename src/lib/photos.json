@@ -1,0 +1,393 @@
+{
+  "hero-bedroom": {
+    "alt": "Bright bedroom with a white bed, round mirror and a globe chandelier under blown-out window light",
+    "caption": "Your key to Kilimani",
+    "focus": "50% 45%",
+    "width": 6720,
+    "height": 4480,
+    "aspect": 1.5,
+    "orient": "landscape",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADwAwCdASoYABAAPulgqE0pJaQiMAgBIB0JZwC06BuoytgJoBXGtz4AAP6boslJiW9CXnZW6FVyYIMibQReX0YJXLDnwgZgObqzW6gyUL3YSIK9RsAAAA==",
+    "from": "KRC_8582"
+  },
+  "arrival-door": {
+    "alt": "Entry door beside a round hardwood dining table with burnt-orange chairs and a sculptural wall mirror",
+    "caption": "No keys, no waiting",
+    "focus": "60% 50%",
+    "width": 4480,
+    "height": 6720,
+    "aspect": 0.6667,
+    "orient": "portrait",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAABwBgCdASoYACQAPuVeqk0pJSQiMBqqqSAciWUAssw6drlrnUZlOlyY8Oyf3BGFoTkROqgp9aTRWZM035gA/ow8oeC7jGLA91sjgHkrkmSPMHvKyoBJREjBGHDx7QsUeusSvF7XSk7/+4+YIOJk5CIt8mLEBYgxUTOdXh+MOY1taMu96KTMv3HeB2p8efmqn1ncPXIbX36M68axxtjj8PwE0BRscdppgAA=",
+    "from": "KRC_8575"
+  },
+  "living-wide": {
+    "alt": "Open living room with two cream sofas, a white coffee table and red and terracotta cushions",
+    "caption": "The living room",
+    "focus": "50% 55%",
+    "width": 6720,
+    "height": 4480,
+    "aspect": 1.5,
+    "orient": "landscape",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAAAwBACdASoYABAAPulgqU0pJaQiMAgBIB0JYwC2yCIj2Q2rxJFNndIJnkAA/uc203ItXAkNLDlc+aydh9x/tVhaCsEp6Yo5hdfttHYn0I8AEB+6QzI1lnjwLxwYNimwpDI9Mw8LndG/jZ6rlZOPKk2c/FV7AAAA",
+    "from": "KRC_8596"
+  },
+  "living-close": {
+    "alt": "Cream sofa dressed with red and plaid cushions beneath a row of framed prints",
+    "caption": "Sink in",
+    "focus": "50% 50%",
+    "width": 6720,
+    "height": 4480,
+    "aspect": 1.5,
+    "orient": "landscape",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAAAwBACdASoYABAAPulep00pJSOiMAgBIB0JQBgbhH26AWNQSix5C4fscEAA/tcTnvQhGSxqVjNmu47XhuJdGe0pZaaO/GBglmH2//owLJ9LNiam7bslIhkiXneblP0duO3g2zrERhP3rA/xpmzaYAAA",
+    "from": "KRC_8593"
+  },
+  "dining-wide": {
+    "alt": "Round hardwood dining table with four burnt-orange chairs on a faded rug",
+    "caption": "Room to gather",
+    "focus": "50% 55%",
+    "width": 4480,
+    "height": 6720,
+    "aspect": 0.6667,
+    "orient": "portrait",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRrgAAABXRUJQVlA4IKwAAACQBgCdASoYACQAPulcpk6pJKMiMBVdUSAdCWUAvzgubptTFAtfqJGcqqj8W/nEaYCu0JrlgdBIp41R8XpgAP7f1dNcFqdIrAcAT+ssso8THj5JZWeatSEpY8h1lMzdtZ3+4uyZSktTiTUXcdkryy1/mXqW2Z5brON4S2H80FFRRGuihYRg5hEhdSqliXzNTEAynQc7xrD/0aV6XKdfigbugDgN0ofB6Sg0wYAA",
+    "from": "KRC_8576"
+  },
+  "mirror-detail": {
+    "alt": "Sculptural free-form wall mirror with a dried pampas stem beside it",
+    "caption": "The house jewellery",
+    "focus": "50% 45%",
+    "width": 4480,
+    "height": 6720,
+    "aspect": 0.6667,
+    "orient": "portrait",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRpwAAABXRUJQVlA4IJAAAABwBgCdASoYACQAPslQn00npKKiOrzIAPAZCWcAvGgvv/nw7Nb3plBRYeMxPor3uPXzIpLCEH2/u7lwIAAA/eKS+MTWM8/getUrqLiE7DP7WTHc3askmL1oXi0icTetfe66im1eYcVS6GvOOX8Z8tMBCrvo4HcCmpa0naEs6GVKtfKnAC1u/VgWz5WrG1RgAAA=",
+    "from": "KRC_8607"
+  },
+  "table-setting": {
+    "alt": "Dark wood table laid with black slate plates, a glass vase of pampas grass and a wine glass",
+    "caption": "Host quietly",
+    "focus": "50% 55%",
+    "width": 4480,
+    "height": 6720,
+    "aspect": 0.6667,
+    "orient": "portrait",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRsgAAABXRUJQVlA4ILwAAACwBgCdASoYACQAPuFYpk0opKOiOrM4ARAcCUAXFQiPFvpc+b3ZxWOHwrw0ncCh3Eaw7MkpA/M8yu77jy92QAD+83/Lc/qMEr+9vaGTm1PgO6JDQwho+0osu4jZxpbgiA/3SmuBuamTZjtcBqkB9+f9FqOE+ubzMMkrtWbvvDTYk5WqeXhVNM+zVReQ9WKxa0Vm/ba4PRGUWbe9HsguHXVgDWI1pe5aLb45/8zrp2+Fw6ogBt8Ufxz5DAAAAA==",
+    "from": "KRC_8604"
+  },
+  "kitchen": {
+    "alt": "Compact white kitchen with a gas cooktop, coffee maker and stainless sink under a window",
+    "caption": "The kitchen is not a prop",
+    "focus": "50% 50%",
+    "width": 4480,
+    "height": 6720,
+    "aspect": 0.6667,
+    "orient": "portrait",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRqYAAABXRUJQVlA4IJoAAAAwBgCdASoYACQAPulmqk+pJaOiJW5hIB0JZwDGQEU3+JPhXcftEGaASCV9mvE3eK1Yv/d2ko8lb7XgAP7rSAyGnnTDfXGiaGdWbCkAS5mBy2xnxy/n9M5dKQWSGuIWyct0p4EqBWSTMwheKjouubbmDbGrdbf+qK9GQXEzKezJT8YToyGRYwd1fXV2tYAPT8jBS8UkIeYNEvgA",
+    "from": "KRC_8610"
+  },
+  "kitchen-detail": {
+    "alt": "Two-burner gas cooktop with cookware, set into a white stone counter",
+    "caption": "Cook properly",
+    "focus": "50% 50%",
+    "width": 6720,
+    "height": 4480,
+    "aspect": 1.5,
+    "orient": "landscape",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAwBACdASoYABAAPuliqE2pJaOiMAgBIB0JZwDA3B5vf9+VD1hWRww9lAAA/ph79A1pP23fxRAog8K/XXg7oIWUP/t2IvPOmkFdav3a1+hxxsftJV60AAAA",
+    "from": "KRC_8613"
+  },
+  "bedroom-still": {
+    "alt": "King bed in white cotton beside a blue-grey vanity, round mirror and soft grey rug",
+    "caption": "The bed you will mention in your review",
+    "focus": "50% 50%",
+    "width": 6720,
+    "height": 4480,
+    "aspect": 1.5,
+    "orient": "landscape",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAADwAwCdASoYABAAPulgqU0pJaQiMAgBIB0JZQC7ACFrzsEABaLrRQ3YAP7zdkyG7yjLTA83wUl2cQ1tCf6XVl4JR5qMmnaMcKOez30lyMIgQU2JaUdglKCYjZVDMP9reYAAAA==",
+    "from": "KRC_8570"
+  },
+  "shower": {
+    "alt": "Walk-in rainfall shower behind clear glass, lit by a tall window",
+    "caption": "Rainfall pressure, hot always",
+    "focus": "50% 45%",
+    "width": 4480,
+    "height": 6720,
+    "aspect": 0.6667,
+    "orient": "portrait",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRqQAAABXRUJQVlA4IJgAAAAwBgCdASoYACQAPulkpk2pJaMiKq35IB0JZwDOOBby+lQV+jrisFH9QVmYpnYPFfHSTTVFU5gS59kAAPxW0CaPI1c7WpgqweqCPebHakLGNdeYopQxJsRZgqa4mCDiCoAcj/MdZZQ/Wfl164+k+EoRikEA5RA//dF2Ex3iIuC3nUnz0GzV02RU9lyhIQ+2BHBmYFQwvziUAA==",
+    "from": "KRC_8592"
+  },
+  "bathroom-vanity": {
+    "alt": "Bathroom vanity with a wide mirror, sage cabinet and glass shower screen beyond",
+    "caption": "The bathroom",
+    "focus": "50% 50%",
+    "width": 4480,
+    "height": 6720,
+    "aspect": 0.6667,
+    "orient": "portrait",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRr4AAABXRUJQVlA4ILIAAAAwBwCdASoYACQAPulmqlCpJSOiqrgKASAdCWcAzcW4Aajvc0uVIcfwLW3+WcUvcEGn+rNhoNpo14o+GtSlUD8v7AwA/uhyQdys/VeIj7d9JHhgoQ0qz2A+GXJwZdIPPy8knwOlBAlB/BalgYheg+xdFDPmDgLxAxHAdBM4IqBfu8t8KcVr0xuXlcqwoEBkUlqe1FNe/ahWaqgta2Lb3R1pATk1mjSFSI48xoO16y3GU4AA",
+    "from": "KRC_8590"
+  },
+  "balcony": {
+    "alt": "Balcony bench and timber table with a bowl of fruit, looking out over the Nairobi skyline",
+    "caption": "Seventh-floor mornings",
+    "focus": "50% 50%",
+    "width": 6720,
+    "height": 4480,
+    "aspect": 1.5,
+    "orient": "landscape",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAADQAwCdASoYABAAPulep00pJSOiMAgBIB0JZQC2yBb9RMpPV2IS9iAA2eoPfkVvmV+FABy+WsEda7BaAHYKd70DCtnTSmdO5xn5t1va2wkrFIOMX5XN2a8oDkmZFiEbEAAAAA==",
+    "from": "KRC_8578"
+  },
+  "gym-wide": {
+    "alt": "Residents gym with cardio machines and benches along a wall of windows",
+    "caption": "A gym you would actually use",
+    "focus": "50% 50%",
+    "width": 6720,
+    "height": 4480,
+    "aspect": 1.5,
+    "orient": "landscape",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAABQBACdASoYABAAPulgqE0pJaQiMAgBIB0JYwDE2CLvLa0bobSBeDIVWUGAAP7c5rdGJQp+tFvko/L/JIsmhT7QNrZaBHqdL4lgWGpWkidZn/4Vmt4Mz6QmeIhxVTDisZKISNF70L5vnYetqi+pmnQawoAAAA==",
+    "from": "KRC_8631"
+  },
+  "gym-weights": {
+    "alt": "Free weights, dumbbell rack and benches in a mirrored gym",
+    "caption": "Free weights and racks",
+    "focus": "50% 50%",
+    "width": 4480,
+    "height": 6720,
+    "aspect": 0.6667,
+    "orient": "portrait",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRsQAAABXRUJQVlA4ILgAAACQBgCdASoYACQAPt1Ypk0opSOiNVv4ARAbiWUAygAcveUANv/MH1yTRPKCPPsmk7r4U8dpEKZaAiBxBTTOAP7GAJFrb9mJt8ZekCtI8fD84JMKDQTytQ5HhRfirTyvc6roFZyqiR/w1Em1DqpPocBlxD2vv2Nj/mjTD7mFg+peBvn31u6aZsgqYgoCEJMeKRsy4hm0zeMsymXv7/ZUIgniWvtXVOBxBes4+gCI409Soy3y/PaAQzQA",
+    "from": "KRC_8633"
+  },
+  "gym-floor": {
+    "alt": "Gym floor with resistance machines and a treadmill under natural light",
+    "caption": "Open from six",
+    "focus": "50% 50%",
+    "width": 6720,
+    "height": 4480,
+    "aspect": 1.5,
+    "orient": "landscape",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAAAwBACdASoYABAAPulgqE0pJaQiMAgBIB0JZQBUfofNtMT5edyCXfzl23IA+6RUDWp+o9zTW/4F8WD7f/Duc3gedWzS/DOmp5BzE+AgtGzNiueCw+4Vk/4CdEh7WhHrsGRSy4AA",
+    "from": "KRC_8628"
+  },
+  "console": {
+    "alt": "Dark wood console table with a woven basket and a dried stem in a vase",
+    "caption": "The entry",
+    "focus": "50% 50%",
+    "width": 4480,
+    "height": 6720,
+    "aspect": 0.6667,
+    "orient": "portrait",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAADwBQCdASoYACQAPuVaq00pJKQiMBqqqSAciWUAwvg4TQMpCf2ZighfgXC3UnXMkzLmnpzbf3h6AAD+91J6Ia1ibzZhZeJRH1QprAo1y2PPJT+AZ3hPVxe5iKHNpVCV+rCKWb12COdiwjfVIQ4R70Ksx7DcyhNCzdEVCToVHsNeDK1J3H/GjwgWz1PFDSz7yBmNbZh2hgGyHLzE+aFZmuFOaQdDPLj8AAA=",
+    "from": "KRC_8573"
+  },
+  "wardrobe": {
+    "alt": "Full-height sliding wardrobe with mirrored and dark panels",
+    "caption": "Room for a long stay",
+    "focus": "50% 50%",
+    "width": 6720,
+    "height": 4480,
+    "aspect": 1.5,
+    "orient": "landscape",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADwAwCdASoYABAAPuliqk2pJaQiMAgBIB0JZQCdABujEPgl/5hvA6ZQAP7qITo5Cole4mT86M/JIsGCvWQMv7IP8AVguDS/1KlZt5D7fUyPJzjh0/UUC5GIVSr1tU2oAAA=",
+    "from": "KRC_8588"
+  },
+  "living-media": {
+    "alt": "Wall-mounted smart TV and soundbar above a low white media unit",
+    "caption": "Smart TV and soundbar",
+    "focus": "50% 50%",
+    "width": 6720,
+    "height": 4480,
+    "aspect": 1.5,
+    "orient": "landscape",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAADwAwCdASoYABAAPulep00pJSOiMAgBIB0JYwAAW8vtM0QdfmD2oKYgAP7hNSBSLkowRpSckW+9LNQtX/ivIE1oSDCx+N63p1IX3T+HkEOslOZQNjiEWAZTcCQPiA8OgIMTBacVxYCyoGF/mRRwAA==",
+    "from": "KRC_8600"
+  },
+  "balcony-door": {
+    "alt": "Sliding balcony door framed by curtains, opening onto seating and the city beyond",
+    "caption": "The way out to the air",
+    "focus": "55% 50%",
+    "width": 6720,
+    "height": 4480,
+    "aspect": 1.5,
+    "orient": "landscape",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADwAwCdASoYABAAPuliqk2pJaQiMAgBIB0JZQCdABujEPgl/5hvA6ZQAP7qITo5Cole4mT86M/JIsGCvWQMv7IP8AVguDS/1KlZt5D7fUyPJzjh0/UUC5GIVSr1tU2oAAA=",
+    "from": "KRC_8588"
+  },
+  "bed-city": {
+    "alt": "Bed beside a floor-to-ceiling window looking across the Kilimani skyline",
+    "caption": "Wake up over the city",
+    "focus": "50% 50%",
+    "width": 6720,
+    "height": 4480,
+    "aspect": 1.5,
+    "orient": "landscape",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADQAwCdASoYABAAPulkqU4pJaQiMAgBIB0JZQAAUVtc8zAByErTZAAA/kvvG+vsoEJw8ph1+1MZQZE2OtHxUr4rH3TTLy1hzLxh48+JfBbr8EpOVmUmHHykg005qrONUAA=",
+    "from": "KRC_8586"
+  },
+  "bed-city-alt": {
+    "alt": "Morning light across a white bed with the city visible through the window",
+    "caption": "Morning, seven floors up",
+    "focus": "50% 50%",
+    "width": 6720,
+    "height": 4480,
+    "aspect": 1.5,
+    "orient": "landscape",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAADwAwCdASoYABAAPuloq06pJiQiMAgBIB0JZQAAQufTQxNHt14V23UAAP6GT52yqARMsV42cCc/BZVuhwxHwtefUItGhN7HGbx4PI0Lv/LZ+y9I1hKfoSbe/0uPO1AlwAqU92gAAAA=",
+    "from": "KRC_8587"
+  },
+  "entry-through": {
+    "alt": "View from the entry hallway past a console table through to the dining and living area",
+    "caption": "The way in",
+    "focus": "50% 55%",
+    "width": 4480,
+    "height": 6720,
+    "aspect": 0.6667,
+    "orient": "portrait",
+    "widths": [
+      2400,
+      1600,
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAAAQBgCdASoYACQAPulurVIpJiQipWmZIB0JZQDAKCM3M/TwpokFIv4EsIf8QZoVgVSEKKPaYMa2MoAA/tbqae75mbaaGP6vx2ipFMldPRb5J4KNVW+Ia++7pat+Z7eoqmATUxEg2t2zC6qGzu8RkoyWTHJaib7OKdGOan56gtvR01qgwxW2RKxOB2lHIXBkWnAAAA==",
+    "from": "KRC_8585"
+  }
+}

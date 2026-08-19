@@ -1,0 +1,22 @@
+{
+  "name": "kito-reel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Social reel for Kito Oak Haven, rendered from the site's own photo crops.",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts reel-vertical out/kito-reel-vertical.mp4",
+    "render:square": "remotion render src/index.ts reel-square out/kito-reel-square.mp4",
+    "render:wide": "remotion render src/index.ts reel-wide out/kito-reel-wide.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "typescript": "^5"
+  }
+}

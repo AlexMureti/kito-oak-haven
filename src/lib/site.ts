@@ -141,12 +141,15 @@ export const walkthrough: Beat[] = [
   },
   {
     layout: "cards",
-    photos: ["gym-wide", "gym-weights", "gym-floor"],
+    // Pool leads: it is the amenity the copy promises twice, and it is the one
+    // most Kilimani listings cannot show. Two gym frames behind it rather than
+    // three — the third was a near-duplicate angle.
+    photos: ["pool", "gym-wide", "gym-weights"],
     eyebrow: "The building",
-    title: "A gym you'd actually use.",
+    title: "A heated pool and a gym you'd actually use.",
     body:
-      "Not a cupboard with a treadmill in it. Cardio, racks, free weights and mirrors, along a wall of windows — open from six in the morning.",
-    tags: ["Open 6am-9pm", "Free weights", "Cardio floor"],
+      "The pool is indoors and heated, so it works in July. The gym is not a cupboard with a treadmill in it — cardio, racks, free weights and mirrors along a wall of windows. Both open from six in the morning.",
+    tags: ["Heated pool", "Open 6am-9pm", "Free weights", "Cardio floor"],
   },
   {
     layout: "full",

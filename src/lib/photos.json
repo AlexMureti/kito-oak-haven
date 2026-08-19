@@ -389,5 +389,20 @@
     ],
     "blur": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAAAQBgCdASoYACQAPulurVIpJiQipWmZIB0JZQDAKCM3M/TwpokFIv4EsIf8QZoVgVSEKKPaYMa2MoAA/tbqae75mbaaGP6vx2ipFMldPRb5J4KNVW+Ia++7pat+Z7eoqmATUxEg2t2zC6qGzu8RkoyWTHJaib7OKdGOan56gtvR01qgwxW2RKxOB2lHIXBkWnAAAA==",
     "from": "KRC_8585"
+  },
+  "pool": {
+    "alt": "Indoor heated pool with blue mosaic tiling, loungers and a wall of windows",
+    "caption": "Heated pool, indoors",
+    "focus": "50% 55%",
+    "width": 1200,
+    "height": 1600,
+    "aspect": 0.75,
+    "orient": "portrait",
+    "widths": [
+      1000,
+      600
+    ],
+    "blur": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAACwBQCdASoYACAAPulcqU0pJSQiMBgMASAdCWYAnTMkvCC7JiHfzdNaszm1aXCy9MDe1knefgAA/tS3JBiSCNnvxDqkWPFPPsi9qYo+O8gFsWjQckJpcEhsnzrQqJudnHSy20vbYgKd8dXSJRQQ3lyCGVzJC73+P93A5CqIAzSqYzgkjx0IAAAA",
+    "from": "POOL_01"
   }
 }

@@ -93,6 +93,13 @@ const PLAN = [
     alt: "Gym floor with resistance machines and a treadmill under natural light",
     caption: "Open from six" },
 
+  // ---- BEAT 7 continued: the pool ----
+  // Client-supplied via WhatsApp, so it lands at 1200x1600 rather than the
+  // shoot's 6720x4480. Fine at card size; do NOT use it full-bleed.
+  { slug: "pool", src: "POOL_01", focus: "50% 55%",
+    alt: "Indoor heated pool with blue mosaic tiling, loungers and a wall of windows",
+    caption: "Heated pool, indoors" },
+
   // ---- BEAT 8: the view from bed ----
   { slug: "bed-city", src: "KRC_8586", focus: "50% 50%",
     alt: "Bed beside a floor-to-ceiling window looking across the Kilimani skyline",

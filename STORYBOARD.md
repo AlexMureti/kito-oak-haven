@@ -80,7 +80,7 @@ An amateur property site is **a stack of equal rectangles that fade in** — eve
 **FRAMES:** `8631` / `8633` / `8628` — three gym angles, real equipment, natural light.
 **LAYOUT:** Three-card stagger-rise, each card front-loaded with the **benefit**, spec in small type beneath.
 **WORDS:** "A gym you'd actually use." Not "fitted fitness centre."
-**POOL:** No frame exists. The pool stays a **typographic claim only** until she sends one — never an empty card, never a stock photo. *(Open item for Alex.)*
+**POOL — RESOLVED 19 Aug.** She sent a frame; it now leads this beat. Caveat: it arrived over WhatsApp at 1200×1600 rather than the shoot's 6720×4480, so it holds at card size and **must not be used full-bleed**. Worth asking her for the original file if it exists.
 
 ## BEAT 8 — THE VIEW FROM BED
 

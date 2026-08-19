@@ -1,6 +1,7 @@
 import React from "react";
 import { Composition } from "remotion";
 import { Reel, REEL_DURATION } from "./Reel";
+import { HeroLoop, HERO_DURATION } from "./HeroLoop";
 
 export const RemotionRoot: React.FC = () => (
   <>
@@ -27,6 +28,15 @@ export const RemotionRoot: React.FC = () => (
       id="reel-wide"
       component={Reel}
       durationInFrames={REEL_DURATION}
+      fps={30}
+      width={1920}
+      height={1080}
+    />
+    {/* Desktop site hero — no text, seamless loop, sits behind the headline. */}
+    <Composition
+      id="hero-loop"
+      component={HeroLoop}
+      durationInFrames={HERO_DURATION}
       fps={30}
       width={1920}
       height={1080}

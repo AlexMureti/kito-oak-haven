@@ -13,9 +13,16 @@ const HOLD = 5200;
 
 export function Hero() {
   const [i, setI] = useState(0);
+  // Gated in JS, not CSS. A `hidden` <video> still downloads, and the entire
+  // reason the loop is desktop-only is to keep ~2MB off Kenyan mobile data.
+  // Rendering it conditionally means the phone never requests the file at all.
+  const [loop, setLoop] = useState(false);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const wide = window.matchMedia("(min-width: 768px)").matches;
+    setLoop(wide && !reduce);
+    if (reduce) return;
     const t = setInterval(() => setI((n) => (n + 1) % SEQUENCE.length), HOLD);
     return () => clearInterval(t);
   }, []);
@@ -47,6 +54,24 @@ export function Hero() {
             />
           </div>
         ))}
+        {/* Desktop hero loop — 15s, silent, seamless, cut from the same
+            6720x4480 frames so it is a downscale rather than an upscale. It
+            layers over the still sequence, which stays underneath as the
+            instant first paint and the mobile experience. */}
+        {loop && (
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            src="/hero/loop.mp4"
+            poster="/hero/poster.jpg"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+          />
+        )}
+
         {/* Scrim: keeps type legible over any frame and sets the photograph
             into the page in pine green instead of letting it float. */}
         <div

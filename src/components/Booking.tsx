@@ -39,8 +39,8 @@ export function Booking() {
           <span className="gold-metal-ink">You&rsquo;ll hear back the same hour.</span>
         </h2>
         <p className="t-lead pretty reveal d2 mx-auto mt-7 max-w-xl text-ink-700">
-          WhatsApp is genuinely the fastest way — messages land on the phone of the
-          person who owns the apartment, not a booking desk. Typical reply is{" "}
+          WhatsApp is genuinely the fastest way — messages land on a real phone,
+          not a booking desk, and dates are held the same day. Typical reply is{" "}
           {site.replyTypical}, {site.replyHours}.
         </p>
 

@@ -18,11 +18,15 @@ export function Direct() {
   const [quote, setQuote] = useState(9500);
   const [nights, setNights] = useState(4);
 
-  const pct = site.directDiscountPct;
+  // The direct price is the OWNER'S RATE, not a percentage of whatever the
+  // guest types. The old logic quoted 85% of their input, so someone entering
+  // 20,000 was told 17,000/night for a 7,000 apartment — the page inventing a
+  // price it had no authority to offer. Now the rate is fixed and the guest's
+  // quote only determines what THEY save, which is true by construction.
+  const directNight = site.nightlyKsh ?? Math.round((quote * (100 - site.directDiscountPct)) / 100);
   const airbnbTotal = quote * nights;
-  const directNight = Math.round((quote * (100 - pct)) / 100);
   const directTotal = directNight * nights;
-  const saving = airbnbTotal - directTotal;
+  const saving = Math.max(0, airbnbTotal - directTotal);
 
   return (
     <section id="direct" className="on-cream section grain relative overflow-hidden">
@@ -33,13 +37,15 @@ export function Direct() {
             <h2 className="t-h2 balance reveal d1 mt-5 text-ink-900">
               Same apartment. Same host.
               <br />
-              <span className="gold-metal-ink">{pct}% less.</span>
+              <span className="gold-metal-ink">
+                {site.currency} {fmt(site.nightlyKsh ?? 0)} a night.
+              </span>
             </h2>
             <p className="t-lead pretty reveal d2 mt-7 text-ink-700">
-              That figure is not a promotion that expires. It is the platform&rsquo;s
-              host commission plus the guest service fee — money that goes to a
-              booking site rather than into the apartment. Book here and it simply
-              is not charged.
+              That is the rate, direct, with nothing added at checkout. What a
+              booking platform charges on top is its host commission and guest
+              service fee — money that goes to the platform rather than into the
+              apartment. Book here and it simply is not charged.
             </p>
 
             <ul className="reveal d3 mt-9 space-y-4">
@@ -47,7 +53,7 @@ export function Direct() {
                 "You pay a deposit to hold the dates, not the full stay upfront.",
                 "Building, unit number and the caretaker's phone before you travel.",
                 "The balance is settled on arrival, once you are inside and satisfied.",
-                "M-Pesa or card. You are dealing with a person, not a support queue.",
+                "M-Pesa. You are dealing with a person, not a support queue.",
               ].map((line) => (
                 <li key={line} className="t-body flex gap-3.5 text-ink-700">
                   <Icon name="check" className="mt-1 h-4 w-4 flex-none text-gold-600" />
@@ -138,9 +144,9 @@ export function Direct() {
               <a
                 className="btn btn-gold mt-7 w-full"
                 href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(
-                  `Hi! Airbnb is quoting me ${site.currency} ${fmt(quote)} a night for ${nights} ${
+                  `Hi! I would like to book Kito Oak Haven for ${nights} ${
                     nights === 1 ? "night" : "nights"
-                  } at Kito Oak Haven. Can you confirm the direct rate and availability?`
+                  }. Airbnb quoted me ${site.currency} ${fmt(quote)} a night. Are these dates available?`
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"

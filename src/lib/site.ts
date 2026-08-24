@@ -22,11 +22,14 @@ export const site = {
   // guest who has not met you. Worth filling in: naming a real host is one of
   // the strongest trust signals a direct-booking page has, and it is the thing
   // Airbnb does that a generic hotel page cannot.
-  host: "",
-  phone: "+254 702 220 207",
-  phoneAlt: "+254 745 124 925",
-  whatsapp: "254702220207",
-  email: "", // ⚠️ NEEDS ALEX: real inbox. Empty = email links hidden.
+  host: "Sylvia Malala",
+  // Alex handles every booking enquiry — confirmed by the owner 23 Aug:
+  // "put yours [contact] and payment on mine". The owner's number is
+  // deliberately NOT on this site; it is where guests pay, not where they call.
+  phone: "+254 740 180 214",
+  phoneAlt: "",
+  whatsapp: "254740180214",
+  email: "", // ⚠️ NEEDS: real inbox. Empty = email links hidden.
   url: "https://kitooakhaven.com",
 
   // Hours you actually answer messages. Promising 24/7 and missing one is
@@ -34,11 +37,13 @@ export const site = {
   replyHours: "7am – 10pm EAT",
   replyTypical: "under 15 minutes",
 
-  // The direct-booking discount vs the same dates on Airbnb.
+  // Indicative only — nobody has verified the owner's actual Airbnb price, so
+  // this figure is never asserted as a headline claim. The calculator shows
+  // each guest their own saving against the quote THEY enter, which is true
+  // by construction and needs no such number.
   directDiscountPct: 15,
-  // ⚠️ NEEDS ALEX: nightly rate in KSh. Until it is set, the hero shows no
-  // price and the calculator works from the guest's own Airbnb quote instead.
-  nightlyKsh: null as number | null,
+  // Set by the owner, 23 Aug 2026. This is the real direct rate a guest pays.
+  nightlyKsh: 7000 as number | null,
   currency: "KSh",
 } as const;
 
@@ -228,11 +233,11 @@ export type Faq = { q: string; a: string; pending?: boolean };
 export const faqs: Faq[] = [
   {
     q: "Is booking direct actually safe?",
-    a: `Fair question — you give up Airbnb's dispute process, so here is how it works instead. You pay a deposit to hold the dates, not the full stay. You get the building name, unit and the caretaker's number before you travel. The balance is settled on arrival once you are inside and satisfied. If anything is not as described, you have not paid for it yet. Payment is by M-Pesa or card, and you deal with the owner directly on ${site.phone}.`,
+    a: `Fair question — you give up Airbnb's dispute process, so here is how it works instead. You pay a deposit to hold the dates, not the full stay. You get the building name, unit and the caretaker's number before you travel. The balance is settled on arrival once you are inside and satisfied. If anything is not as described, you have not paid for it yet. Payment is by M-Pesa, and you are dealing with a person on ${site.phone} — not a queue.`,
   },
   {
     q: `How much cheaper is direct, really?`,
-    a: `${site.directDiscountPct}% below whatever Airbnb quotes you for the same dates. That is not a promotion — it is the platform's host fee and guest service fee, which simply are not charged here. Send a screenshot of your Airbnb quote on WhatsApp and you will get the direct figure back, no negotiating.`,
+    a: `${site.currency} ${site.nightlyKsh?.toLocaleString("en-KE")} a night, direct, with nothing added at checkout. Whatever a booking platform quotes on top of that is its host fee and guest service fee — charges that go to the platform, not the apartment. Send a screenshot of your quote on WhatsApp and you will get the direct figure back, no negotiating.`,
   },
   {
     q: "What happens when the power goes out?",

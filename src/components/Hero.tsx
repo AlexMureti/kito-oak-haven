@@ -106,7 +106,7 @@ export function Hero() {
           <p className="t-lead pretty mt-5 max-w-xl text-ink-700 reveal d1 sm:mt-7">
             A private one-bedroom on the seventh floor of {site.building} — heated
             pool, backup power that actually works, and Yaya Centre eight minutes
-            down the road. Booked directly with the person who owns it.
+            down the road. Booked direct — no platform fee, no booking desk.
           </p>
 
           <div className="reveal d2 mt-7 flex flex-wrap items-center gap-3 sm:mt-9">
@@ -127,8 +127,8 @@ export function Hero() {
           </div>
 
           <p className="t-small reveal d3 mt-5 text-ink-500">
-            {site.directDiscountPct}% below Airbnb · replies in {site.replyTypical},{" "}
-            {site.replyHours}
+            {site.currency} {site.nightlyKsh?.toLocaleString("en-KE")} a night, direct ·
+            replies in {site.replyTypical}, {site.replyHours}
           </p>
         </div>
       </div>

@@ -1,0 +1,20 @@
+import puppeteer from "puppeteer-core";
+const OUT = "C:/Users/Alexx/Desktop/My-Portfolio-website";
+const b = await puppeteer.launch({ executablePath:"C:/Program Files/Google/Chrome/Application/chrome.exe",
+  headless:"new", protocolTimeout:180000, args:["--no-sandbox","--hide-scrollbars"] });
+const p = await b.newPage();
+await p.setViewport({ width:1440, height:900 });
+await p.goto("http://localhost:4321/index.html", { waitUntil:"networkidle0", timeout:60000 });
+await p.evaluate(()=>new Promise(r=>setTimeout(r,2400)));
+await p.screenshot({ path:OUT+"/_shot_hero.png" });
+await p.evaluate(async()=>{ for(let y=0;y<document.body.scrollHeight;y+=500){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,45));} });
+await p.evaluate(()=>new Promise(r=>setTimeout(r,900)));
+const h = await p.evaluate(()=>document.body.scrollHeight);
+await p.evaluate((y)=>window.scrollTo(0,y), Math.round(h*0.26));
+await p.evaluate(()=>new Promise(r=>setTimeout(r,1200)));
+await p.screenshot({ path:OUT+"/_shot_work.png" });
+await p.evaluate(()=>window.scrollTo(0,0));
+await p.evaluate(()=>new Promise(r=>setTimeout(r,600)));
+await p.screenshot({ path:OUT+"/_shot_full.png", fullPage:true });
+console.log("page height:", h);
+await b.close();

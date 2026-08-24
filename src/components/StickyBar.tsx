@@ -46,7 +46,7 @@ export function StickyBar() {
       >
         <div className="min-w-0">
           <p className="t-small truncate text-ink-900">
-            {site.directDiscountPct}% below Airbnb
+            {site.currency} {site.nightlyKsh?.toLocaleString("en-KE")} a night, direct
           </p>
           <p className="t-small truncate text-ink-500">
             Replies in {site.replyTypical}

@@ -60,6 +60,7 @@ export function logIntent(intent: BookingIntent): string {
 
   try {
     const payload = JSON.stringify({
+      token: site.bookingLogToken,
       ref,
       source: intent.source,
       nights: intent.nights ?? null,

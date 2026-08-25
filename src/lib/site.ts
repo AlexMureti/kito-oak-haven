@@ -50,6 +50,11 @@ export const site = {
   // off and every CTA still works normally; see scripts/apps-script.gs
   // for the three-minute setup that produces this URL.
   bookingLogUrl: "",
+  // Shared token the Apps Script checks before it will write a row. This is
+  // NOT a secret — it ships in the client bundle and anyone who views source
+  // can read it. Its only job is keeping scanners and bots out of the ledger.
+  // It must never guard anything that actually matters.
+  bookingLogToken: "JSX1p9iZb8DF2tUZOitglYtNgciPGWC4",
 } as const;
 
 export const nav = [

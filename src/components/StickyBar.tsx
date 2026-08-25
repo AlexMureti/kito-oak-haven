@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { onBookingClick, plainHref } from "@/lib/booking";
 import { site } from "@/lib/site";
 import { Icon } from "./Icon";
 
@@ -54,9 +55,13 @@ export function StickyBar() {
         </div>
         <a
           className="btn btn-gold flex-none !px-6 !py-2.5 !text-[0.86rem]"
-          href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(
-            "Hi! I'd like to check availability at Kito Oak Haven for these dates: "
-          )}`}
+          href={plainHref("Hi! I'd like to book Kito Oak Haven.")}
+          onClick={onBookingClick(
+            { source: "sticky-bar" },
+            (ref) => `Hi! I'd like to book Kito Oak Haven. My dates are: 
+
+Ref: ${ref}`
+          )}
           target="_blank"
           rel="noopener noreferrer"
           tabIndex={show ? 0 : -1}

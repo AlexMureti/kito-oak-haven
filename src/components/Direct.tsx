@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { onBookingClick, plainHref } from "@/lib/booking";
 import { site } from "@/lib/site";
 import { Icon } from "./Icon";
 
@@ -143,11 +144,16 @@ export function Direct() {
 
               <a
                 className="btn btn-gold mt-7 w-full"
-                href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(
-                  `Hi! I would like to book Kito Oak Haven for ${nights} ${
-                    nights === 1 ? "night" : "nights"
-                  }. Airbnb quoted me ${site.currency} ${fmt(quote)} a night. Are these dates available?`
-                )}`}
+                href={plainHref("Hi! I would like to book Kito Oak Haven.")}
+                onClick={onBookingClick(
+                  { source: "calculator", nights, quoteKsh: quote },
+                  (ref) =>
+                    `Hi! I would like to book Kito Oak Haven for ${nights} ${
+                      nights === 1 ? "night" : "nights"
+                    }. Airbnb quoted me ${site.currency} ${fmt(quote)} a night. Are these dates available?
+
+Ref: ${ref}`
+                )}
                 target="_blank"
                 rel="noopener noreferrer"
               >

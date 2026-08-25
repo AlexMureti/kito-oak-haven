@@ -45,6 +45,11 @@ export const site = {
   // Set by the owner, 23 Aug 2026. This is the real direct rate a guest pays.
   nightlyKsh: 7000 as number | null,
   currency: "KSh",
+
+  // Google Apps Script /exec URL for the booking log. Empty = logging is
+  // off and every CTA still works normally; see scripts/apps-script.gs
+  // for the three-minute setup that produces this URL.
+  bookingLogUrl: "",
 } as const;
 
 export const nav = [

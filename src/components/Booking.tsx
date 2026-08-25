@@ -1,3 +1,6 @@
+"use client";
+
+import { onBookingClick, plainHref } from "@/lib/booking";
 import { site } from "@/lib/site";
 import { Photo } from "./Photo";
 import { Icon } from "./Icon";
@@ -47,9 +50,13 @@ export function Booking() {
         <div className="reveal d3 mt-10 flex flex-wrap items-center justify-center gap-3">
           <a
             className="btn btn-gold"
-            href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(
-              "Hi! I'd like to book Kito Oak Haven. My dates are: "
-            )}`}
+            href={plainHref("Hi! I'd like to book Kito Oak Haven. My dates are: ")}
+            onClick={onBookingClick(
+              { source: "booking-section" },
+              (ref) => `Hi! I'd like to book Kito Oak Haven. My dates are: 
+
+Ref: ${ref}`
+            )}
             target="_blank"
             rel="noopener noreferrer"
           >

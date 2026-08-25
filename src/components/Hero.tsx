@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Photo } from "./Photo";
+import { onBookingClick, plainHref } from "@/lib/booking";
 import { site, heroFacts } from "@/lib/site";
 import { Icon } from "./Icon";
 
@@ -112,9 +113,13 @@ export function Hero() {
           <div className="reveal d2 mt-7 flex flex-wrap items-center gap-3 sm:mt-9">
             <a
               className="btn btn-gold"
-              href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(
-                "Hi! I'd like to check availability at Kito Oak Haven for these dates: "
-              )}`}
+              href={plainHref("Hi! I'd like to check availability at Kito Oak Haven for these dates: ")}
+              onClick={onBookingClick(
+                { source: "hero" },
+                (ref) => `Hi! I'd like to check availability at Kito Oak Haven for these dates: 
+
+Ref: ${ref}`
+              )}
               target="_blank"
               rel="noopener noreferrer"
             >

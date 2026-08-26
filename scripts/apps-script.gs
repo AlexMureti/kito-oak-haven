@@ -57,9 +57,15 @@ var SHARED_TOKEN = 'JSX1p9iZb8DF2tUZOitglYtNgciPGWC4';
 /** Anything longer is not a real enquiry from our own form. */
 var MAX_BODY = 2000;
 
+// Check-in / Check-out are filled in BY HAND when a booking is confirmed.
+// The site cannot know them — a guest picks dates in conversation, not on
+// the page. With no Airbnb calendar in play, these two columns are the
+// booking calendar: sort by Check-in and you can see every held night.
 var HEADERS = [
   'Ref', 'Logged (EAT)', 'Source', 'Nights', 'Guest Airbnb quote',
-  'Direct rate', 'Commission due', 'Came from', 'Status', 'Notes'
+  'Direct rate', 'Commission due', 'Came from',
+  'Check-in', 'Check-out', 'Guest name',
+  'Status', 'Notes'
 ];
 
 /** Sources our own site actually sends. Anything else is not ours. */
@@ -98,6 +104,9 @@ function doPost(e) {
       num_(data.nightlyKsh, 0, 10000000),
       num_(data.commissionKsh, 0, 10000000),
       safe_(String(data.referrer || '').slice(0, 200)),
+      '', // Check-in  — filled by hand on confirmation
+      '', // Check-out — filled by hand on confirmation
+      '', // Guest name — filled by hand on confirmation
       'enquiry',
       ''
     ]);

@@ -1,3 +1,4 @@
+import photos from "@/lib/photos.json";
 import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
 import { Direct } from "@/components/Direct";
@@ -19,7 +20,7 @@ const lodging = {
   "@id": `${site.url}/#lodging`,
   name: site.name,
   description:
-    "A privately hosted one-bedroom apartment on the seventh floor in Kilimani, Nairobi. Heated pool and gym, automatic backup power, fiber Wi-Fi and self check-in, eight minutes' walk from Yaya Centre. Book direct below Airbnb rates.",
+    `A privately hosted one-bedroom apartment on the seventh floor in Kilimani, Nairobi. Heated pool and gym, automatic backup power, fiber Wi-Fi and self check-in, eight minutes' walk from Yaya Centre. ${site.currency} ${site.nightlyKsh?.toLocaleString("en-KE")} a night, booked direct.`,
   url: site.url,
   telephone: site.phone,
   address: {
@@ -35,7 +36,31 @@ const lodging = {
   smokingAllowed: false,
   checkinTime: "14:00",
   checkoutTime: "11:00",
-  priceRange: "$$",
+  priceRange: `${site.currency} ${site.nightlyKsh?.toLocaleString("en-KE")}`,
+  currenciesAccepted: "KES",
+  paymentAccepted: "M-Pesa",
+  hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.mapsQuery)}`,
+  // Width comes from the manifest, not a guess. The pool frame arrived over
+  // WhatsApp at 1200px so no 1600 variant exists, and hard-coding one pointed
+  // Google at a 404.
+  image: ["hero-bedroom", "living-wide", "balcony", "pool"].map((slug) => {
+    const widths = (photos as Record<string, { widths: number[] }>)[slug].widths;
+    return `${site.url}/gallery/${slug}-${Math.max(...widths)}.jpg`;
+  }),
+  makesOffer: {
+    "@type": "Offer",
+    name: "Direct booking",
+    priceCurrency: "KES",
+    price: site.nightlyKsh,
+    availability: "https://schema.org/InStock",
+    priceSpecification: {
+      "@type": "UnitPriceSpecification",
+      price: site.nightlyKsh,
+      priceCurrency: "KES",
+      unitCode: "DAY",
+      unitText: "per night",
+    },
+  },
   amenityFeature: assurances.map((a) => ({
     "@type": "LocationFeatureSpecification",
     name: a.title,

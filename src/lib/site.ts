@@ -30,7 +30,10 @@ export const site = {
   phoneAlt: "",
   whatsapp: "254740180214",
   email: "", // ⚠️ NEEDS: real inbox. Empty = email links hidden.
-  url: "https://kitooakhaven.com",
+  // The live URL. kitooakhaven.com does not resolve — pointing canonical,
+  // sitemap and LodgingBusiness structured data at a dead domain sends Google
+  // to nothing. Swap this the day a real domain is bought and pointed.
+  url: "https://kito-oak-haven.vercel.app",
 
   // Hours you actually answer messages. Promising 24/7 and missing one is
   // worse than promising a window and keeping it.

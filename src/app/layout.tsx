@@ -18,7 +18,7 @@ const sans = Inter({
 });
 
 const description =
-  "A privately hosted one-bedroom apartment in Kilimani, Nairobi — heated pool and gym, automatic backup power, fiber Wi-Fi, self check-in, eight minutes from Yaya Centre. Book direct and pay 15% less than Airbnb.";
+  "A privately hosted one-bedroom apartment in Kilimani, Nairobi — heated pool and gym, automatic backup power, fiber Wi-Fi, self check-in, eight minutes from Yaya Centre. KSh 7,000 a night, direct.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),

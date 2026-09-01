@@ -1,4 +1,4 @@
-import { neighbourhood } from "@/lib/site";
+import { neighbourhood, site } from "@/lib/site";
 
 /**
  * BEAT 8 — the Kilimani plate.
@@ -212,6 +212,15 @@ export function MapPlate() {
         </span>
         <span className="legend-note">Rings are minutes from the door, not distance.</span>
       </p>
+
+      <a
+        className="directions"
+        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.mapsQuery)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Open in Google Maps &rarr;
+      </a>
     </div>
   );
 }

@@ -52,6 +52,11 @@ export const site = {
   // Google Apps Script /exec URL for the booking log. Empty = logging is
   // off and every CTA still works normally; see scripts/apps-script.gs
   // for the three-minute setup that produces this URL.
+  // Built from the address rather than a coordinate pair. The building is
+  // already well established on Maps, so a search resolves to it; inventing a
+  // lat/lng we never surveyed would be a guess dressed as precision.
+  mapsQuery: "Oak Classic Residence, George Padmore Road, Kilimani, Nairobi",
+
   bookingLogUrl: "https://script.google.com/macros/s/AKfycbyBBydnZkDQ8W2dA5L9HNCkvpVJ4U1qYaKm_OsDQuXuIGdN5IYL5AIpbMZOV_jLcz6XdQ/exec",
   // Shared token the Apps Script checks before it will write a row. This is
   // NOT a secret — it ships in the client bundle and anyone who views source

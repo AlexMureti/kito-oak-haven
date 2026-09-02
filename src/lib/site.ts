@@ -267,19 +267,15 @@ export const faqs: Faq[] = [
   },
   {
     q: "Do you arrange airport pickup from JKIA?",
-    a: "Tell us your flight number when you book and a driver will be arranged for you, quoted up front. It is roughly a 30–45 minute drive depending on Mombasa Road. If you would rather use Uber or Bolt, set your destination to Oak Classic Residence, George Padmore Road — the pin is correct.",
+    a: "Tell us your flight number when you book and a driver will be arranged for you at your own cost, quoted up front so there are no surprises. It is roughly a 30–45 minute drive depending on Mombasa Road. If you would rather use Uber or Bolt, set your destination to Oak Classic Residence, George Padmore Road — the pin is correct.",
   },
   {
     q: "Is it suitable for working remotely?",
     a: "It is one of the main reasons people book it. Fiber line, a real desk, backup power, and quiet during the day. Calls hold. If you need anything specific for a work trip, ask before you book rather than after.",
   },
   {
-    // ⚠️ NEEDS ALEX: confirm the terms, then delete `pending` to publish this.
-    // Recommendation: free cancellation up to 5 days before arrival with the
-    // deposit refunded in full — flexible terms out-convert strict ones for
-    // direct bookings, and a vague cancellation answer loses the booking here.
+    // Set by the owner, 26 Aug 2026: 48 hours.
     q: "What is the cancellation policy?",
-    a: "Free cancellation up to 5 days before arrival, with your deposit refunded in full. Inside 5 days the deposit is held against the dates, but message us — if the nights can be re-let, they are refunded.",
-    pending: true,
+    a: "Free cancellation up to 48 hours before arrival, with your deposit refunded in full. Inside 48 hours the deposit is held against the dates — but message us, because if the nights can be re-let they are refunded.",
   },
 ];

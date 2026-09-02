@@ -267,11 +267,11 @@ export const faqs: Faq[] = [
   },
   {
     q: "Do you arrange airport pickup from JKIA?",
-    a: "Yes, with a vetted driver rather than a rank taxi — roughly a 30–45 minute drive depending on Mombasa Road. Complimentary on direct bookings of three nights or more; a flat fee otherwise. Send your flight number and someone will be there with your name.",
+    a: "Tell us your flight number when you book and a driver will be arranged for you, quoted up front. It is roughly a 30–45 minute drive depending on Mombasa Road. If you would rather use Uber or Bolt, set your destination to Oak Classic Residence, George Padmore Road — the pin is correct.",
   },
   {
     q: "Is it suitable for working remotely?",
-    a: "It is one of the main reasons people book it. Fiber line, a real desk, backup power, and quiet during the day. Calls hold. If you need a second monitor, ask — it can usually be arranged.",
+    a: "It is one of the main reasons people book it. Fiber line, a real desk, backup power, and quiet during the day. Calls hold. If you need anything specific for a work trip, ask before you book rather than after.",
   },
   {
     // ⚠️ NEEDS ALEX: confirm the terms, then delete `pending` to publish this.

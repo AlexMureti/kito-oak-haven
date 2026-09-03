@@ -237,6 +237,75 @@ check('a missing date is idle, not an error', () => {
   eq(assess('2026-09-12', '', TODAY, HOLDS).state, 'idle', 'state');
 });
 
+console.log('\nmonths');
+
+const { addMonths, monthCells } = L;
+ok(typeof addMonths === 'function', 'addMonths() is not exported from the page');
+ok(typeof monthCells === 'function', 'monthCells() is not exported from the page');
+
+check('a month added to the 31st clamps to the end of a short month', () => {
+  eq(addMonths('2026-01-31', 1), '2026-02-28', '2026 is not a leap year');
+  eq(addMonths('2028-01-31', 1), '2028-02-29', '2028 is a leap year');
+  eq(addMonths('2026-03-31', 1), '2026-04-30', 'April has 30 days');
+});
+
+check('adding months crosses the year', () => {
+  eq(addMonths('2026-12-15', 1), '2027-01-15');
+  eq(addMonths('2026-09-03', 12), '2027-09-03');
+});
+
+check('September 2026 lays out Monday-first with one leading blank', () => {
+  // 3 September 2026 is a Thursday, so the 1st is a Tuesday: one blank before it.
+  const cells = monthCells(2026, 8);
+  const lead = cells.findIndex(c => c !== null);
+  eq(lead, 1, 'leading blanks');
+  eq(cells[1], '2026-09-01', 'first day');
+  eq(cells.filter(Boolean).length, 30, 'days in September');
+});
+
+check('October 2026 starts on a Thursday, three blanks in', () => {
+  const cells = monthCells(2026, 9);
+  eq(cells.findIndex(c => c !== null), 3, 'leading blanks');
+  eq(cells.filter(Boolean).length, 31, 'days in October');
+});
+
+check('February in a leap year has 29 cells', () => {
+  eq(monthCells(2028, 1).filter(Boolean).length, 29);
+  eq(monthCells(2026, 1).filter(Boolean).length, 28);
+});
+
+check('every day a month yields is inside that month, in order', () => {
+  const cells = monthCells(2026, 11).filter(Boolean);
+  for (let i = 0; i < cells.length; i++) {
+    ok(cells[i].startsWith('2026-12'), 'stray day ' + cells[i]);
+    if (i) ok(cells[i] > cells[i - 1], 'out of order at ' + cells[i]);
+  }
+});
+
+check('a stay can be picked across a month boundary', () => {
+  let s = nextSelection({ checkIn: null, checkOut: null }, '2026-11-28');
+  s = nextSelection(s, '2026-12-02');
+  eq(s, { checkIn: '2026-11-28', checkOut: '2026-12-03' });
+  eq(assess(s.checkIn, s.checkOut, TODAY, HOLDS).state, 'free');
+  eq(nightsBetween(s.checkIn, s.checkOut), 5, 'nights across the boundary');
+});
+
+check('a guest booking two months out is assessable', () => {
+  const start = addMonths(TODAY, 2);
+  const r = assess(start, addDays(start, 5), TODAY, HOLDS);
+  eq(r.state, 'free', 'state');
+  eq(r.nights, 5, 'nights');
+});
+
+check('the nearest free window can land in a later month', () => {
+  const holds = [{ start: '2026-09-05', end: '2026-10-04', label: 'Airbnb' }];
+  const r = assess('2026-09-10', '2026-09-14', TODAY, holds);
+  eq(r.state, 'clash', 'state');
+  ok(r.alternative, 'no alternative across the month end');
+  eq(r.alternative.start, '2026-10-04', 'alternative start');
+  eq(assess(r.alternative.start, r.alternative.end, TODAY, holds).state, 'free');
+});
+
 console.log('\ndates that cross boundaries');
 
 check('a stay across a month end is counted correctly', () => {

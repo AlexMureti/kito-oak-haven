@@ -141,12 +141,7 @@
 
   header { text-align: center; padding-bottom: clamp(30px, 5vw, 46px); }
 
-  .lockup {
-    width: clamp(116px, 21vw, 168px);
-    height: auto;
-    margin: 0 auto clamp(24px, 4vw, 34px);
-    display: block;
-  }
+  .lockup { width: clamp(116px, 21vw, 168px); height: auto; margin: 0 auto clamp(24px, 4vw, 34px); display: block; }
 
   .lozenge-rule {
     display: flex;
@@ -158,7 +153,6 @@
   }
 
   .lozenge-rule .line { height: 1px; flex: 1; background: linear-gradient(90deg, transparent, var(--gold-600), transparent); }
-
   .lozenge { width: 5px; height: 5px; background: var(--gold-400); transform: rotate(45deg); flex: none; }
 
   header .lede { margin-left: auto; margin-right: auto; }
@@ -190,106 +184,135 @@
 
   .scenario { font-size: 12.5px; color: var(--ink-500); margin: 0; }
 
-  .instruction {
-    font-size: 13px;
-    color: var(--ink-500);
-    margin: 0 0 14px;
+  .instruction { font-size: 13px; color: var(--ink-500); margin: 0 0 18px; }
+
+  /* ---------- the calendar ----------
+     The fluting is the logo's column, so each day is a flute: an arched head,
+     a groove down the middle, a booked night filled to the top. A facade
+     carries ranks of columns rather than one row of twenty, which is also the
+     only shape that lets a guest look two months ahead. */
+
+  .cal-head {
     display: flex;
-    flex-wrap: wrap;
-    gap: 4px 10px;
-    justify-content: space-between;
-  }
-
-  .instruction .months { color: var(--ink-700); font-weight: 500; }
-
-  /* ---------- the colonnade ----------
-     Twenty nights as flutes. The fluting is the logo's column; a booked night
-     is a filled bay. Flex with no fixed width so it always fits exactly and
-     never scrolls sideways on a phone.
-
-     Each flute is a real button: she picks nights, not dates. That keeps the
-     half-open checkout rule invisible to her and correct in the model, and it
-     removes the date fields that were fighting her on a two-digit month. */
-
-  .marker-rail, .colonnade { display: flex; gap: 3px; }
-  .marker-rail { height: 13px; margin-bottom: 5px; }
-
-  .marker-slot { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; }
-  .marker-slot .lozenge { width: 6px; height: 6px; }
-  .marker-slot:not([data-arrival]) .lozenge { display: none; }
-
-  .flute {
-    flex: 1 1 0;
-    min-width: 0;
-    height: clamp(58px, 13vw, 78px);
-    border-radius: 999px 999px 2px 2px;
-    background: var(--cream-100);
-    border: 1px solid color-mix(in srgb, var(--gold-600) 22%, transparent);
-    position: relative;
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    padding: 0 0 5px;
-    font-family: var(--sans);
-    cursor: pointer;
-    overflow: hidden;
-    transition: background .28s var(--ease-luxe), border-color .28s var(--ease-luxe), transform .18s var(--ease-luxe);
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
   }
 
-  .flute:hover { transform: translateY(-2px); border-color: var(--gold-500); }
-  .flute:focus-visible { outline: 2px solid var(--gold-600); outline-offset: 2px; z-index: 1; }
-
-  /* the groove — what makes a bar read as a flute rather than a bar chart */
-  .flute::before {
-    content: "";
-    position: absolute;
-    top: 13px; bottom: 15px;
-    width: 1px;
-    background: color-mix(in srgb, var(--gold-700) 26%, transparent);
-  }
-
-  .flute .dow {
-    font-size: clamp(7px, 1.5vw, 8.5px);
-    letter-spacing: .06em;
-    color: var(--ink-500);
+  .cal-title {
+    font-family: var(--display);
+    font-size: clamp(1.25rem, 3vw, 1.6rem);
     line-height: 1;
-    margin-bottom: 3px;
+    margin: 0;
+    color: var(--ink-900);
   }
 
-  .flute .num {
-    font-size: clamp(9px, 2vw, 11px);
+  .cal-nav { display: flex; gap: 6px; }
+
+  .cal-nav button {
+    width: 40px;
+    height: 40px;
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1;
+    color: var(--ink-700);
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--gold-600) 32%, transparent);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: border-color .2s var(--ease-luxe), background .2s var(--ease-luxe);
+  }
+
+  .cal-nav button:hover:not(:disabled) { border-color: var(--gold-600); background: var(--cream-100); }
+  .cal-nav button:focus-visible { outline: 2px solid var(--gold-500); outline-offset: 1px; }
+  .cal-nav button:disabled { opacity: .28; cursor: default; }
+
+  .dow-row, .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+
+  .dow-row { margin-bottom: 6px; }
+
+  .dow-row span {
+    text-align: center;
+    font-size: 9.5px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+  }
+
+  .day {
+    position: relative;
+    height: clamp(42px, 7.2vw, 56px);
+    border-radius: 14px 14px 2px 2px;
+    background: var(--cream-100);
+    border: 1px solid color-mix(in srgb, var(--gold-600) 20%, transparent);
+    font-family: var(--sans);
+    font-size: clamp(11px, 1.7vw, 13px);
     font-variant-numeric: tabular-nums;
     font-weight: 500;
     color: var(--ink-700);
-    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: background .24s var(--ease-luxe), border-color .24s var(--ease-luxe), transform .16s var(--ease-luxe);
   }
 
-  .flute[data-hold="airbnb"] { background: var(--pine-800); border-color: var(--pine-700); }
-  .flute[data-hold="airbnb"] .dow { color: color-mix(in srgb, var(--cream-200) 55%, transparent); }
-  .flute[data-hold="airbnb"] .num { color: var(--cream-200); }
-  .flute[data-hold="airbnb"]::before { background: color-mix(in srgb, var(--gold-400) 20%, transparent); }
+  .day::before {
+    content: "";
+    position: absolute;
+    top: 9px; bottom: 7px;
+    width: 1px;
+    background: color-mix(in srgb, var(--gold-700) 18%, transparent);
+  }
 
-  .flute[data-hold="direct"] { background: var(--gold-metal); border-color: var(--gold-600); }
-  .flute[data-hold="direct"] .dow { color: color-mix(in srgb, var(--pine-950) 62%, transparent); }
-  .flute[data-hold="direct"] .num { color: var(--pine-950); }
-  .flute[data-hold="direct"]::before { background: color-mix(in srgb, var(--pine-950) 22%, transparent); }
+  .day > span { position: relative; z-index: 1; }
 
-  .flute[data-hold="clash"] { background: var(--terracotta-500); border-color: var(--terracotta-600); }
-  .flute[data-hold="clash"] .dow { color: color-mix(in srgb, var(--cream-50) 66%, transparent); }
-  .flute[data-hold="clash"] .num { color: var(--cream-50); }
-  .flute[data-hold="clash"]::before { background: color-mix(in srgb, var(--cream-50) 26%, transparent); }
+  .day.blank { visibility: hidden; pointer-events: none; }
 
-  /* the range being previewed under the cursor, before it is committed */
-  .flute[data-preview] { border-color: var(--gold-600); background: var(--cream-200); }
-  .flute[data-preview][data-hold="airbnb"],
-  .flute[data-preview][data-hold="clash"] { background: var(--terracotta-300); }
+  .day:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--gold-500); }
+  .day:focus-visible { outline: 2px solid var(--gold-600); outline-offset: 2px; z-index: 2; }
+
+  /* A night already gone. Visible so the month still reads as a month, but
+     plainly not for sale. */
+  .day:disabled {
+    cursor: default;
+    background: transparent;
+    border-color: transparent;
+    color: color-mix(in srgb, var(--ink-500) 42%, transparent);
+  }
+  .day:disabled::before { display: none; }
+
+  .day[data-hold="airbnb"] { background: var(--pine-800); border-color: var(--pine-700); color: var(--cream-200); }
+  .day[data-hold="airbnb"]::before { background: color-mix(in srgb, var(--gold-400) 20%, transparent); }
+
+  .day[data-hold="direct"] { background: var(--gold-metal); border-color: var(--gold-600); color: var(--pine-950); }
+  .day[data-hold="direct"]::before { background: color-mix(in srgb, var(--pine-950) 22%, transparent); }
+
+  .day[data-hold="clash"] { background: var(--terracotta-500); border-color: var(--terracotta-600); color: var(--cream-50); }
+  .day[data-hold="clash"]::before { background: color-mix(in srgb, var(--cream-50) 26%, transparent); }
+
+  .day[data-preview] { border-color: var(--gold-600); background: var(--cream-200); color: var(--ink-900); }
+  .day[data-preview][data-hold="clash"] { background: var(--terracotta-300); }
+
+  /* the acorn's descendant: one jewel, on the arrival night only */
+  .day[data-arrival]::after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    width: 5px; height: 5px;
+    background: var(--gold-300);
+    transform: rotate(45deg);
+    z-index: 1;
+  }
+  .day[data-arrival][data-hold="direct"]::after { background: var(--pine-950); }
 
   .legend {
     display: flex;
     flex-wrap: wrap;
     gap: 8px 16px;
-    margin-top: 15px;
+    margin-top: 16px;
     font-size: 11px;
     color: var(--ink-500);
   }
@@ -297,8 +320,8 @@
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
 
   .chip {
-    width: 9px; height: 13px;
-    border-radius: 999px 999px 1px 1px;
+    width: 10px; height: 13px;
+    border-radius: 5px 5px 1px 1px;
     display: inline-block;
     border: 1px solid color-mix(in srgb, var(--gold-600) 26%, transparent);
   }
@@ -396,14 +419,7 @@
 
   .step:last-child { border-bottom: 1px solid color-mix(in srgb, var(--gold-500) 18%, transparent); }
 
-  .step .n {
-    font-family: var(--display);
-    font-size: 1.3rem;
-    line-height: 1;
-    padding-top: 2px;
-    color: var(--gold-400);
-  }
-
+  .step .n { font-family: var(--display); font-size: 1.3rem; line-height: 1; padding-top: 2px; color: var(--gold-400); }
   .step p { margin: 0; font-size: 14.5px; }
 
   .rules { display: flex; flex-direction: column; gap: 24px; margin-top: 26px; }
@@ -430,7 +446,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before { animation: none !important; transition: none !important; }
-    .flute:hover:not(:disabled) { transform: none; }
+    .day:hover:not(:disabled) { transform: none; }
   }
 </style>
 
@@ -453,13 +469,21 @@
       <p class="scenario" id="scenario"></p>
     </div>
 
-    <p class="instruction">
-      <span>Tap the arrival night, then the last one. Keep tapping to stretch it.</span>
-      <span class="months" id="months"></span>
-    </p>
+    <p class="instruction">Tap the arrival night, then the last one. Keep tapping to stretch the stay, and move months with the arrows.</p>
 
-    <div class="marker-rail" id="rail"></div>
-    <div class="colonnade" id="strip"></div>
+    <div class="cal-head">
+      <h3 class="cal-title" id="calTitle">—</h3>
+      <div class="cal-nav">
+        <button type="button" id="prev" aria-label="Previous month">&#8249;</button>
+        <button type="button" id="next" aria-label="Next month">&#8250;</button>
+      </div>
+    </div>
+
+    <div class="dow-row" aria-hidden="true">
+      <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+    </div>
+
+    <div class="grid" id="grid"></div>
 
     <div class="legend">
       <span><i class="chip" style="background:var(--cream-100)"></i>Free</span>
@@ -472,7 +496,7 @@
     <div class="presets">
       <button type="button" data-from="5" data-nights="4">A guest who overlaps you</button>
       <button type="button" data-from="7" data-nights="4">One arriving the day yours leaves</button>
-      <button type="button" data-from="9" data-nights="4">A stay well clear of you</button>
+      <button type="button" data-from="60" data-nights="5">Someone booking two months out</button>
       <button type="button" data-clear="1">Clear</button>
     </div>
 
@@ -522,7 +546,7 @@
         <span class="n">III</span>
         <div>
           <h3>Look whenever you want</h3>
-          <p>You get view access to the calendar. Ninety nights ahead, colour-coded exactly like the strip above.</p>
+          <p>You get view access to the calendar, a year ahead, colour-coded exactly like the one above.</p>
         </div>
       </div>
     </div>
@@ -532,7 +556,7 @@
     <h2>The rules it follows</h2>
 
     <div class="rules">
-      <p><strong>A night that has already gone cannot be sold.</strong> The calendar starts today and refuses anything behind it, whichever way the dates arrive.</p>
+      <p><strong>A night that has already gone cannot be sold.</strong> Past dates are shown so the month still reads as a month, but they cannot be picked, and nothing will ever suggest one.</p>
 
       <p><strong>An enquiry does not hold a night.</strong> Only a confirmed booking blocks dates — otherwise every person who ever tapped the WhatsApp button would be holding nights they were never going to take.</p>
 
@@ -580,6 +604,17 @@ function addDays(ymd, n) {
   return toYmd(d);
 }
 
+/** Clamps to the end of a short month, so 31 January plus one month is 28 February. */
+function addMonths(ymd, n) {
+  var d = utcNoon(ymd);
+  var wanted = d.getUTCDate();
+  d.setUTCDate(1);
+  d.setUTCMonth(d.getUTCMonth() + n);
+  var lastOfMonth = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
+  d.setUTCDate(Math.min(wanted, lastOfMonth));
+  return toYmd(d);
+}
+
 function nightsBetween(a, b) {
   return Math.round((utcNoon(b).getTime() - utcNoon(a).getTime()) / 86400000);
 }
@@ -600,6 +635,11 @@ function hitsAny(start, end, holds) {
   for (var i = 0; i < holds.length; i++) {
     if (overlaps(start, end, holds[i].start, holds[i].end)) return holds[i];
   }
+  return null;
+}
+
+function heldOn(ymd, holds) {
+  for (var i = 0; i < holds.length; i++) if (covers(holds[i], ymd)) return holds[i];
   return null;
 }
 
@@ -639,9 +679,7 @@ function assess(checkIn, checkOut, today, holds) {
   var clashNights = [];
   for (var d = 0; d < nights; d++) {
     var day = addDays(checkIn, d);
-    for (var h = 0; h < holds.length; h++) {
-      if (covers(holds[h], day)) { clashNights.push(day); break; }
-    }
+    if (heldOn(day, holds)) clashNights.push(day);
   }
 
   return {
@@ -657,10 +695,9 @@ function assess(checkIn, checkOut, today, holds) {
  *
  * A third tap extends the stay rather than starting over. Booking sites
  * conventionally restart on the third tap, and here that silently wiped the
- * highlight with nothing on screen to explain it — the strip is small, so the
- * selection simply vanished and the control read as broken. Growing the stay
- * is what someone means when they keep tapping further along. Starting over
- * is what Clear is for, and tapping behind the arrival still does it.
+ * highlight with nothing on screen to explain it. Growing the stay is what
+ * someone means when they keep tapping further along. Starting over is what
+ * Clear is for, and tapping behind the arrival still does it.
  */
 function nextSelection(sel, day) {
   if (!sel || !sel.checkIn || day < sel.checkIn) {
@@ -669,43 +706,53 @@ function nextSelection(sel, day) {
   return { checkIn: sel.checkIn, checkOut: addDays(day, 1) };
 }
 
+/** The cells of one month, Monday first, with leading blanks. */
+function monthCells(year, month) {
+  var lead = (new Date(Date.UTC(year, month, 1)).getUTCDay() + 6) % 7;
+  var count = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  var cells = [];
+  for (var b = 0; b < lead; b++) cells.push(null);
+  for (var d = 1; d <= count; d++) {
+    cells.push(toYmd(new Date(Date.UTC(year, month, d))));
+  }
+  return cells;
+}
+
 /* --- end pure logic --- */
 
 (function () {
-  var DOW = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   var DAYNAME = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   var MONTH = ['January','February','March','April','May','June',
                'July','August','September','October','November','December'];
-  // How many nights the colonnade shows. The flutes are flex:1 so they never
-  // overflow — they just get thinner, and at a 375px phone twenty of them
-  // measure about 11.9px each, which is narrower than the two digits printed
-  // in them. Fewer nights on a narrow screen is the honest fix; the strip is
-  // the thing she is actually reading.
-  function spanForWidth() {
-    return window.innerWidth < 560 ? 14 : 20;
-  }
 
-  var SPAN = spanForWidth();
+  // How far ahead a guest can look. Airbnb's own import reaches two years;
+  // twelve months is as far as anyone books a Nairobi apartment, and it keeps
+  // the arrows from running forever.
+  var HORIZON_MONTHS = 12;
 
   // Nairobi is UTC+3 with no daylight saving, so "today" there is today's UTC
-  // date shifted by three hours. The window starts here and rolls, which is
-  // what keeps a night that has already gone off the page entirely rather
-  // than relying on a check to catch it later.
+  // date shifted by three hours.
   function todayInNairobi() {
-    var now = new Date();
-    return toYmd(new Date(now.getTime() + 3 * 3600000));
+    return toYmd(new Date(Date.now() + 3 * 3600000));
   }
 
   var TODAY = todayInNairobi();
-  var LAST = addDays(TODAY, SPAN);
-  var resizeTimer = null;
+  var HORIZON = addMonths(TODAY, HORIZON_MONTHS);
 
-  // The worked example: four nights, starting three days out. Relative to
-  // today so the page is never stale and never demonstrates a past booking.
-  var HOLDS = [{ start: addDays(TODAY, 3), end: addDays(TODAY, 7), label: 'Airbnb' }];
+  // The worked example: four stays spread over the next three months, so the
+  // calendar has something to show when she moves forward rather than looking
+  // empty the moment she leaves this month.
+  var HOLDS = [
+    { start: addDays(TODAY, 3),  end: addDays(TODAY, 7),  label: 'Airbnb' },
+    { start: addDays(TODAY, 24), end: addDays(TODAY, 29), label: 'Airbnb' },
+    { start: addDays(TODAY, 52), end: addDays(TODAY, 57), label: 'Airbnb' },
+    { start: addDays(TODAY, 81), end: addDays(TODAY, 88), label: 'Airbnb' }
+  ];
 
-  var strip = document.getElementById('strip');
-  var rail = document.getElementById('rail');
+  var grid = document.getElementById('grid');
+  var calTitle = document.getElementById('calTitle');
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
   var verdict = document.getElementById('verdict');
   var word = document.getElementById('word');
   var detail = document.getElementById('detail');
@@ -713,6 +760,10 @@ function nextSelection(sel, day) {
   var offerText = document.getElementById('offerText');
   var offerBtn = document.getElementById('offerBtn');
   var live = document.getElementById('live');
+
+  var view = { y: Number(TODAY.slice(0, 4)), m: Number(TODAY.slice(5, 7)) - 1 };
+  var minKey = view.y * 12 + view.m;
+  var maxKey = minKey + HORIZON_MONTHS - 1;
 
   var sel = { checkIn: null, checkOut: null };
   var hovering = null;
@@ -734,53 +785,49 @@ function nextSelection(sel, day) {
     return n + 'th';
   }
 
-  function monthSpan() {
-    var a = utcNoon(TODAY), b = utcNoon(addDays(TODAY, SPAN - 1));
-    if (a.getUTCMonth() === b.getUTCMonth()) {
-      return MONTH[a.getUTCMonth()] + ' ' + a.getUTCFullYear();
-    }
-    return MONTH[a.getUTCMonth()] + ' – ' + MONTH[b.getUTCMonth()] + ' ' + b.getUTCFullYear();
+  function goToMonthOf(ymd) {
+    view = { y: Number(ymd.slice(0, 4)), m: Number(ymd.slice(5, 7)) - 1 };
+    build();
   }
 
   function build() {
-    strip.innerHTML = '';
-    rail.innerHTML = '';
+    grid.innerHTML = '';
+    calTitle.textContent = MONTH[view.m] + ' ' + view.y;
 
-    var flutes = document.createDocumentFragment();
-    var slots = document.createDocumentFragment();
+    var key = view.y * 12 + view.m;
+    prevBtn.disabled = key <= minKey;
+    nextBtn.disabled = key >= maxKey;
 
-    for (var i = 0; i < SPAN; i++) {
-      var day = addDays(TODAY, i);
-      var d = utcNoon(day);
+    var cells = monthCells(view.y, view.m);
+    var frag = document.createDocumentFragment();
 
+    for (var i = 0; i < cells.length; i++) {
       var b = document.createElement('button');
       b.type = 'button';
-      b.className = 'flute';
-      b.setAttribute('data-day', day);
-      b.innerHTML = '<span class="dow" aria-hidden="true">' + DOW[d.getUTCDay()] + '</span>' +
-                    '<span class="num" aria-hidden="true">' + d.getUTCDate() + '</span>';
-      flutes.appendChild(b);
 
-      var slot = document.createElement('div');
-      slot.className = 'marker-slot';
-      slot.setAttribute('data-day', day);
-      slot.innerHTML = '<span class="lozenge"></span>';
-      slots.appendChild(slot);
+      if (cells[i] === null) {
+        b.className = 'day blank';
+        b.tabIndex = -1;
+        b.setAttribute('aria-hidden', 'true');
+      } else {
+        b.className = 'day';
+        b.setAttribute('data-day', cells[i]);
+        b.innerHTML = '<span>' + utcNoon(cells[i]).getUTCDate() + '</span>';
+        // Structurally unpickable rather than merely rejected later.
+        if (cells[i] < TODAY || cells[i] >= HORIZON) b.disabled = true;
+      }
+      frag.appendChild(b);
     }
 
-    strip.appendChild(flutes);
-    rail.appendChild(slots);
-
-    document.getElementById('scenario').textContent =
-      'Worked example — your Airbnb holds four nights from ' + longDate(HOLDS[0].start);
-    document.getElementById('months').textContent = monthSpan();
+    grid.appendChild(frag);
+    paint();
   }
 
   /**
-   * What the strip should show right now.
+   * What the calendar should show right now.
    *
    * The arrival night fills the moment it is tapped, before any second tap.
-   * Without that, the only feedback on the first tap is a six-pixel lozenge,
+   * Without that, the only feedback on the first tap is a five-pixel lozenge,
    * and the control reads as not having registered at all.
    */
   function shown() {
@@ -792,23 +839,22 @@ function nextSelection(sel, day) {
   }
 
   function paint() {
-    var view = shown();
-    var guest = (view.checkIn && view.checkOut) ? { start: view.checkIn, end: view.checkOut } : null;
-    var flutes = strip.children;
-    var slots = rail.children;
+    var view2 = shown();
+    var guest = (view2.checkIn && view2.checkOut)
+      ? { start: view2.checkIn, end: view2.checkOut } : null;
 
-    for (var i = 0; i < flutes.length; i++) {
-      var el = flutes[i];
+    var cells = grid.children;
+
+    for (var i = 0; i < cells.length; i++) {
+      var el = cells[i];
       var day = el.getAttribute('data-day');
-      var onAirbnb = false;
-      for (var h = 0; h < HOLDS.length; h++) if (covers(HOLDS[h], day)) onAirbnb = true;
-      var onGuest = guest ? covers(guest, day) : false;
-      var state;
+      if (!day) continue;
 
-      if (onAirbnb && onGuest) state = 'clash';
-      else if (onAirbnb) state = 'airbnb';
-      else if (onGuest) state = 'direct';
-      else state = null;
+      var onAirbnb = !!heldOn(day, HOLDS);
+      var onGuest = guest ? covers(guest, day) : false;
+      var state = (onAirbnb && onGuest) ? 'clash'
+                : onAirbnb ? 'airbnb'
+                : onGuest ? 'direct' : null;
 
       if (state) el.setAttribute('data-hold', state); else el.removeAttribute('data-hold');
 
@@ -817,16 +863,17 @@ function nextSelection(sel, day) {
       var tentative = onGuest && !sel.checkOut && day > sel.checkIn;
       if (tentative) el.setAttribute('data-preview', ''); else el.removeAttribute('data-preview');
 
+      if (guest && day === guest.start) el.setAttribute('data-arrival', '');
+      else el.removeAttribute('data-arrival');
+
       var d = utcNoon(day);
       el.setAttribute('aria-label',
-        DAYNAME[d.getUTCDay()] + ' ' + longDate(day) + ', ' +
-        (state === 'clash' ? 'collides with your Airbnb'
+        DAYNAME[d.getUTCDay()] + ' ' + longDate(day) + ' ' + d.getUTCFullYear() + ', ' +
+        (el.disabled ? 'already gone'
+          : state === 'clash' ? 'collides with your Airbnb'
           : state === 'airbnb' ? 'already booked on Airbnb'
           : state === 'direct' ? 'in this booking' : 'free'));
       el.setAttribute('aria-pressed', onGuest && !tentative ? 'true' : 'false');
-
-      if (guest && day === guest.start) slots[i].setAttribute('data-arrival', '');
-      else slots[i].removeAttribute('data-arrival');
     }
   }
 
@@ -838,7 +885,7 @@ function nextSelection(sel, day) {
       verdict.setAttribute('data-state', 'idle');
       word.textContent = sel.checkIn ? 'Now the last night' : 'Pick your nights';
       detail.textContent = sel.checkIn
-        ? 'Arriving ' + longDate(sel.checkIn) + '. Tap the last night of the stay — or tap an earlier night to move the arrival.'
+        ? 'Arriving ' + longDate(sel.checkIn) + '. Tap the last night of the stay — it can be in a later month.'
         : 'Tap a night to arrive, then tap the last night of the stay.';
       return;
     }
@@ -885,80 +932,71 @@ function nextSelection(sel, day) {
     if (r.alternative) {
       offerText.innerHTML = 'Nearest ' + r.nights + ' free night' + (r.nights === 1 ? '' : 's') +
         ': <b>' + shortDate(r.alternative.start) + ' to ' + shortDate(r.alternative.end) + '</b>.';
-
-      // A long stay can push the free window past the end of the strip. The
-      // answer is still true and still worth showing, but the button would
-      // select nights that are not on screen and read as a dead control, so
-      // the text stays and the button goes.
-      var fits = r.alternative.end <= LAST;
-      offerBtn.hidden = !fits;
-      if (fits) {
-        offerBtn.setAttribute('data-in', r.alternative.start);
-        offerBtn.setAttribute('data-out', r.alternative.end);
-      }
+      offerBtn.setAttribute('data-in', r.alternative.start);
+      offerBtn.setAttribute('data-out', r.alternative.end);
       offer.hidden = false;
     }
   }
 
-  function pick(day) {
-    sel = nextSelection(sel, day);
+  function commit(next, jumpTo) {
+    sel = next;
     hovering = null;
+    if (jumpTo) goToMonthOf(jumpTo); // build() repaints
     render();
   }
 
   build();
   render();
 
-  strip.addEventListener('click', function (e) {
-    var b = e.target.closest('.flute');
-    if (b && !b.disabled) pick(b.getAttribute('data-day'));
+  grid.addEventListener('click', function (e) {
+    var b = e.target.closest('.day');
+    if (!b || b.disabled || !b.getAttribute('data-day')) return;
+    commit(nextSelection(sel, b.getAttribute('data-day')));
   });
 
-  strip.addEventListener('mouseover', function (e) {
-    var b = e.target.closest('.flute');
-    if (!b || !sel.checkIn || sel.checkOut) return;
-    hovering = b.getAttribute('data-day');
+  grid.addEventListener('mouseover', function (e) {
+    var b = e.target.closest('.day');
+    if (!b || b.disabled || !sel.checkIn || sel.checkOut) return;
+    var day = b.getAttribute('data-day');
+    if (!day) return;
+    hovering = day;
     paint();
   });
 
-  strip.addEventListener('mouseleave', function () {
+  grid.addEventListener('mouseleave', function () {
     if (hovering) { hovering = null; paint(); }
+  });
+
+  prevBtn.addEventListener('click', function () {
+    if (this.disabled) return;
+    view.m--; if (view.m < 0) { view.m = 11; view.y--; }
+    build();
+  });
+
+  nextBtn.addEventListener('click', function () {
+    if (this.disabled) return;
+    view.m++; if (view.m > 11) { view.m = 0; view.y++; }
+    build();
   });
 
   var presets = document.querySelectorAll('.presets button');
   for (var p = 0; p < presets.length; p++) {
     presets[p].addEventListener('click', function () {
       if (this.hasAttribute('data-clear')) {
-        sel = { checkIn: null, checkOut: null };
-      } else {
-        var from = addDays(TODAY, Number(this.getAttribute('data-from')));
-        sel = { checkIn: from, checkOut: addDays(from, Number(this.getAttribute('data-nights'))) };
+        commit({ checkIn: null, checkOut: null }, TODAY);
+        return;
       }
-      hovering = null;
-      render();
+      var from = addDays(TODAY, Number(this.getAttribute('data-from')));
+      commit({ checkIn: from, checkOut: addDays(from, Number(this.getAttribute('data-nights'))) }, from);
     });
   }
 
   offerBtn.addEventListener('click', function () {
-    sel = { checkIn: this.getAttribute('data-in'), checkOut: this.getAttribute('data-out') };
-    hovering = null;
-    render();
+    var start = this.getAttribute('data-in');
+    commit({ checkIn: start, checkOut: this.getAttribute('data-out') }, start);
   });
 
-  // Rotating a phone changes how many nights fit. Rebuild, and drop a
-  // selection that would now sit off the end of the strip — a verdict about
-  // nights you cannot see reads as a bug.
-  window.addEventListener('resize', function () {
-    if (spanForWidth() === SPAN) return;
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () {
-      SPAN = spanForWidth();
-      LAST = addDays(TODAY, SPAN);
-      if (sel.checkOut && sel.checkOut > LAST) sel = { checkIn: null, checkOut: null };
-      hovering = null;
-      build();
-      render();
-    }, 150);
-  });
+  document.getElementById('scenario').textContent =
+    'Worked example — ' + HOLDS.length + ' stays already on your Airbnb over the next three months';
 })();
 </script>

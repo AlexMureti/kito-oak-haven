@@ -31,7 +31,7 @@ Four things transfer, and everything on the page comes from one of them:
 
 | From the mark | Used as |
 |---|---|
-| **The fluting** — vertical grooves, evenly spaced | The availability strip. A row of nights *is* a colonnade. Each night is a flute. |
+| **The fluting** — vertical grooves, evenly spaced | Each day cell is a flute: arched head, groove down the middle, filled to the top when booked. |
 | **The arch** in the K's leg | The soft crown on each night, and on the working plate. Restrained — a curve, not a doorway. |
 | **The acorn** — one precise jewel at a junction | A single gold lozenge marking the arrival night. One per view, never decoration. |
 | **Foil, not paint** | Gold is only ever a gradient that catches light. A flat gold fill is the tell that nobody looked at the logo. |
@@ -66,10 +66,16 @@ with the lozenge, then one Cormorant line: *Two calendars sell one apartment.*
 The foil gradient drifts slowly, as if catching light. That is the only ambient
 motion on the page.
 
-**2 — The colonnade.** The instrument, on a cream plate. Twenty nights as
-flutes. Two date fields, three presets so she never has to type. Above it, a
-quiet occupancy read — *six of the next twenty nights are held* — because a
-system that knows its own state reads as a system.
+**2 — The calendar.** The instrument, on a cream plate. A real month grid with
+arrows, a year of horizon, and days drawn as flutes.
+
+This started as a single row of twenty nights, which was wrong and had to be
+rebuilt. Twenty nights is not a booking calendar — a guest asking for dates two
+months out could not even see them, which made the whole thing a toy. The
+metaphor was driving the layout instead of the function. A facade carries ranks
+of columns rather than one row of twenty, so the grid is closer to the mark
+anyway, and it fixes the phone at the same time: seven columns give ~39px cells
+where twenty flutes gave ~12px.
 
 **3 — The verdict.** Not a coloured alert box. A gold rule, one Cormorant word
 (*Available* / *Collision*), then the reasoning in Inter naming the actual

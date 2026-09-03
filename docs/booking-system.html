@@ -1,426 +1,479 @@
 <title>Kito Booking System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@400;500;600&display=swap">
 
 <style>
+  /* Kito Oak Haven — taken from the site's own brand system (globals.css).
+     Pine ground, antique gold, terracotta as the single warm accent, cream
+     as the working surface. Gold is never a flat fill: it always carries the
+     metal gradient, because the mark is struck foil, not paint. */
   :root {
-    color-scheme: light;
-
-    --paper:     #f2f4f1;
-    --surface:   #ffffff;
-    --ink:       #1b211d;
-    --ink-soft:  #566059;
-    --ink-faint: #868f88;
-    --rule:      #d8ded7;
-    --rule-soft: #e7ebe5;
-
-    /* These four are the spreadsheet's own colours. Kept identical on purpose:
-       the page and the sheet have to look like one system. */
-    --free-bg:    #ffffff;
-    --airbnb-bg:  #e8e4dc;
-    --airbnb-ink: #7a6c53;
-    --direct-bg:  #d9e8dd;
-    --direct-ink: #2c6344;
-    --clash-bg:   #f4c7c3;
-    --clash-ink:  #9d2f24;
-
-    --accent:     #2c6344;
-    --accent-dim: #dfe9e2;
-
-    --shadow: 0 1px 2px rgba(27, 33, 29, .05), 0 8px 24px -12px rgba(27, 33, 29, .14);
-
-    --display: "Fraunces", Georgia, "Times New Roman", serif;
-    --body: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      color-scheme: dark;
-      --paper:     #141815;
-      --surface:   #1c211d;
-      --ink:       #e6eae5;
-      --ink-soft:  #9aa39c;
-      --ink-faint: #6d766f;
-      --rule:      #2e352f;
-      --rule-soft: #242a25;
-
-      --free-bg:    #1c211d;
-      --airbnb-bg:  #3a352c;
-      --airbnb-ink: #cdc1a7;
-      --direct-bg:  #1f3d2b;
-      --direct-ink: #91d5aa;
-      --clash-bg:   #4a231e;
-      --clash-ink:  #f2a99f;
-
-      --accent:     #6cbf8e;
-      --accent-dim: #22302a;
-
-      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px -12px rgba(0, 0, 0, .6);
-    }
-  }
-
-  :root[data-theme="dark"] {
     color-scheme: dark;
-    --paper:     #141815;
-    --surface:   #1c211d;
-    --ink:       #e6eae5;
-    --ink-soft:  #9aa39c;
-    --ink-faint: #6d766f;
-    --rule:      #2e352f;
-    --rule-soft: #242a25;
 
-    --free-bg:    #1c211d;
-    --airbnb-bg:  #3a352c;
-    --airbnb-ink: #cdc1a7;
-    --direct-bg:  #1f3d2b;
-    --direct-ink: #91d5aa;
-    --clash-bg:   #4a231e;
-    --clash-ink:  #f2a99f;
+    --pine-950: #061310;
+    --pine-900: #0a1c16;
+    --pine-850: #0f2620;
+    --pine-800: #143228;
+    --pine-700: #1c4736;
+    --pine-600: #276048;
 
-    --accent:     #6cbf8e;
-    --accent-dim: #22302a;
+    --gold-200: #f2e4c2;
+    --gold-300: #e6cf9c;
+    --gold-400: #d7b878;
+    --gold-500: #c6a15b;
+    --gold-600: #ad8442;
+    --gold-700: #8a6832;
 
-    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px -12px rgba(0, 0, 0, .6);
+    --terracotta-300: #e0a184;
+    --terracotta-500: #c05a2e;
+    --terracotta-600: #a94a24;
+
+    --cream-50:  #faf7f1;
+    --cream-100: #f4ece0;
+    --cream-200: #e9dcc8;
+    --cream-300: #d9c6a6;
+
+    --ink-900: #171917;
+    --ink-700: #3a3f3b;
+    --ink-500: #6b716c;
+
+    --gold-metal: linear-gradient(
+      100deg,
+      #8a6832 0%, #c6a15b 18%, #f2e4c2 34%, #d7b878 48%,
+      #ad8442 66%, #e6cf9c 84%, #9c7439 100%
+    );
+
+    /* The metal above carries dark bronze stops that read as shadow on cream.
+       On the pine ground those stops go muddy and drop the contrast of a
+       headline to about 3.5:1, so foil set on dark keeps only the lit range. */
+    --gold-foil-dark: linear-gradient(
+      100deg,
+      #c6a15b 0%, #e6cf9c 20%, #f2e4c2 38%,
+      #d7b878 56%, #e6cf9c 78%, #c6a15b 100%
+    );
+
+    --rule: color-mix(in srgb, var(--gold-500) 30%, transparent);
+    --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   * { box-sizing: border-box; }
 
   body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--body);
-    font-size: 16px;
-    line-height: 1.6;
     margin: 0;
+    background: var(--pine-950);
+    color: var(--cream-100);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.62;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
-  .wrap {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 56px 24px 80px;
-  }
+  .page { max-width: 860px; margin: 0 auto; padding: clamp(38px, 7vw, 76px) clamp(18px, 5vw, 44px) 72px; }
 
-  .eyebrow {
-    font-family: var(--mono);
-    font-size: 11px;
+  /* ---------- shared type ---------- */
+
+  .label {
+    font-family: var(--sans);
+    font-size: 10.5px;
     font-weight: 500;
-    letter-spacing: .14em;
+    letter-spacing: .26em;
     text-transform: uppercase;
-    color: var(--ink-faint);
-    margin: 0 0 14px;
+    color: var(--gold-400);
+    margin: 0;
   }
 
   h1 {
     font-family: var(--display);
-    font-optical-sizing: auto;
-    font-weight: 600;
-    font-size: clamp(30px, 6vw, 44px);
-    line-height: 1.1;
-    letter-spacing: -0.015em;
+    font-weight: 400;
+    font-size: clamp(2.1rem, 6.4vw, 3.9rem);
+    line-height: 1.02;
+    letter-spacing: -0.012em;
     text-wrap: balance;
-    margin: 0 0 18px;
+    margin: 0 0 20px;
+    color: var(--cream-50);
   }
 
   h2 {
     font-family: var(--display);
-    font-weight: 600;
-    font-size: clamp(21px, 3.4vw, 26px);
-    line-height: 1.22;
-    letter-spacing: -0.01em;
+    font-weight: 400;
+    font-size: clamp(1.55rem, 3.6vw, 2.35rem);
+    line-height: 1.08;
     text-wrap: balance;
-    margin: 0 0 12px;
+    margin: 0 0 14px;
+    color: var(--cream-50);
   }
 
   h3 {
-    font-family: var(--body);
+    font-family: var(--sans);
     font-weight: 600;
-    font-size: 15px;
-    line-height: 1.35;
-    margin: 0 0 6px;
+    font-size: 14.5px;
+    letter-spacing: -0.005em;
+    margin: 0 0 5px;
+    color: var(--cream-50);
   }
 
-  p { margin: 0 0 16px; max-width: 62ch; }
+  p { margin: 0 0 15px; max-width: 60ch; color: color-mix(in srgb, var(--cream-100) 80%, transparent); }
 
   .lede {
-    font-size: 18px;
-    line-height: 1.55;
-    color: var(--ink-soft);
+    font-size: clamp(1rem, 1.5vw, 1.16rem);
+    line-height: 1.62;
+    color: color-mix(in srgb, var(--cream-200) 82%, transparent);
     margin-bottom: 0;
   }
 
-  strong { font-weight: 600; }
+  em { font-style: italic; color: var(--cream-100); }
+  strong { font-weight: 600; color: var(--cream-50); }
 
-  section { margin-top: 56px; }
-
-  .divider {
-    height: 1px;
-    background: var(--rule);
-    border: 0;
-    margin: 56px 0 0;
+  /* The one place gold moves. The mark is foil, so its light shifts. */
+  .foil {
+    background: var(--gold-foil-dark);
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: drift 14s var(--ease-luxe) infinite alternate;
   }
 
-  /* ---- the instrument ---- */
-
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    box-shadow: var(--shadow);
-    padding: 22px;
-    margin-top: 28px;
+  @keyframes drift {
+    from { background-position: 0% 50%; }
+    to   { background-position: 100% 50%; }
   }
 
-  .panel-head {
+  /* ---------- masthead ---------- */
+
+  header { text-align: center; padding-bottom: clamp(30px, 5vw, 46px); }
+
+  .lockup {
+    width: clamp(116px, 21vw, 168px);
+    height: auto;
+    margin: 0 auto clamp(24px, 4vw, 34px);
+    display: block;
+  }
+
+  /* The lozenge divider from the wordmark, rebuilt as a rule. */
+  .lozenge-rule {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    justify-content: center;
+    margin: 0 auto clamp(24px, 4vw, 32px);
+    max-width: 320px;
+  }
+
+  .lozenge-rule .line { height: 1px; flex: 1; background: linear-gradient(90deg, transparent, var(--gold-600), transparent); }
+
+  .lozenge {
+    width: 5px; height: 5px;
+    background: var(--gold-400);
+    transform: rotate(45deg);
+    flex: none;
+  }
+
+  header .lede { margin-left: auto; margin-right: auto; }
+
+  /* ---------- the working plate ---------- */
+
+  .plate {
+    color-scheme: light;
+    background: var(--cream-50);
+    color: var(--ink-900);
+    border: 1px solid color-mix(in srgb, var(--gold-500) 42%, transparent);
+    border-radius: 3px;
+    padding: clamp(20px, 4vw, 32px);
+    box-shadow: 0 34px 70px -34px rgba(0, 0, 0, .82), 0 2px 0 0 rgba(250, 247, 241, .05);
+  }
+
+  .plate p { color: var(--ink-700); }
+  .plate .label { color: var(--gold-700); }
+
+  .plate-head {
     display: flex;
     flex-wrap: wrap;
+    gap: 8px 18px;
     align-items: baseline;
     justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 18px;
+    padding-bottom: 15px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid color-mix(in srgb, var(--gold-600) 24%, transparent);
   }
 
-  .panel-head .eyebrow { margin: 0; }
+  .scenario { font-size: 12.5px; color: var(--ink-500); margin: 0; }
 
-  .scenario {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink-faint);
+  /* ---------- the colonnade ----------
+     Twenty nights as flutes. The fluting is the logo's column; a booked night
+     is a filled bay. Flex with no fixed width so it always fits exactly and
+     never scrolls sideways on a phone. */
+
+  .marker-rail, .colonnade { display: flex; gap: 3px; }
+  .marker-rail { height: 13px; margin-bottom: 5px; }
+
+  .marker-slot { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; }
+
+  .marker-slot[data-arrival] .lozenge { width: 6px; height: 6px; }
+  .marker-slot:not([data-arrival]) .lozenge { display: none; }
+
+  .flute {
+    flex: 1 1 0;
+    min-width: 0;
+    height: clamp(58px, 13vw, 78px);
+    border-radius: 999px 999px 2px 2px;
+    background: var(--cream-100);
+    border: 1px solid color-mix(in srgb, var(--gold-600) 22%, transparent);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 5px;
+    transition: background .32s var(--ease-luxe), border-color .32s var(--ease-luxe);
+    overflow: hidden;
   }
 
-  .controls {
+  /* the groove — what makes a bar read as a flute */
+  .flute::before {
+    content: "";
+    position: absolute;
+    top: 13px; bottom: 15px;
+    width: 1px;
+    background: color-mix(in srgb, var(--gold-700) 26%, transparent);
+  }
+
+  .flute .dow {
+    font-size: clamp(7px, 1.5vw, 8.5px);
+    letter-spacing: .06em;
+    color: var(--ink-500);
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+
+  .flute .num {
+    font-size: clamp(9px, 2vw, 11px);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    color: var(--ink-700);
+    line-height: 1;
+  }
+
+  .flute[data-hold="airbnb"] { background: var(--pine-800); border-color: var(--pine-700); }
+  .flute[data-hold="airbnb"] .dow { color: color-mix(in srgb, var(--cream-200) 55%, transparent); }
+  .flute[data-hold="airbnb"] .num { color: var(--cream-200); }
+  .flute[data-hold="airbnb"]::before { background: color-mix(in srgb, var(--gold-400) 20%, transparent); }
+
+  .flute[data-hold="direct"] { background: var(--gold-metal); border-color: var(--gold-600); }
+  .flute[data-hold="direct"] .dow { color: color-mix(in srgb, var(--pine-950) 62%, transparent); }
+  .flute[data-hold="direct"] .num { color: var(--pine-950); }
+  .flute[data-hold="direct"]::before { background: color-mix(in srgb, var(--pine-950) 22%, transparent); }
+
+  .flute[data-hold="clash"] { background: var(--terracotta-500); border-color: var(--terracotta-600); }
+  .flute[data-hold="clash"] .dow { color: color-mix(in srgb, var(--cream-50) 66%, transparent); }
+  .flute[data-hold="clash"] .num { color: var(--cream-50); }
+  .flute[data-hold="clash"]::before { background: color-mix(in srgb, var(--cream-50) 26%, transparent); }
+
+  .legend {
     display: flex;
     flex-wrap: wrap;
-    gap: 14px;
-    align-items: flex-end;
+    gap: 8px 16px;
+    margin-top: 15px;
+    font-size: 11px;
+    color: var(--ink-500);
   }
 
-  .field { display: flex; flex-direction: column; gap: 5px; flex: 1 1 150px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+  .chip {
+    width: 9px; height: 13px;
+    border-radius: 999px 999px 1px 1px;
+    display: inline-block;
+    border: 1px solid color-mix(in srgb, var(--gold-600) 26%, transparent);
+  }
+
+  /* ---------- controls ---------- */
+
+  .fields { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 26px; }
+  .field { display: flex; flex-direction: column; gap: 6px; flex: 1 1 156px; }
 
   .field label {
-    font-family: var(--mono);
     font-size: 10px;
-    letter-spacing: .12em;
+    font-weight: 500;
+    letter-spacing: .2em;
     text-transform: uppercase;
-    color: var(--ink-faint);
+    color: var(--ink-500);
   }
 
   .field input {
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--ink);
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    padding: 9px 10px;
+    font-family: var(--sans);
+    font-size: 14.5px;
+    color: var(--ink-900);
+    background: #fff;
+    border: 1px solid color-mix(in srgb, var(--gold-600) 34%, transparent);
+    border-radius: 2px;
+    padding: 11px 12px;
     width: 100%;
-    min-height: 40px;
+    min-height: 44px;
   }
 
-  .field input:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 1px;
-  }
+  .field input:focus-visible { outline: 2px solid var(--gold-500); outline-offset: 1px; }
 
-  .verdict {
-    margin-top: 18px;
-    border-radius: 3px;
-    padding: 14px 16px;
-    border: 1px solid var(--rule);
-    background: var(--paper);
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .verdict .mark {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: .1em;
-    padding: 3px 8px;
-    border-radius: 2px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .verdict .detail { font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
-  .verdict .detail b { color: var(--ink); font-weight: 600; }
-
-  .verdict[data-state="free"] { background: var(--direct-bg); border-color: transparent; }
-  .verdict[data-state="free"] .mark { background: var(--direct-ink); color: var(--direct-bg); }
-  .verdict[data-state="free"] .detail,
-  .verdict[data-state="free"] .detail b { color: var(--direct-ink); }
-
-  .verdict[data-state="taken"] { background: var(--clash-bg); border-color: transparent; }
-  .verdict[data-state="taken"] .mark { background: var(--clash-ink); color: var(--clash-bg); }
-  .verdict[data-state="taken"] .detail,
-  .verdict[data-state="taken"] .detail b { color: var(--clash-ink); }
-
-  .verdict[data-state="idle"] .mark { background: var(--rule); color: var(--ink-soft); }
-
-  /* ---- calendar strip ---- */
-
-  .strip-scroll { overflow-x: auto; margin-top: 20px; padding-bottom: 4px; }
-
-  .strip { display: flex; gap: 3px; min-width: max-content; }
-
-  .cell {
-    width: 28px;
-    border-radius: 2px;
-    border: 1px solid var(--rule-soft);
-    background: var(--free-bg);
-    padding: 6px 0 7px;
-    text-align: center;
-    transition: background-color .15s ease, border-color .15s ease;
-  }
-
-  .cell .dow {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: .06em;
-    color: var(--ink-faint);
-    display: block;
-  }
-
-  .cell .num {
-    font-family: var(--mono);
-    font-size: 13px;
-    font-variant-numeric: tabular-nums;
-    color: var(--ink-soft);
-    display: block;
-    margin-top: 2px;
-  }
-
-  .cell[data-hold="airbnb"] { background: var(--airbnb-bg); border-color: transparent; }
-  .cell[data-hold="airbnb"] .num,
-  .cell[data-hold="airbnb"] .dow { color: var(--airbnb-ink); }
-
-  .cell[data-hold="direct"] { background: var(--direct-bg); border-color: transparent; }
-  .cell[data-hold="direct"] .num,
-  .cell[data-hold="direct"] .dow { color: var(--direct-ink); }
-
-  .cell[data-hold="clash"] { background: var(--clash-bg); border-color: transparent; }
-  .cell[data-hold="clash"] .num,
-  .cell[data-hold="clash"] .dow { color: var(--clash-ink); font-weight: 500; }
-
-  .key {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    margin-top: 16px;
-    font-family: var(--mono);
-    font-size: 10.5px;
-    letter-spacing: .06em;
-    color: var(--ink-faint);
-  }
-
-  .key span { display: inline-flex; align-items: center; gap: 6px; }
-
-  .swatch {
-    width: 11px;
-    height: 11px;
-    border-radius: 2px;
-    border: 1px solid var(--rule-soft);
-    display: inline-block;
-  }
-
-  /* ---- preset buttons ---- */
-
-  .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 
   .presets button {
-    font-family: var(--body);
-    font-size: 13px;
+    font-family: var(--sans);
+    font-size: 12.5px;
     font-weight: 500;
-    color: var(--ink-soft);
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    padding: 7px 12px;
+    color: var(--ink-700);
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--gold-600) 32%, transparent);
+    border-radius: 2px;
+    padding: 9px 14px;
+    min-height: 38px;
     cursor: pointer;
-    transition: border-color .15s ease, color .15s ease;
+    transition: border-color .22s var(--ease-luxe), color .22s var(--ease-luxe), background .22s var(--ease-luxe);
   }
 
-  .presets button:hover { border-color: var(--accent); color: var(--accent); }
-  .presets button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .presets button:hover { border-color: var(--gold-600); color: var(--ink-900); background: var(--cream-100); }
+  .presets button:focus-visible { outline: 2px solid var(--gold-500); outline-offset: 1px; }
 
-  /* ---- steps ---- */
+  /* ---------- the verdict ---------- */
 
-  .steps { display: flex; flex-direction: column; gap: 0; margin-top: 24px; }
-
-  .step {
-    display: grid;
-    grid-template-columns: 30px 1fr;
-    gap: 16px;
-    padding: 18px 0;
-    border-top: 1px solid var(--rule);
+  .verdict {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid color-mix(in srgb, var(--gold-600) 24%, transparent);
   }
 
-  .step:last-child { border-bottom: 1px solid var(--rule); }
-
-  .step .n {
-    font-family: var(--mono);
-    font-size: 12px;
-    font-variant-numeric: tabular-nums;
-    color: var(--accent);
-    padding-top: 2px;
+  .verdict-word {
+    font-family: var(--display);
+    font-size: clamp(1.5rem, 3.6vw, 2.05rem);
+    line-height: 1.05;
+    margin: 0 0 6px;
+    color: var(--ink-900);
   }
 
-  .step p { margin: 0; font-size: 14.5px; color: var(--ink-soft); }
+  .verdict[data-state="free"] .verdict-word { color: var(--gold-700); }
+  .verdict[data-state="clash"] .verdict-word { color: var(--terracotta-600); }
 
-  /* ---- rules list ---- */
+  .verdict-detail { font-size: 14.5px; margin: 0; color: var(--ink-700); max-width: 56ch; }
+  .verdict-detail b { font-weight: 600; color: var(--ink-900); }
 
-  .rules { display: flex; flex-direction: column; gap: 22px; margin-top: 26px; }
-  .rules p { margin: 0; font-size: 14.5px; color: var(--ink-soft); }
+  .offer {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 11px;
+    padding: 13px 15px;
+    background: var(--cream-100);
+    border-left: 2px solid var(--gold-500);
+  }
 
-  .note {
-    border-left: 2px solid var(--accent);
-    padding: 2px 0 2px 16px;
+  .offer p { margin: 0; font-size: 13.5px; color: var(--ink-700); }
+  .offer[hidden] { display: none; }
+
+  .offer button {
+    font-family: var(--sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--pine-950);
+    background: var(--gold-metal);
+    border: 0;
+    border-radius: 2px;
+    padding: 9px 15px;
+    min-height: 38px;
+    cursor: pointer;
+  }
+
+  .offer button:focus-visible { outline: 2px solid var(--pine-800); outline-offset: 2px; }
+
+  /* ---------- prose sections ---------- */
+
+  section { margin-top: clamp(48px, 8vw, 78px); }
+
+  .aside {
+    border-left: 1px solid var(--gold-600);
+    padding: 3px 0 3px 18px;
     margin-top: 26px;
   }
 
-  .note p { margin: 0; font-size: 14.5px; color: var(--ink-soft); }
+  .aside p { margin: 0; font-size: 14.5px; }
+
+  .steps { margin-top: 26px; }
+
+  .step {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 16px;
+    padding: 19px 0;
+    border-top: 1px solid color-mix(in srgb, var(--gold-500) 18%, transparent);
+  }
+
+  .step:last-child { border-bottom: 1px solid color-mix(in srgb, var(--gold-500) 18%, transparent); }
+
+  .step .n {
+    font-family: var(--display);
+    font-size: 1.3rem;
+    line-height: 1;
+    padding-top: 2px;
+    color: var(--gold-400);
+  }
+
+  .step p { margin: 0; font-size: 14.5px; }
+
+  .rules { display: flex; flex-direction: column; gap: 24px; margin-top: 26px; }
+  .rules p { margin: 0; font-size: 14.5px; }
 
   footer {
-    margin-top: 64px;
-    padding-top: 22px;
-    border-top: 1px solid var(--rule);
-    font-size: 13px;
-    color: var(--ink-faint);
+    margin-top: clamp(52px, 8vw, 80px);
+    padding-top: 24px;
+    border-top: 1px solid color-mix(in srgb, var(--gold-500) 20%, transparent);
+    font-size: 12.5px;
+    color: color-mix(in srgb, var(--cream-200) 52%, transparent);
   }
 
-  footer a { color: var(--accent); text-decoration: none; }
+  footer p { color: inherit; font-size: inherit; margin: 0 0 5px; }
+  footer a { color: var(--gold-400); text-decoration: none; }
   footer a:hover { text-decoration: underline; }
-  footer a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  footer a:focus-visible { outline: 2px solid var(--gold-400); outline-offset: 3px; }
 
   @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; animation: none !important; }
-  }
-
-  @media (max-width: 560px) {
-    .wrap { padding: 40px 18px 64px; }
-    .panel { padding: 18px 16px; }
+    *, *::before { animation: none !important; transition: none !important; }
   }
 </style>
 
-<div class="wrap">
+<div class="page">
 
-  <p class="eyebrow">Kito Oak Haven · Booking operations</p>
-  <h1>Two calendars sell one apartment. Here is what stops them colliding.</h1>
-  <p class="lede">Your Airbnb listing and the website both sell the same nights. Neither knows about the other by default. This is the part that makes sure a website guest can never take a night you have already sold.</p>
+  <header>
+    <img class="lockup" src="data:image/png;base64,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" alt="Kito Oak Haven — Urban Sanctuary, Nairobi">
 
-  <div class="panel">
-    <div class="panel-head">
-      <p class="eyebrow">Try it yourself</p>
-      <p class="scenario">Example: Airbnb holds 6–10 September</p>
+    <div class="lozenge-rule">
+      <span class="line"></span><span class="lozenge"></span><span class="line"></span>
     </div>
 
-    <p style="font-size:14px;color:var(--ink-soft);margin-bottom:18px;">Pretend a guest messages asking for dates. Pick them and see what the system answers.</p>
+    <h1>Two calendars sell <span class="foil">one apartment</span>.</h1>
+    <p class="lede">Your Airbnb and the website both sell the same nights, and by default neither knows about the other. This is the part that makes sure a website guest can never take a night you have already sold.</p>
+  </header>
 
-    <div class="controls">
+  <div class="plate">
+    <div class="plate-head">
+      <p class="label">Availability</p>
+      <p class="scenario">Worked example — your Airbnb holds four nights from 6 September</p>
+    </div>
+
+    <div class="marker-rail" id="rail"></div>
+    <div class="colonnade" id="strip"></div>
+
+    <div class="legend">
+      <span><i class="chip" style="background:var(--cream-100)"></i>Free</span>
+      <span><i class="chip" style="background:var(--pine-800);border-color:var(--pine-700)"></i>Your Airbnb</span>
+      <span><i class="chip" style="background:var(--gold-metal);border-color:var(--gold-600)"></i>Website booking</span>
+      <span><i class="chip" style="background:var(--terracotta-500);border-color:var(--terracotta-600)"></i>Collision</span>
+      <span><i class="lozenge" style="position:relative;top:-1px"></i>Arrival</span>
+    </div>
+
+    <div class="fields">
       <div class="field">
         <label for="in">Guest arrives</label>
         <input type="date" id="in" value="2026-09-08" min="2026-09-01" max="2026-09-20">
@@ -431,66 +484,57 @@
       </div>
     </div>
 
-    <div class="verdict" id="verdict" data-state="idle">
-      <span class="mark" id="mark">—</span>
-      <span class="detail" id="detail">Pick dates above.</span>
-    </div>
-
-    <div class="strip-scroll">
-      <div class="strip" id="strip"></div>
-    </div>
-
-    <div class="key">
-      <span><i class="swatch" style="background:var(--free-bg)"></i>Free</span>
-      <span><i class="swatch" style="background:var(--airbnb-bg);border-color:transparent"></i>Your Airbnb</span>
-      <span><i class="swatch" style="background:var(--direct-bg);border-color:transparent"></i>Website booking</span>
-      <span><i class="swatch" style="background:var(--clash-bg);border-color:transparent"></i>Collision</span>
-    </div>
-
     <div class="presets">
       <button type="button" data-in="2026-09-08" data-out="2026-09-12">A guest who overlaps you</button>
       <button type="button" data-in="2026-09-10" data-out="2026-09-14">One arriving the day yours leaves</button>
-      <button type="button" data-in="2026-09-14" data-out="2026-09-18">A clear week</button>
+      <button type="button" data-in="2026-09-15" data-out="2026-09-19">A clear week</button>
+    </div>
+
+    <div class="verdict" id="verdict" data-state="idle">
+      <p class="verdict-word" id="word">Pick your dates</p>
+      <p class="verdict-detail" id="detail">Use the buttons above, or set them by hand.</p>
+      <div class="offer" id="offer" hidden>
+        <p id="offerText"></p>
+        <button type="button" id="offerBtn">Use these dates</button>
+      </div>
     </div>
   </div>
 
-  <div class="note">
-    <p>Try the middle one. A guest arriving on the 10th and your guest leaving on the 10th share a date, but not a night — so that booking is <strong>free to take</strong>. Systems that get this wrong quietly turn away a real booking every time a stay ends.</p>
+  <div class="aside">
+    <p>Try the middle button. A guest arriving on the 10th and your guest leaving on the 10th share a date, but not a night — so that stay is <strong>free to take</strong>. A system that gets this wrong quietly turns away a real booking every time a stay ends.</p>
   </div>
-
-  <hr class="divider">
 
   <section>
     <h2>How it knows</h2>
     <p>Airbnb publishes every listing's booked nights as a calendar link. It is generated once and keeps working — you never open it again.</p>
-    <p>A program reads that link every three hours and writes your booked nights into the same sheet as the website bookings. Three hours is not a guess: Airbnb rebuilds its own calendar file on a three-hour cycle, so checking more often reads the same thing twice.</p>
-    <p>Both channels then sit in one place, and the question <em>are these nights free?</em> gets answered by looking, instead of by someone remembering to ask.</p>
+    <p>A program reads that link every three hours and writes your booked nights into the same place as the website bookings. Three hours is not a guess: Airbnb rebuilds its own calendar file on a three-hour cycle, so checking more often reads the same thing twice.</p>
+    <p>Both channels then sit in one view, and <em>are these nights free?</em> gets answered by looking, instead of by someone remembering to ask.</p>
   </section>
 
   <section>
     <h2>What you would do</h2>
-    <p>Once, and then never again.</p>
+    <p>Once. Then never again.</p>
 
     <div class="steps">
       <div class="step">
-        <span class="n">01</span>
+        <span class="n">I</span>
         <div>
           <h3>Send one link</h3>
-          <p>In Airbnb: Calendar → Availability → Connect calendars → Export calendar. Copy what it gives you and send it over. That is the whole setup.</p>
+          <p>In Airbnb: Calendar → Availability → Connect calendars → Export calendar. Copy what it gives you and send it over. That is the entire setup, and it takes about thirty seconds.</p>
         </div>
       </div>
       <div class="step">
-        <span class="n">02</span>
+        <span class="n">II</span>
         <div>
           <h3>Nothing else</h3>
-          <p>Your team keeps working exactly as they do now. Nothing changes on their side, and nobody has to tell anyone about a booking.</p>
+          <p>Your team keeps working exactly as they do now. Nothing changes on their side and nobody has to report a booking to anyone.</p>
         </div>
       </div>
       <div class="step">
-        <span class="n">03</span>
+        <span class="n">III</span>
         <div>
           <h3>Look whenever you want</h3>
-          <p>You get view access to the sheet. Ninety days ahead, one row per night, colour-coded exactly like the strip above.</p>
+          <p>You get view access to the calendar. Ninety nights ahead, colour-coded exactly like the strip above.</p>
         </div>
       </div>
     </div>
@@ -500,9 +544,9 @@
     <h2>The rules it follows</h2>
 
     <div class="rules">
-      <p><strong>An enquiry does not hold a night.</strong> Only a confirmed booking blocks dates. Otherwise every person who ever tapped the WhatsApp button would be blocking nights they were never going to take.</p>
+      <p><strong>An enquiry does not hold a night.</strong> Only a confirmed booking blocks dates — otherwise every person who ever tapped the WhatsApp button would be holding nights they were never going to take.</p>
 
-      <p><strong>A calendar that fails to load is treated as a failure, not as an empty calendar.</strong> Airbnb's export sometimes returns an error page instead of your dates. A careless version would read that as "everything was cancelled" and release every night you have sold. This one changes nothing and records a warning.</p>
+      <p><strong>A calendar that fails to load is treated as a failure, not as an empty calendar.</strong> Airbnb's export sometimes returns an error page instead of your dates. A careless version reads that as "everything was cancelled" and releases every night you have sold. This one changes nothing and records a warning.</p>
 
       <p><strong>Nothing is ever deleted.</strong> A booking that disappears is marked released, not removed, so there is always a record of what was held and when.</p>
 
@@ -513,136 +557,203 @@
   <section>
     <h2>What it does not do</h2>
     <p>It does not confirm bookings on its own. It makes a collision visible and raises an alert — the decision stays with a person.</p>
-    <p>It also cannot see a booking your team takes outside Airbnb. If a stay is sold over the phone and blocked on Airbnb afterwards, this sees it the moment they do. If it is never blocked there, nothing can see it. That is worth knowing about rather than discovering later.</p>
+    <p>It also cannot see a booking your team takes outside Airbnb. If a stay is sold over the phone and blocked on Airbnb afterwards, this sees it the moment they do. If it is never blocked there, nothing can see it. Worth knowing now rather than discovering later.</p>
   </section>
 
   <footer>
-    Built for Kito Oak Haven by Alex Maingi · <a href="tel:+254740180214">+254&nbsp;740&nbsp;180&nbsp;214</a><br>
-    The calendar above is a worked example, not live data.
+    <p>Prepared for Kito Oak Haven · Alex Maingi · <a href="tel:+254740180214">+254&nbsp;740&nbsp;180&nbsp;214</a></p>
+    <p>The calendar above is a worked example, not live booking data.</p>
   </footer>
 </div>
 
 <script>
-  // The example calendar. Half-open, exactly like the real thing: the 6th, 7th,
+  // The worked example. Half-open, exactly like the real system: the 6th, 7th,
   // 8th and 9th are held, and the 10th is free for someone else to arrive.
   var AIRBNB = { start: '2026-09-06', end: '2026-09-10' };
 
-  var DAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  var DOW = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  var MONTH = ['January','February','March','April','May','June',
+               'July','August','September','October','November','December'];
   var FIRST = '2026-09-01';
   var SPAN = 20;
 
   var inEl = document.getElementById('in');
   var outEl = document.getElementById('out');
   var strip = document.getElementById('strip');
+  var rail = document.getElementById('rail');
   var verdict = document.getElementById('verdict');
-  var mark = document.getElementById('mark');
+  var word = document.getElementById('word');
   var detail = document.getElementById('detail');
+  var offer = document.getElementById('offer');
+  var offerText = document.getElementById('offerText');
+  var offerBtn = document.getElementById('offerBtn');
 
-  // The same one line the server-side script uses. Check-in counts, check-out
-  // does not, so two stays that meet on one date do not collide.
-  function overlaps(aIn, aOut, bIn, bOut) {
-    return aIn < bOut && bIn < aOut;
-  }
-
-  function covers(range, day) {
-    return range.start <= day && day < range.end;
-  }
+  // The same single line the server-side script uses. Check-in counts,
+  // check-out does not, so two stays that meet on one date do not collide.
+  function overlaps(aIn, aOut, bIn, bOut) { return aIn < bOut && bIn < aOut; }
+  function covers(range, day) { return range.start <= day && day < range.end; }
 
   function utcNoon(ymd) {
     var p = ymd.split('-');
     return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2], 12, 0, 0));
   }
-
   function addDays(ymd, n) {
     var d = utcNoon(ymd);
     d.setUTCDate(d.getUTCDate() + n);
     return d.toISOString().slice(0, 10);
   }
-
-  function nights(a, b) {
+  function nightsBetween(a, b) {
     return Math.round((utcNoon(b) - utcNoon(a)) / 86400000);
   }
 
+  function ordinal(n) {
+    if (n > 3 && n < 21) return n + 'th';
+    if (n % 10 === 1) return n + 'st';
+    if (n % 10 === 2) return n + 'nd';
+    if (n % 10 === 3) return n + 'rd';
+    return n + 'th';
+  }
+  function dayOf(ymd) { return utcNoon(ymd).getUTCDate(); }
   function pretty(ymd) {
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var d = utcNoon(ymd);
-    return d.getUTCDate() + ' ' + months[d.getUTCMonth()];
+    return d.getUTCDate() + ' ' + MONTH[d.getUTCMonth()].slice(0, 3);
+  }
+
+  /** Names the nights that actually collide, so the answer is specific. */
+  function clashingNights(guest) {
+    var out = [];
+    for (var i = 0; i < SPAN; i++) {
+      var day = addDays(FIRST, i);
+      if (covers(guest, day) && covers(AIRBNB, day)) out.push(ordinal(dayOf(day)));
+    }
+    return out;
+  }
+
+  /**
+   * A system that only says no is a checker. This finds the first window of
+   * the same length that is actually free, at or after the requested arrival.
+   */
+  function nearestWindow(fromDay, n) {
+    var lastDay = addDays(FIRST, SPAN);
+    for (var i = 0; i < SPAN; i++) {
+      var s = addDays(fromDay, i);
+      var e = addDays(s, n);
+      if (e > lastDay) break;
+      if (!overlaps(s, e, AIRBNB.start, AIRBNB.end)) return { start: s, end: e };
+    }
+    return null;
   }
 
   function build() {
-    var frag = document.createDocumentFragment();
+    var flutes = document.createDocumentFragment();
+    var slots = document.createDocumentFragment();
+
     for (var i = 0; i < SPAN; i++) {
       var day = addDays(FIRST, i);
       var d = utcNoon(day);
-      var cell = document.createElement('div');
-      cell.className = 'cell';
-      cell.setAttribute('data-day', day);
-      cell.innerHTML = '<span class="dow">' + DAYS[d.getUTCDay()] + '</span>' +
-                       '<span class="num">' + d.getUTCDate() + '</span>';
-      frag.appendChild(cell);
+
+      var flute = document.createElement('div');
+      flute.className = 'flute';
+      flute.setAttribute('data-day', day);
+      flute.innerHTML = '<span class="dow">' + DOW[d.getUTCDay()] + '</span>' +
+                        '<span class="num">' + d.getUTCDate() + '</span>';
+      flutes.appendChild(flute);
+
+      var slot = document.createElement('div');
+      slot.className = 'marker-slot';
+      slot.setAttribute('data-day', day);
+      slot.innerHTML = '<span class="lozenge"></span>';
+      slots.appendChild(slot);
     }
-    strip.appendChild(frag);
+
+    strip.appendChild(flutes);
+    rail.appendChild(slots);
   }
 
   function render() {
     var a = inEl.value;
     var b = outEl.value;
-    var guest = null;
+    var guest = (a && b && b > a) ? { start: a, end: b } : null;
 
-    if (a && b && b > a) guest = { start: a, end: b };
+    var flutes = strip.children;
+    var slots = rail.children;
 
-    var cells = strip.children;
-    for (var i = 0; i < cells.length; i++) {
-      var day = cells[i].getAttribute('data-day');
+    for (var i = 0; i < flutes.length; i++) {
+      var day = flutes[i].getAttribute('data-day');
       var onAirbnb = covers(AIRBNB, day);
       var onGuest = guest ? covers(guest, day) : false;
 
-      if (onAirbnb && onGuest) cells[i].setAttribute('data-hold', 'clash');
-      else if (onAirbnb) cells[i].setAttribute('data-hold', 'airbnb');
-      else if (onGuest) cells[i].setAttribute('data-hold', 'direct');
-      else cells[i].removeAttribute('data-hold');
+      if (onAirbnb && onGuest) flutes[i].setAttribute('data-hold', 'clash');
+      else if (onAirbnb) flutes[i].setAttribute('data-hold', 'airbnb');
+      else if (onGuest) flutes[i].setAttribute('data-hold', 'direct');
+      else flutes[i].removeAttribute('data-hold');
+
+      if (guest && day === guest.start) slots[i].setAttribute('data-arrival', '');
+      else slots[i].removeAttribute('data-arrival');
     }
+
+    offer.hidden = true;
 
     if (!guest) {
       verdict.setAttribute('data-state', 'idle');
-      mark.textContent = '—';
-      detail.textContent = b && a && b <= a
-        ? 'The leaving date has to be after the arriving date.'
-        : 'Pick both dates above.';
+      word.textContent = 'Pick your dates';
+      detail.textContent = (a && b && b <= a)
+        ? 'The leaving date needs to be after the arriving date.'
+        : 'Use the buttons above, or set them by hand.';
       return;
     }
 
+    var n = nightsBetween(guest.start, guest.end);
     var clash = overlaps(guest.start, guest.end, AIRBNB.start, AIRBNB.end);
-    var n = nights(guest.start, guest.end);
 
-    if (clash) {
-      verdict.setAttribute('data-state', 'taken');
-      mark.textContent = 'TAKEN';
-      detail.innerHTML = 'Those nights run into your Airbnb booking of <b>' +
-        pretty(AIRBNB.start) + ' – ' + pretty(AIRBNB.end) +
-        '</b>. The booking is stopped and an alert goes out.';
-    } else {
+    if (!clash) {
       verdict.setAttribute('data-state', 'free');
-      mark.textContent = 'FREE';
-      detail.innerHTML = '<b>' + n + (n === 1 ? ' night' : ' nights') +
-        '</b> and nothing else holds them. Safe to confirm.';
+      word.textContent = 'Available';
+      detail.innerHTML = '<b>' + n + (n === 1 ? ' night' : ' nights') + ', ' +
+        pretty(guest.start) + ' to ' + pretty(guest.end) +
+        '.</b> Nothing else holds them, so this one is safe to confirm.';
+      return;
+    }
+
+    verdict.setAttribute('data-state', 'clash');
+    word.textContent = 'Collision';
+
+    var nights = clashingNights(guest);
+    var named = nights.length === 1
+      ? 'The ' + nights[0] + ' is'
+      : 'The ' + nights.slice(0, -1).join(', ') + ' and ' + nights[nights.length - 1] + ' are';
+
+    detail.innerHTML = named + ' <b>already sold on your Airbnb</b>. ' +
+      'The booking is stopped before it is confirmed and an alert goes out.';
+
+    var alt = nearestWindow(guest.start, n);
+    if (alt) {
+      offerText.innerHTML = 'Nearest ' + n + ' free night' + (n === 1 ? '' : 's') +
+        ': <b>' + pretty(alt.start) + ' to ' + pretty(alt.end) + '</b>.';
+      offerBtn.setAttribute('data-in', alt.start);
+      offerBtn.setAttribute('data-out', alt.end);
+      offer.hidden = false;
     }
   }
+
+  function apply(a, b) { inEl.value = a; outEl.value = b; render(); }
 
   build();
   render();
 
-  inEl.addEventListener('change', render);
-  outEl.addEventListener('change', render);
   inEl.addEventListener('input', render);
   outEl.addEventListener('input', render);
+  inEl.addEventListener('change', render);
+  outEl.addEventListener('change', render);
 
   var presets = document.querySelectorAll('.presets button');
   for (var p = 0; p < presets.length; p++) {
     presets[p].addEventListener('click', function () {
-      inEl.value = this.getAttribute('data-in');
-      outEl.value = this.getAttribute('data-out');
-      render();
+      apply(this.getAttribute('data-in'), this.getAttribute('data-out'));
     });
   }
+
+  offerBtn.addEventListener('click', function () {
+    apply(this.getAttribute('data-in'), this.getAttribute('data-out'));
+  });
 </script>

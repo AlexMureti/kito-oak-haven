@@ -422,6 +422,52 @@
   .step .n { font-family: var(--display); font-size: 1.3rem; line-height: 1; padding-top: 2px; color: var(--gold-400); }
   .step p { margin: 0; font-size: 14.5px; }
 
+  .warn {
+    border-left: 1px solid var(--terracotta-500);
+    padding-left: 15px;
+    margin: 15px 0 0;
+    font-size: 13.5px;
+    color: var(--terracotta-300);
+  }
+
+  .linkcheck { margin-top: 18px; }
+
+  .linkcheck label {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold-400);
+    margin-bottom: 8px;
+  }
+
+  .linkcheck input {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    color: var(--cream-50);
+    background: var(--pine-900);
+    border: 1px solid color-mix(in srgb, var(--gold-500) 30%, transparent);
+    border-radius: 2px;
+    padding: 12px;
+    min-height: 46px;
+  }
+
+  .linkcheck input::placeholder { color: color-mix(in srgb, var(--cream-200) 30%, transparent); }
+  .linkcheck input:focus-visible { outline: 2px solid var(--gold-400); outline-offset: 1px; }
+
+  .checkout {
+    font-size: 13px;
+    line-height: 1.55;
+    margin: 11px 0 0;
+    color: color-mix(in srgb, var(--cream-200) 58%, transparent);
+  }
+
+  .checkout[data-ok="yes"] { color: var(--gold-300); }
+  .checkout[data-ok="no"] { color: var(--terracotta-300); }
+  .checkout b { color: var(--cream-50); font-weight: 600; }
+
   .rules { display: flex; flex-direction: column; gap: 24px; margin-top: 26px; }
   .rules p { margin: 0; font-size: 14.5px; }
 
@@ -532,7 +578,17 @@
         <span class="n">I</span>
         <div>
           <h3>Send one link</h3>
-          <p>In Airbnb: Calendar → Availability → Connect calendars → Export calendar. Copy what it gives you and send it over. That is the entire setup, and it takes about thirty seconds.</p>
+          <p>On the Kito listing in Airbnb: <strong>Calendar → Availability → Connect calendars → Export calendar</strong>. Copy the whole thing and send it over. That is the entire setup, and it takes about thirty seconds.</p>
+          <p>Whoever manages the listing can do this — it does not have to be you. Forward them this page.</p>
+
+          <p class="warn"><strong>Export, never Import.</strong> Import is the other button in the same menu, and it would block real nights on your Airbnb. Nothing I send you should ever be pasted into Airbnb — this only ever reads.</p>
+
+          <div class="linkcheck">
+            <label for="linkCheck">Paste it here before you send it</label>
+            <input type="text" id="linkCheck" autocomplete="off" autocapitalize="off" spellcheck="false"
+                   placeholder="https://www.airbnb.com/calendar/ical/…">
+            <p class="checkout" id="checkOut">Checked here in your browser. Nothing is sent anywhere.</p>
+          </div>
         </div>
       </div>
       <div class="step">
@@ -704,6 +760,47 @@ function nextSelection(sel, day) {
     return { checkIn: day, checkOut: null };
   }
   return { checkIn: sel.checkIn, checkOut: addDays(day, 1) };
+}
+
+/**
+ * Judges a pasted Airbnb export link before anyone relies on it.
+ *
+ * The whole system hangs on one link arriving correctly from someone who has
+ * never heard of iCal, so the realistic mistakes get named rather than left to
+ * fail quietly three weeks later:
+ *
+ *   - the public listing page instead of the calendar link
+ *   - an Airbnb page that is not the export at all
+ *   - the link cut short, losing the ?s= token that makes it work
+ *   - a link for a different property in the same group — the one failure that
+ *     looks like success, because a wrong listing still returns real bookings
+ *
+ * The listing id is returned so it can be compared against the number in the
+ * listing's own airbnb.com/rooms/<id> address; they are the same number.
+ *
+ * This checks the shape only. Nothing is fetched — a browser cannot read that
+ * URL across origins — so a link that passes here is well-formed, not proven
+ * to work. Only the server pulling it proves that.
+ */
+function checkIcalLink(raw) {
+  var text = String(raw == null ? '' : raw).trim();
+  if (!text) return { state: 'empty' };
+
+  // People paste with a sentence around it, or a trailing full stop.
+  var found = text.match(/https?:\/\/[^\s"'<>]+/);
+  if (!found) return { state: 'not-a-link' };
+
+  var url = found[0].replace(/[.,;:)\]]+$/, '');
+  var lower = url.toLowerCase();
+
+  if (lower.indexOf('airbnb.') === -1) return { state: 'not-airbnb' };
+  if (/\/rooms\/|\/h\//.test(lower)) return { state: 'listing-page' };
+
+  var ical = url.match(/\/calendar\/ical\/(\d+)\.ics/i);
+  if (!ical) return { state: 'not-the-export' };
+  if (!/[?&]s=[A-Za-z0-9._-]+/.test(url)) return { state: 'no-token' };
+
+  return { state: 'ok', listingId: ical[1] };
 }
 
 /** The cells of one month, Monday first, with leading blanks. */
@@ -998,5 +1095,44 @@ function monthCells(year, month) {
 
   document.getElementById('scenario').textContent =
     'Worked example — ' + HOLDS.length + ' stays already on your Airbnb over the next three months';
+
+  // ---- the link check ----
+  //
+  // Everything above is worthless without one link arriving correctly from
+  // someone who has never heard of iCal. This says what is wrong with what
+  // they pasted, in their own words, before they send it.
+
+  var LINK_MESSAGE = {
+    empty: 'Checked here in your browser. Nothing is sent anywhere.',
+    'not-a-link': 'That is not a link yet. Paste the whole thing, starting with <b>https</b>.',
+    'not-airbnb': 'That link is not from Airbnb.',
+    'listing-page': 'That is the public listing page. The one needed is under <b>Calendar → Availability → Connect calendars → Export calendar</b>.',
+    'not-the-export': 'That is an Airbnb page, but not the calendar export.',
+    'no-token': 'The link was cut short — the private part after <b>?s=</b> is missing. Copy it again, all of it.'
+  };
+
+  var linkInput = document.getElementById('linkCheck');
+  var checkOut = document.getElementById('checkOut');
+
+  linkInput.addEventListener('input', function () {
+    var r = checkIcalLink(this.value);
+
+    if (r.state === 'ok') {
+      checkOut.setAttribute('data-ok', 'yes');
+      checkOut.innerHTML = 'Right shape — listing <b>' + r.listingId + '</b>. ' +
+        'One last check: open the listing on Airbnb and make sure its own address ends in the ' +
+        'same number. If it does not, this link belongs to a different property.';
+      return;
+    }
+
+    if (r.state === 'empty') {
+      checkOut.removeAttribute('data-ok');
+      checkOut.innerHTML = LINK_MESSAGE.empty;
+      return;
+    }
+
+    checkOut.setAttribute('data-ok', 'no');
+    checkOut.innerHTML = LINK_MESSAGE[r.state] || 'That does not look like the calendar link.';
+  });
 })();
 </script>

@@ -237,6 +237,62 @@ check('a missing date is idle, not an error', () => {
   eq(assess('2026-09-12', '', TODAY, HOLDS).state, 'idle', 'state');
 });
 
+console.log('\nthe link someone has to send us');
+
+const { checkIcalLink } = L;
+ok(typeof checkIcalLink === 'function', 'checkIcalLink() is not exported from the page');
+
+const GOOD = 'https://www.airbnb.com/calendar/ical/48291736.ics?s=9f2c1ab77e5d40c8b3a6e1d7f0c4a852';
+
+check('a correct export link passes and yields the listing id', () => {
+  const r = checkIcalLink(GOOD);
+  eq(r.state, 'ok', 'state');
+  eq(r.listingId, '48291736', 'listing id');
+});
+
+check('the listing id is the number to compare against the rooms link', () => {
+  // airbnb.com/rooms/48291736 is the same listing, so the numbers must match.
+  const r = checkIcalLink(GOOD);
+  const roomsId = 'https://www.airbnb.com/rooms/48291736'.match(/\/rooms\/(\d+)/)[1];
+  eq(r.listingId, roomsId, 'ical id vs rooms id');
+});
+
+check('the public listing page is caught, not accepted', () => {
+  eq(checkIcalLink('https://www.airbnb.com/rooms/48291736').state, 'listing-page');
+  eq(checkIcalLink('https://airbnb.co.uk/rooms/48291736?source=x').state, 'listing-page');
+});
+
+check('a link cut short before the token is caught', () => {
+  eq(checkIcalLink('https://www.airbnb.com/calendar/ical/48291736.ics').state, 'no-token');
+});
+
+check('some other Airbnb page is caught', () => {
+  eq(checkIcalLink('https://www.airbnb.com/hosting/reservations').state, 'not-the-export');
+});
+
+check('a link from somewhere else entirely is caught', () => {
+  eq(checkIcalLink('https://calendar.google.com/calendar/ical/x/basic.ics').state, 'not-airbnb');
+  eq(checkIcalLink('https://www.booking.com/hotel/ke/kito.html').state, 'not-airbnb');
+});
+
+check('nothing pasted, or prose with no link, is not an error', () => {
+  eq(checkIcalLink('').state, 'empty');
+  eq(checkIcalLink('   ').state, 'empty');
+  eq(checkIcalLink(null).state, 'empty');
+  eq(checkIcalLink('here you go').state, 'not-a-link');
+});
+
+check('a link pasted inside a sentence is still read', () => {
+  const r = checkIcalLink('Hi Alex here it is ' + GOOD + ' thanks.');
+  eq(r.state, 'ok', 'state');
+  eq(r.listingId, '48291736', 'listing id');
+});
+
+check('a trailing full stop is not treated as part of the link', () => {
+  eq(checkIcalLink(GOOD + '.').state, 'ok');
+  eq(checkIcalLink('(' + GOOD + ')').state, 'ok');
+});
+
 console.log('\nmonths');
 
 const { addMonths, monthCells } = L;

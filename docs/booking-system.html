@@ -454,7 +454,7 @@
     </div>
 
     <p class="instruction">
-      <span>Tap the nights a guest is asking for.</span>
+      <span>Tap the arrival night, then the last one. Keep tapping to stretch it.</span>
       <span class="months" id="months"></span>
     </p>
 
@@ -652,6 +652,23 @@ function assess(checkIn, checkOut, today, holds) {
   };
 }
 
+/**
+ * What tapping a night does to the current selection.
+ *
+ * A third tap extends the stay rather than starting over. Booking sites
+ * conventionally restart on the third tap, and here that silently wiped the
+ * highlight with nothing on screen to explain it — the strip is small, so the
+ * selection simply vanished and the control read as broken. Growing the stay
+ * is what someone means when they keep tapping further along. Starting over
+ * is what Clear is for, and tapping behind the arrival still does it.
+ */
+function nextSelection(sel, day) {
+  if (!sel || !sel.checkIn || day < sel.checkIn) {
+    return { checkIn: day, checkOut: null };
+  }
+  return { checkIn: sel.checkIn, checkOut: addDays(day, 1) };
+}
+
 /* --- end pure logic --- */
 
 (function () {
@@ -759,19 +776,24 @@ function assess(checkIn, checkOut, today, holds) {
     document.getElementById('months').textContent = monthSpan();
   }
 
-  /** What the strip should show right now: the committed range, or the one under the cursor. */
+  /**
+   * What the strip should show right now.
+   *
+   * The arrival night fills the moment it is tapped, before any second tap.
+   * Without that, the only feedback on the first tap is a six-pixel lozenge,
+   * and the control reads as not having registered at all.
+   */
   function shown() {
-    if (sel.checkIn && !sel.checkOut && hovering && hovering >= sel.checkIn) {
-      return { checkIn: sel.checkIn, checkOut: addDays(hovering, 1) };
-    }
-    return sel;
+    if (!sel.checkIn || sel.checkOut) return sel;
+    var end = (hovering && hovering >= sel.checkIn)
+      ? addDays(hovering, 1)
+      : addDays(sel.checkIn, 1);
+    return { checkIn: sel.checkIn, checkOut: end };
   }
 
   function paint() {
     var view = shown();
     var guest = (view.checkIn && view.checkOut) ? { start: view.checkIn, end: view.checkOut } : null;
-    var previewing = guest && !sel.checkOut;
-
     var flutes = strip.children;
     var slots = rail.children;
 
@@ -789,7 +811,11 @@ function assess(checkIn, checkOut, today, holds) {
       else state = null;
 
       if (state) el.setAttribute('data-hold', state); else el.removeAttribute('data-hold');
-      if (previewing && onGuest) el.setAttribute('data-preview', ''); else el.removeAttribute('data-preview');
+
+      // Only the tail being hovered is tentative. The arrival night is a
+      // commitment the moment it is tapped and is drawn as one.
+      var tentative = onGuest && !sel.checkOut && day > sel.checkIn;
+      if (tentative) el.setAttribute('data-preview', ''); else el.removeAttribute('data-preview');
 
       var d = utcNoon(day);
       el.setAttribute('aria-label',
@@ -797,7 +823,7 @@ function assess(checkIn, checkOut, today, holds) {
         (state === 'clash' ? 'collides with your Airbnb'
           : state === 'airbnb' ? 'already booked on Airbnb'
           : state === 'direct' ? 'in this booking' : 'free'));
-      el.setAttribute('aria-pressed', onGuest && !previewing ? 'true' : 'false');
+      el.setAttribute('aria-pressed', onGuest && !tentative ? 'true' : 'false');
 
       if (guest && day === guest.start) slots[i].setAttribute('data-arrival', '');
       else slots[i].removeAttribute('data-arrival');
@@ -812,7 +838,7 @@ function assess(checkIn, checkOut, today, holds) {
       verdict.setAttribute('data-state', 'idle');
       word.textContent = sel.checkIn ? 'Now the last night' : 'Pick your nights';
       detail.textContent = sel.checkIn
-        ? 'Arriving ' + longDate(sel.checkIn) + '. Tap the last night of the stay.'
+        ? 'Arriving ' + longDate(sel.checkIn) + '. Tap the last night of the stay — or tap an earlier night to move the arrival.'
         : 'Tap a night to arrive, then tap the last night of the stay.';
       return;
     }
@@ -875,11 +901,7 @@ function assess(checkIn, checkOut, today, holds) {
   }
 
   function pick(day) {
-    if (!sel.checkIn || sel.checkOut || day < sel.checkIn) {
-      sel = { checkIn: day, checkOut: null };
-    } else {
-      sel.checkOut = addDays(day, 1);
-    }
+    sel = nextSelection(sel, day);
     hovering = null;
     render();
   }

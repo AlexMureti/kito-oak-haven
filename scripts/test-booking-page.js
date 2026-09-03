@@ -167,6 +167,59 @@ check('two holds back to back still yield a free window', () => {
   eq(second.state, 'free', 'offered window collides with the second hold');
 });
 
+console.log('\npicking nights by tapping');
+
+const { nextSelection } = L;
+ok(typeof nextSelection === 'function', 'nextSelection() is not exported from the page');
+
+const EMPTY = { checkIn: null, checkOut: null };
+
+check('the first tap sets the arrival and nothing else', () => {
+  eq(nextSelection(EMPTY, '2026-09-05'), { checkIn: '2026-09-05', checkOut: null });
+});
+
+check('the second tap closes the stay on the night after the one tapped', () => {
+  const a = nextSelection(EMPTY, '2026-09-05');
+  eq(nextSelection(a, '2026-09-08'), { checkIn: '2026-09-05', checkOut: '2026-09-09' });
+});
+
+check('a third tap further along extends the stay instead of wiping it', () => {
+  let s = nextSelection(EMPTY, '2026-09-05');
+  s = nextSelection(s, '2026-09-08');
+  s = nextSelection(s, '2026-09-12');
+  eq(s, { checkIn: '2026-09-05', checkOut: '2026-09-13' });
+});
+
+check('tapping back inside the stay shortens it', () => {
+  let s = nextSelection(EMPTY, '2026-09-05');
+  s = nextSelection(s, '2026-09-12');
+  s = nextSelection(s, '2026-09-07');
+  eq(s, { checkIn: '2026-09-05', checkOut: '2026-09-08' });
+});
+
+check('tapping before the arrival starts a new stay there', () => {
+  let s = nextSelection(EMPTY, '2026-09-08');
+  s = nextSelection(s, '2026-09-12');
+  s = nextSelection(s, '2026-09-04');
+  eq(s, { checkIn: '2026-09-04', checkOut: null });
+});
+
+check('tapping the arrival night itself makes a one-night stay', () => {
+  const a = nextSelection(EMPTY, '2026-09-05');
+  eq(nextSelection(a, '2026-09-05'), { checkIn: '2026-09-05', checkOut: '2026-09-06' });
+});
+
+check('extending never leaves the stay inverted', () => {
+  let s = EMPTY;
+  const taps = ['2026-09-09', '2026-09-05', '2026-09-14', '2026-09-06', '2026-09-20'];
+  for (const t of taps) {
+    s = nextSelection(s, t);
+    if (s.checkIn && s.checkOut) {
+      ok(s.checkOut > s.checkIn, 'after tapping ' + t + ' the stay was ' + JSON.stringify(s));
+    }
+  }
+});
+
 console.log('\nbad input');
 
 check('check-out before check-in is invalid, not free', () => {

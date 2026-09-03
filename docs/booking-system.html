@@ -45,15 +45,14 @@
     );
 
     /* The metal above carries dark bronze stops that read as shadow on cream.
-       On the pine ground those stops go muddy and drop the contrast of a
-       headline to about 3.5:1, so foil set on dark keeps only the lit range. */
+       On the pine ground those stops go muddy and drop a headline to about
+       3.5:1, so foil set on dark keeps only the lit range. */
     --gold-foil-dark: linear-gradient(
       100deg,
       #c6a15b 0%, #e6cf9c 20%, #f2e4c2 38%,
       #d7b878 56%, #e6cf9c 78%, #c6a15b 100%
     );
 
-    --rule: color-mix(in srgb, var(--gold-500) 30%, transparent);
     --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
     --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
@@ -74,10 +73,7 @@
 
   .page { max-width: 860px; margin: 0 auto; padding: clamp(38px, 7vw, 76px) clamp(18px, 5vw, 44px) 72px; }
 
-  /* ---------- shared type ---------- */
-
   .label {
-    font-family: var(--sans);
     font-size: 10.5px;
     font-weight: 500;
     letter-spacing: .26em;
@@ -108,7 +104,6 @@
   }
 
   h3 {
-    font-family: var(--sans);
     font-weight: 600;
     font-size: 14.5px;
     letter-spacing: -0.005em;
@@ -128,7 +123,6 @@
   em { font-style: italic; color: var(--cream-100); }
   strong { font-weight: 600; color: var(--cream-50); }
 
-  /* The one place gold moves. The mark is foil, so its light shifts. */
   .foil {
     background: var(--gold-foil-dark);
     background-size: 220% 100%;
@@ -154,7 +148,6 @@
     display: block;
   }
 
-  /* The lozenge divider from the wordmark, rebuilt as a rule. */
   .lozenge-rule {
     display: flex;
     align-items: center;
@@ -166,25 +159,19 @@
 
   .lozenge-rule .line { height: 1px; flex: 1; background: linear-gradient(90deg, transparent, var(--gold-600), transparent); }
 
-  .lozenge {
-    width: 5px; height: 5px;
-    background: var(--gold-400);
-    transform: rotate(45deg);
-    flex: none;
-  }
+  .lozenge { width: 5px; height: 5px; background: var(--gold-400); transform: rotate(45deg); flex: none; }
 
   header .lede { margin-left: auto; margin-right: auto; }
 
   /* ---------- the working plate ---------- */
 
   .plate {
-    color-scheme: light;
     background: var(--cream-50);
     color: var(--ink-900);
     border: 1px solid color-mix(in srgb, var(--gold-500) 42%, transparent);
     border-radius: 3px;
     padding: clamp(20px, 4vw, 32px);
-    box-shadow: 0 34px 70px -34px rgba(0, 0, 0, .82), 0 2px 0 0 rgba(250, 247, 241, .05);
+    box-shadow: 0 34px 70px -34px rgba(0, 0, 0, .82);
   }
 
   .plate p { color: var(--ink-700); }
@@ -197,23 +184,38 @@
     align-items: baseline;
     justify-content: space-between;
     padding-bottom: 15px;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
     border-bottom: 1px solid color-mix(in srgb, var(--gold-600) 24%, transparent);
   }
 
   .scenario { font-size: 12.5px; color: var(--ink-500); margin: 0; }
 
+  .instruction {
+    font-size: 13px;
+    color: var(--ink-500);
+    margin: 0 0 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    justify-content: space-between;
+  }
+
+  .instruction .months { color: var(--ink-700); font-weight: 500; }
+
   /* ---------- the colonnade ----------
      Twenty nights as flutes. The fluting is the logo's column; a booked night
      is a filled bay. Flex with no fixed width so it always fits exactly and
-     never scrolls sideways on a phone. */
+     never scrolls sideways on a phone.
+
+     Each flute is a real button: she picks nights, not dates. That keeps the
+     half-open checkout rule invisible to her and correct in the model, and it
+     removes the date fields that were fighting her on a two-digit month. */
 
   .marker-rail, .colonnade { display: flex; gap: 3px; }
   .marker-rail { height: 13px; margin-bottom: 5px; }
 
   .marker-slot { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; }
-
-  .marker-slot[data-arrival] .lozenge { width: 6px; height: 6px; }
+  .marker-slot .lozenge { width: 6px; height: 6px; }
   .marker-slot:not([data-arrival]) .lozenge { display: none; }
 
   .flute {
@@ -228,12 +230,17 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 5px;
-    transition: background .32s var(--ease-luxe), border-color .32s var(--ease-luxe);
+    padding: 0 0 5px;
+    font-family: var(--sans);
+    cursor: pointer;
     overflow: hidden;
+    transition: background .28s var(--ease-luxe), border-color .28s var(--ease-luxe), transform .18s var(--ease-luxe);
   }
 
-  /* the groove — what makes a bar read as a flute */
+  .flute:hover { transform: translateY(-2px); border-color: var(--gold-500); }
+  .flute:focus-visible { outline: 2px solid var(--gold-600); outline-offset: 2px; z-index: 1; }
+
+  /* the groove — what makes a bar read as a flute rather than a bar chart */
   .flute::before {
     content: "";
     position: absolute;
@@ -273,6 +280,11 @@
   .flute[data-hold="clash"] .num { color: var(--cream-50); }
   .flute[data-hold="clash"]::before { background: color-mix(in srgb, var(--cream-50) 26%, transparent); }
 
+  /* the range being previewed under the cursor, before it is committed */
+  .flute[data-preview] { border-color: var(--gold-600); background: var(--cream-200); }
+  .flute[data-preview][data-hold="airbnb"],
+  .flute[data-preview][data-hold="clash"] { background: var(--terracotta-300); }
+
   .legend {
     display: flex;
     flex-wrap: wrap;
@@ -291,34 +303,9 @@
     border: 1px solid color-mix(in srgb, var(--gold-600) 26%, transparent);
   }
 
-  /* ---------- controls ---------- */
+  /* ---------- presets ---------- */
 
-  .fields { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 26px; }
-  .field { display: flex; flex-direction: column; gap: 6px; flex: 1 1 156px; }
-
-  .field label {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    color: var(--ink-500);
-  }
-
-  .field input {
-    font-family: var(--sans);
-    font-size: 14.5px;
-    color: var(--ink-900);
-    background: #fff;
-    border: 1px solid color-mix(in srgb, var(--gold-600) 34%, transparent);
-    border-radius: 2px;
-    padding: 11px 12px;
-    width: 100%;
-    min-height: 44px;
-  }
-
-  .field input:focus-visible { outline: 2px solid var(--gold-500); outline-offset: 1px; }
-
-  .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
 
   .presets button {
     font-family: var(--sans);
@@ -329,7 +316,7 @@
     border: 1px solid color-mix(in srgb, var(--gold-600) 32%, transparent);
     border-radius: 2px;
     padding: 9px 14px;
-    min-height: 38px;
+    min-height: 40px;
     cursor: pointer;
     transition: border-color .22s var(--ease-luxe), color .22s var(--ease-luxe), background .22s var(--ease-luxe);
   }
@@ -340,7 +327,7 @@
   /* ---------- the verdict ---------- */
 
   .verdict {
-    margin-top: 24px;
+    margin-top: 22px;
     padding-top: 20px;
     border-top: 1px solid color-mix(in srgb, var(--gold-600) 24%, transparent);
   }
@@ -355,6 +342,8 @@
 
   .verdict[data-state="free"] .verdict-word { color: var(--gold-700); }
   .verdict[data-state="clash"] .verdict-word { color: var(--terracotta-600); }
+  .verdict[data-state="past"] .verdict-word,
+  .verdict[data-state="invalid"] .verdict-word { color: var(--ink-500); }
 
   .verdict-detail { font-size: 14.5px; margin: 0; color: var(--ink-700); max-width: 56ch; }
   .verdict-detail b { font-weight: 600; color: var(--ink-900); }
@@ -381,23 +370,18 @@
     background: var(--gold-metal);
     border: 0;
     border-radius: 2px;
-    padding: 9px 15px;
-    min-height: 38px;
+    padding: 10px 15px;
+    min-height: 40px;
     cursor: pointer;
   }
 
   .offer button:focus-visible { outline: 2px solid var(--pine-800); outline-offset: 2px; }
 
-  /* ---------- prose sections ---------- */
+  /* ---------- prose ---------- */
 
   section { margin-top: clamp(48px, 8vw, 78px); }
 
-  .aside {
-    border-left: 1px solid var(--gold-600);
-    padding: 3px 0 3px 18px;
-    margin-top: 26px;
-  }
-
+  .aside { border-left: 1px solid var(--gold-600); padding: 3px 0 3px 18px; margin-top: 26px; }
   .aside p { margin: 0; font-size: 14.5px; }
 
   .steps { margin-top: 26px; }
@@ -438,8 +422,15 @@
   footer a:hover { text-decoration: underline; }
   footer a:focus-visible { outline: 2px solid var(--gold-400); outline-offset: 3px; }
 
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *, *::before { animation: none !important; transition: none !important; }
+    .flute:hover:not(:disabled) { transform: none; }
   }
 </style>
 
@@ -459,8 +450,13 @@
   <div class="plate">
     <div class="plate-head">
       <p class="label">Availability</p>
-      <p class="scenario">Worked example — your Airbnb holds four nights from 6 September</p>
+      <p class="scenario" id="scenario"></p>
     </div>
+
+    <p class="instruction">
+      <span>Tap the nights a guest is asking for.</span>
+      <span class="months" id="months"></span>
+    </p>
 
     <div class="marker-rail" id="rail"></div>
     <div class="colonnade" id="strip"></div>
@@ -473,35 +469,27 @@
       <span><i class="lozenge" style="position:relative;top:-1px"></i>Arrival</span>
     </div>
 
-    <div class="fields">
-      <div class="field">
-        <label for="in">Guest arrives</label>
-        <input type="date" id="in" value="2026-09-08" min="2026-09-01" max="2026-09-20">
-      </div>
-      <div class="field">
-        <label for="out">Guest leaves</label>
-        <input type="date" id="out" value="2026-09-12" min="2026-09-02" max="2026-09-21">
-      </div>
-    </div>
-
     <div class="presets">
-      <button type="button" data-in="2026-09-08" data-out="2026-09-12">A guest who overlaps you</button>
-      <button type="button" data-in="2026-09-10" data-out="2026-09-14">One arriving the day yours leaves</button>
-      <button type="button" data-in="2026-09-15" data-out="2026-09-19">A clear week</button>
+      <button type="button" data-from="5" data-nights="4">A guest who overlaps you</button>
+      <button type="button" data-from="7" data-nights="4">One arriving the day yours leaves</button>
+      <button type="button" data-from="9" data-nights="4">A stay well clear of you</button>
+      <button type="button" data-clear="1">Clear</button>
     </div>
 
     <div class="verdict" id="verdict" data-state="idle">
-      <p class="verdict-word" id="word">Pick your dates</p>
-      <p class="verdict-detail" id="detail">Use the buttons above, or set them by hand.</p>
+      <p class="verdict-word" id="word">Pick your nights</p>
+      <p class="verdict-detail" id="detail">Tap a night to arrive, then tap the last night of the stay.</p>
       <div class="offer" id="offer" hidden>
         <p id="offerText"></p>
-        <button type="button" id="offerBtn">Use these dates</button>
+        <button type="button" id="offerBtn">Use these nights</button>
       </div>
     </div>
+
+    <p class="visually-hidden" role="status" aria-live="polite" id="live"></p>
   </div>
 
   <div class="aside">
-    <p>Try the middle button. A guest arriving on the 10th and your guest leaving on the 10th share a date, but not a night — so that stay is <strong>free to take</strong>. A system that gets this wrong quietly turns away a real booking every time a stay ends.</p>
+    <p>Try the second button. A guest arriving on the day your guest leaves shares a date with them, but not a night — so that stay is <strong>free to take</strong>. A system that gets this wrong quietly turns away a real booking every time a stay ends.</p>
   </div>
 
   <section>
@@ -544,6 +532,8 @@
     <h2>The rules it follows</h2>
 
     <div class="rules">
+      <p><strong>A night that has already gone cannot be sold.</strong> The calendar starts today and refuses anything behind it, whichever way the dates arrive.</p>
+
       <p><strong>An enquiry does not hold a night.</strong> Only a confirmed booking blocks dates — otherwise every person who ever tapped the WhatsApp button would be holding nights they were never going to take.</p>
 
       <p><strong>A calendar that fails to load is treated as a failure, not as an empty calendar.</strong> Airbnb's export sometimes returns an error page instead of your dates. A careless version reads that as "everything was cancelled" and releases every night you have sold. This one changes nothing and records a warning.</p>
@@ -567,18 +557,136 @@
 </div>
 
 <script>
-  // The worked example. Half-open, exactly like the real system: the 6th, 7th,
-  // 8th and 9th are held, and the 10th is free for someone else to arrive.
-  var AIRBNB = { start: '2026-09-06', end: '2026-09-10' };
+/* --- pure logic: tested by scripts/test-booking-page.js --- */
 
+// Dates are ISO strings throughout, never Date objects, because ISO strings
+// compare correctly as text and cannot drift by a timezone. Day arithmetic is
+// the one exception and it happens at UTC noon, where no offset or daylight
+// rule can push a result onto the wrong day.
+
+function utcNoon(ymd) {
+  var p = String(ymd).split('-');
+  return new Date(Date.UTC(Number(p[0]), Number(p[1]) - 1, Number(p[2]), 12, 0, 0));
+}
+
+function toYmd(date) {
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  return date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1) + '-' + pad(date.getUTCDate());
+}
+
+function addDays(ymd, n) {
+  var d = utcNoon(ymd);
+  d.setUTCDate(d.getUTCDate() + n);
+  return toYmd(d);
+}
+
+function nightsBetween(a, b) {
+  return Math.round((utcNoon(b).getTime() - utcNoon(a).getTime()) / 86400000);
+}
+
+// Both ranges are half-open: check-in counts, check-out does not. One guest
+// leaving on the 10th and another arriving on the 10th share a date but not a
+// night, and an inclusive comparison would refuse a night that is genuinely
+// for sale — every single time a stay ends.
+function overlaps(aIn, aOut, bIn, bOut) {
+  return aIn < bOut && bIn < aOut;
+}
+
+function covers(range, ymd) {
+  return range.start <= ymd && ymd < range.end;
+}
+
+function hitsAny(start, end, holds) {
+  for (var i = 0; i < holds.length; i++) {
+    if (overlaps(start, end, holds[i].start, holds[i].end)) return holds[i];
+  }
+  return null;
+}
+
+/**
+ * The first window of the requested length that is actually free, at or after
+ * the requested arrival and never behind today. A system that only says no is
+ * a checker; this is what makes it answer the question the guest was asking.
+ */
+function nearestWindow(from, nights, today, holds) {
+  var start = from < today ? today : from;
+  for (var i = 0; i < 365; i++) {
+    var s = addDays(start, i);
+    var e = addDays(s, nights);
+    if (!hitsAny(s, e, holds)) return { start: s, end: e };
+  }
+  return null;
+}
+
+/**
+ * The whole decision, in one place, with no DOM in it.
+ *
+ * `today` is passed in rather than read from the clock so the same call can be
+ * tested, and so a page left open overnight cannot quietly start selling
+ * yesterday.
+ */
+function assess(checkIn, checkOut, today, holds) {
+  if (!checkIn || !checkOut) return { state: 'idle' };
+  if (checkOut <= checkIn) return { state: 'invalid' };
+  if (checkIn < today) return { state: 'past' };
+
+  var nights = nightsBetween(checkIn, checkOut);
+
+  if (!hitsAny(checkIn, checkOut, holds)) {
+    return { state: 'free', nights: nights };
+  }
+
+  var clashNights = [];
+  for (var d = 0; d < nights; d++) {
+    var day = addDays(checkIn, d);
+    for (var h = 0; h < holds.length; h++) {
+      if (covers(holds[h], day)) { clashNights.push(day); break; }
+    }
+  }
+
+  return {
+    state: 'clash',
+    nights: nights,
+    clashNights: clashNights,
+    alternative: nearestWindow(checkIn, nights, today, holds)
+  };
+}
+
+/* --- end pure logic --- */
+
+(function () {
   var DOW = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  var DAYNAME = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   var MONTH = ['January','February','March','April','May','June',
                'July','August','September','October','November','December'];
-  var FIRST = '2026-09-01';
-  var SPAN = 20;
+  // How many nights the colonnade shows. The flutes are flex:1 so they never
+  // overflow — they just get thinner, and at a 375px phone twenty of them
+  // measure about 11.9px each, which is narrower than the two digits printed
+  // in them. Fewer nights on a narrow screen is the honest fix; the strip is
+  // the thing she is actually reading.
+  function spanForWidth() {
+    return window.innerWidth < 560 ? 14 : 20;
+  }
 
-  var inEl = document.getElementById('in');
-  var outEl = document.getElementById('out');
+  var SPAN = spanForWidth();
+
+  // Nairobi is UTC+3 with no daylight saving, so "today" there is today's UTC
+  // date shifted by three hours. The window starts here and rolls, which is
+  // what keeps a night that has already gone off the page entirely rather
+  // than relying on a check to catch it later.
+  function todayInNairobi() {
+    var now = new Date();
+    return toYmd(new Date(now.getTime() + 3 * 3600000));
+  }
+
+  var TODAY = todayInNairobi();
+  var LAST = addDays(TODAY, SPAN);
+  var resizeTimer = null;
+
+  // The worked example: four nights, starting three days out. Relative to
+  // today so the page is never stale and never demonstrates a past booking.
+  var HOLDS = [{ start: addDays(TODAY, 3), end: addDays(TODAY, 7), label: 'Airbnb' }];
+
   var strip = document.getElementById('strip');
   var rail = document.getElementById('rail');
   var verdict = document.getElementById('verdict');
@@ -587,77 +695,54 @@
   var offer = document.getElementById('offer');
   var offerText = document.getElementById('offerText');
   var offerBtn = document.getElementById('offerBtn');
+  var live = document.getElementById('live');
 
-  // The same single line the server-side script uses. Check-in counts,
-  // check-out does not, so two stays that meet on one date do not collide.
-  function overlaps(aIn, aOut, bIn, bOut) { return aIn < bOut && bIn < aOut; }
-  function covers(range, day) { return range.start <= day && day < range.end; }
+  var sel = { checkIn: null, checkOut: null };
+  var hovering = null;
 
-  function utcNoon(ymd) {
-    var p = ymd.split('-');
-    return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2], 12, 0, 0));
-  }
-  function addDays(ymd, n) {
+  function longDate(ymd) {
     var d = utcNoon(ymd);
-    d.setUTCDate(d.getUTCDate() + n);
-    return d.toISOString().slice(0, 10);
+    return d.getUTCDate() + ' ' + MONTH[d.getUTCMonth()];
   }
-  function nightsBetween(a, b) {
-    return Math.round((utcNoon(b) - utcNoon(a)) / 86400000);
+  function shortDate(ymd) {
+    var d = utcNoon(ymd);
+    return d.getUTCDate() + ' ' + MONTH[d.getUTCMonth()].slice(0, 3);
   }
-
-  function ordinal(n) {
+  function ordinal(ymd) {
+    var n = utcNoon(ymd).getUTCDate();
     if (n > 3 && n < 21) return n + 'th';
     if (n % 10 === 1) return n + 'st';
     if (n % 10 === 2) return n + 'nd';
     if (n % 10 === 3) return n + 'rd';
     return n + 'th';
   }
-  function dayOf(ymd) { return utcNoon(ymd).getUTCDate(); }
-  function pretty(ymd) {
-    var d = utcNoon(ymd);
-    return d.getUTCDate() + ' ' + MONTH[d.getUTCMonth()].slice(0, 3);
-  }
 
-  /** Names the nights that actually collide, so the answer is specific. */
-  function clashingNights(guest) {
-    var out = [];
-    for (var i = 0; i < SPAN; i++) {
-      var day = addDays(FIRST, i);
-      if (covers(guest, day) && covers(AIRBNB, day)) out.push(ordinal(dayOf(day)));
+  function monthSpan() {
+    var a = utcNoon(TODAY), b = utcNoon(addDays(TODAY, SPAN - 1));
+    if (a.getUTCMonth() === b.getUTCMonth()) {
+      return MONTH[a.getUTCMonth()] + ' ' + a.getUTCFullYear();
     }
-    return out;
-  }
-
-  /**
-   * A system that only says no is a checker. This finds the first window of
-   * the same length that is actually free, at or after the requested arrival.
-   */
-  function nearestWindow(fromDay, n) {
-    var lastDay = addDays(FIRST, SPAN);
-    for (var i = 0; i < SPAN; i++) {
-      var s = addDays(fromDay, i);
-      var e = addDays(s, n);
-      if (e > lastDay) break;
-      if (!overlaps(s, e, AIRBNB.start, AIRBNB.end)) return { start: s, end: e };
-    }
-    return null;
+    return MONTH[a.getUTCMonth()] + ' – ' + MONTH[b.getUTCMonth()] + ' ' + b.getUTCFullYear();
   }
 
   function build() {
+    strip.innerHTML = '';
+    rail.innerHTML = '';
+
     var flutes = document.createDocumentFragment();
     var slots = document.createDocumentFragment();
 
     for (var i = 0; i < SPAN; i++) {
-      var day = addDays(FIRST, i);
+      var day = addDays(TODAY, i);
       var d = utcNoon(day);
 
-      var flute = document.createElement('div');
-      flute.className = 'flute';
-      flute.setAttribute('data-day', day);
-      flute.innerHTML = '<span class="dow">' + DOW[d.getUTCDay()] + '</span>' +
-                        '<span class="num">' + d.getUTCDate() + '</span>';
-      flutes.appendChild(flute);
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'flute';
+      b.setAttribute('data-day', day);
+      b.innerHTML = '<span class="dow" aria-hidden="true">' + DOW[d.getUTCDay()] + '</span>' +
+                    '<span class="num" aria-hidden="true">' + d.getUTCDate() + '</span>';
+      flutes.appendChild(b);
 
       var slot = document.createElement('div');
       slot.className = 'marker-slot';
@@ -668,92 +753,190 @@
 
     strip.appendChild(flutes);
     rail.appendChild(slots);
+
+    document.getElementById('scenario').textContent =
+      'Worked example — your Airbnb holds four nights from ' + longDate(HOLDS[0].start);
+    document.getElementById('months').textContent = monthSpan();
   }
 
-  function render() {
-    var a = inEl.value;
-    var b = outEl.value;
-    var guest = (a && b && b > a) ? { start: a, end: b } : null;
+  /** What the strip should show right now: the committed range, or the one under the cursor. */
+  function shown() {
+    if (sel.checkIn && !sel.checkOut && hovering && hovering >= sel.checkIn) {
+      return { checkIn: sel.checkIn, checkOut: addDays(hovering, 1) };
+    }
+    return sel;
+  }
+
+  function paint() {
+    var view = shown();
+    var guest = (view.checkIn && view.checkOut) ? { start: view.checkIn, end: view.checkOut } : null;
+    var previewing = guest && !sel.checkOut;
 
     var flutes = strip.children;
     var slots = rail.children;
 
     for (var i = 0; i < flutes.length; i++) {
-      var day = flutes[i].getAttribute('data-day');
-      var onAirbnb = covers(AIRBNB, day);
+      var el = flutes[i];
+      var day = el.getAttribute('data-day');
+      var onAirbnb = false;
+      for (var h = 0; h < HOLDS.length; h++) if (covers(HOLDS[h], day)) onAirbnb = true;
       var onGuest = guest ? covers(guest, day) : false;
+      var state;
 
-      if (onAirbnb && onGuest) flutes[i].setAttribute('data-hold', 'clash');
-      else if (onAirbnb) flutes[i].setAttribute('data-hold', 'airbnb');
-      else if (onGuest) flutes[i].setAttribute('data-hold', 'direct');
-      else flutes[i].removeAttribute('data-hold');
+      if (onAirbnb && onGuest) state = 'clash';
+      else if (onAirbnb) state = 'airbnb';
+      else if (onGuest) state = 'direct';
+      else state = null;
+
+      if (state) el.setAttribute('data-hold', state); else el.removeAttribute('data-hold');
+      if (previewing && onGuest) el.setAttribute('data-preview', ''); else el.removeAttribute('data-preview');
+
+      var d = utcNoon(day);
+      el.setAttribute('aria-label',
+        DAYNAME[d.getUTCDay()] + ' ' + longDate(day) + ', ' +
+        (state === 'clash' ? 'collides with your Airbnb'
+          : state === 'airbnb' ? 'already booked on Airbnb'
+          : state === 'direct' ? 'in this booking' : 'free'));
+      el.setAttribute('aria-pressed', onGuest && !previewing ? 'true' : 'false');
 
       if (guest && day === guest.start) slots[i].setAttribute('data-arrival', '');
       else slots[i].removeAttribute('data-arrival');
     }
+  }
 
+  function render() {
+    paint();
     offer.hidden = true;
 
-    if (!guest) {
+    if (!sel.checkIn || !sel.checkOut) {
       verdict.setAttribute('data-state', 'idle');
-      word.textContent = 'Pick your dates';
-      detail.textContent = (a && b && b <= a)
-        ? 'The leaving date needs to be after the arriving date.'
-        : 'Use the buttons above, or set them by hand.';
+      word.textContent = sel.checkIn ? 'Now the last night' : 'Pick your nights';
+      detail.textContent = sel.checkIn
+        ? 'Arriving ' + longDate(sel.checkIn) + '. Tap the last night of the stay.'
+        : 'Tap a night to arrive, then tap the last night of the stay.';
       return;
     }
 
-    var n = nightsBetween(guest.start, guest.end);
-    var clash = overlaps(guest.start, guest.end, AIRBNB.start, AIRBNB.end);
+    var r = assess(sel.checkIn, sel.checkOut, TODAY, HOLDS);
 
-    if (!clash) {
+    if (r.state === 'past') {
+      verdict.setAttribute('data-state', 'past');
+      word.textContent = 'Already gone';
+      detail.textContent = 'That night is in the past. The calendar only sells from today forward.';
+      live.textContent = 'Those nights are in the past.';
+      return;
+    }
+
+    if (r.state === 'invalid') {
+      verdict.setAttribute('data-state', 'invalid');
+      word.textContent = 'Not a stay';
+      detail.textContent = 'The last night has to be on or after the arrival night.';
+      return;
+    }
+
+    if (r.state === 'free') {
       verdict.setAttribute('data-state', 'free');
       word.textContent = 'Available';
-      detail.innerHTML = '<b>' + n + (n === 1 ? ' night' : ' nights') + ', ' +
-        pretty(guest.start) + ' to ' + pretty(guest.end) +
+      detail.innerHTML = '<b>' + r.nights + (r.nights === 1 ? ' night, ' : ' nights, ') +
+        shortDate(sel.checkIn) + ' to ' + shortDate(sel.checkOut) +
         '.</b> Nothing else holds them, so this one is safe to confirm.';
+      live.textContent = 'Available, ' + r.nights + ' nights.';
       return;
     }
 
     verdict.setAttribute('data-state', 'clash');
     word.textContent = 'Collision';
 
-    var nights = clashingNights(guest);
-    var named = nights.length === 1
-      ? 'The ' + nights[0] + ' is'
-      : 'The ' + nights.slice(0, -1).join(', ') + ' and ' + nights[nights.length - 1] + ' are';
+    var names = r.clashNights.map(ordinal);
+    var phrase = names.length === 1
+      ? 'The ' + names[0] + ' is'
+      : 'The ' + names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] + ' are';
 
-    detail.innerHTML = named + ' <b>already sold on your Airbnb</b>. ' +
+    detail.innerHTML = phrase + ' <b>already sold on your Airbnb</b>. ' +
       'The booking is stopped before it is confirmed and an alert goes out.';
+    live.textContent = 'Collision on ' + names.join(', ') + '.';
 
-    var alt = nearestWindow(guest.start, n);
-    if (alt) {
-      offerText.innerHTML = 'Nearest ' + n + ' free night' + (n === 1 ? '' : 's') +
-        ': <b>' + pretty(alt.start) + ' to ' + pretty(alt.end) + '</b>.';
-      offerBtn.setAttribute('data-in', alt.start);
-      offerBtn.setAttribute('data-out', alt.end);
+    if (r.alternative) {
+      offerText.innerHTML = 'Nearest ' + r.nights + ' free night' + (r.nights === 1 ? '' : 's') +
+        ': <b>' + shortDate(r.alternative.start) + ' to ' + shortDate(r.alternative.end) + '</b>.';
+
+      // A long stay can push the free window past the end of the strip. The
+      // answer is still true and still worth showing, but the button would
+      // select nights that are not on screen and read as a dead control, so
+      // the text stays and the button goes.
+      var fits = r.alternative.end <= LAST;
+      offerBtn.hidden = !fits;
+      if (fits) {
+        offerBtn.setAttribute('data-in', r.alternative.start);
+        offerBtn.setAttribute('data-out', r.alternative.end);
+      }
       offer.hidden = false;
     }
   }
 
-  function apply(a, b) { inEl.value = a; outEl.value = b; render(); }
+  function pick(day) {
+    if (!sel.checkIn || sel.checkOut || day < sel.checkIn) {
+      sel = { checkIn: day, checkOut: null };
+    } else {
+      sel.checkOut = addDays(day, 1);
+    }
+    hovering = null;
+    render();
+  }
 
   build();
   render();
 
-  inEl.addEventListener('input', render);
-  outEl.addEventListener('input', render);
-  inEl.addEventListener('change', render);
-  outEl.addEventListener('change', render);
+  strip.addEventListener('click', function (e) {
+    var b = e.target.closest('.flute');
+    if (b && !b.disabled) pick(b.getAttribute('data-day'));
+  });
+
+  strip.addEventListener('mouseover', function (e) {
+    var b = e.target.closest('.flute');
+    if (!b || !sel.checkIn || sel.checkOut) return;
+    hovering = b.getAttribute('data-day');
+    paint();
+  });
+
+  strip.addEventListener('mouseleave', function () {
+    if (hovering) { hovering = null; paint(); }
+  });
 
   var presets = document.querySelectorAll('.presets button');
   for (var p = 0; p < presets.length; p++) {
     presets[p].addEventListener('click', function () {
-      apply(this.getAttribute('data-in'), this.getAttribute('data-out'));
+      if (this.hasAttribute('data-clear')) {
+        sel = { checkIn: null, checkOut: null };
+      } else {
+        var from = addDays(TODAY, Number(this.getAttribute('data-from')));
+        sel = { checkIn: from, checkOut: addDays(from, Number(this.getAttribute('data-nights'))) };
+      }
+      hovering = null;
+      render();
     });
   }
 
   offerBtn.addEventListener('click', function () {
-    apply(this.getAttribute('data-in'), this.getAttribute('data-out'));
+    sel = { checkIn: this.getAttribute('data-in'), checkOut: this.getAttribute('data-out') };
+    hovering = null;
+    render();
   });
+
+  // Rotating a phone changes how many nights fit. Rebuild, and drop a
+  // selection that would now sit off the end of the strip — a verdict about
+  // nights you cannot see reads as a bug.
+  window.addEventListener('resize', function () {
+    if (spanForWidth() === SPAN) return;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      SPAN = spanForWidth();
+      LAST = addDays(TODAY, SPAN);
+      if (sel.checkOut && sel.checkOut > LAST) sel = { checkIn: null, checkOut: null };
+      hovering = null;
+      build();
+      render();
+    }, 150);
+  });
+})();
 </script>

@@ -1,0 +1,648 @@
+<title>Kito Booking System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    color-scheme: light;
+
+    --paper:     #f2f4f1;
+    --surface:   #ffffff;
+    --ink:       #1b211d;
+    --ink-soft:  #566059;
+    --ink-faint: #868f88;
+    --rule:      #d8ded7;
+    --rule-soft: #e7ebe5;
+
+    /* These four are the spreadsheet's own colours. Kept identical on purpose:
+       the page and the sheet have to look like one system. */
+    --free-bg:    #ffffff;
+    --airbnb-bg:  #e8e4dc;
+    --airbnb-ink: #7a6c53;
+    --direct-bg:  #d9e8dd;
+    --direct-ink: #2c6344;
+    --clash-bg:   #f4c7c3;
+    --clash-ink:  #9d2f24;
+
+    --accent:     #2c6344;
+    --accent-dim: #dfe9e2;
+
+    --shadow: 0 1px 2px rgba(27, 33, 29, .05), 0 8px 24px -12px rgba(27, 33, 29, .14);
+
+    --display: "Fraunces", Georgia, "Times New Roman", serif;
+    --body: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper:     #141815;
+      --surface:   #1c211d;
+      --ink:       #e6eae5;
+      --ink-soft:  #9aa39c;
+      --ink-faint: #6d766f;
+      --rule:      #2e352f;
+      --rule-soft: #242a25;
+
+      --free-bg:    #1c211d;
+      --airbnb-bg:  #3a352c;
+      --airbnb-ink: #cdc1a7;
+      --direct-bg:  #1f3d2b;
+      --direct-ink: #91d5aa;
+      --clash-bg:   #4a231e;
+      --clash-ink:  #f2a99f;
+
+      --accent:     #6cbf8e;
+      --accent-dim: #22302a;
+
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px -12px rgba(0, 0, 0, .6);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper:     #141815;
+    --surface:   #1c211d;
+    --ink:       #e6eae5;
+    --ink-soft:  #9aa39c;
+    --ink-faint: #6d766f;
+    --rule:      #2e352f;
+    --rule-soft: #242a25;
+
+    --free-bg:    #1c211d;
+    --airbnb-bg:  #3a352c;
+    --airbnb-ink: #cdc1a7;
+    --direct-bg:  #1f3d2b;
+    --direct-ink: #91d5aa;
+    --clash-bg:   #4a231e;
+    --clash-ink:  #f2a99f;
+
+    --accent:     #6cbf8e;
+    --accent-dim: #22302a;
+
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px -12px rgba(0, 0, 0, .6);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 14px;
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: clamp(30px, 6vw, 44px);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    margin: 0 0 18px;
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(21px, 3.4vw, 26px);
+    line-height: 1.22;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0 0 12px;
+  }
+
+  h3 {
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.35;
+    margin: 0 0 6px;
+  }
+
+  p { margin: 0 0 16px; max-width: 62ch; }
+
+  .lede {
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin-bottom: 0;
+  }
+
+  strong { font-weight: 600; }
+
+  section { margin-top: 56px; }
+
+  .divider {
+    height: 1px;
+    background: var(--rule);
+    border: 0;
+    margin: 56px 0 0;
+  }
+
+  /* ---- the instrument ---- */
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    padding: 22px;
+    margin-top: 28px;
+  }
+
+  .panel-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .panel-head .eyebrow { margin: 0; }
+
+  .scenario {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: flex-end;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 5px; flex: 1 1 150px; }
+
+  .field label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .field input {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 9px 10px;
+    width: 100%;
+    min-height: 40px;
+  }
+
+  .field input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .verdict {
+    margin-top: 18px;
+    border-radius: 3px;
+    padding: 14px 16px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .verdict .mark {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    padding: 3px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .verdict .detail { font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
+  .verdict .detail b { color: var(--ink); font-weight: 600; }
+
+  .verdict[data-state="free"] { background: var(--direct-bg); border-color: transparent; }
+  .verdict[data-state="free"] .mark { background: var(--direct-ink); color: var(--direct-bg); }
+  .verdict[data-state="free"] .detail,
+  .verdict[data-state="free"] .detail b { color: var(--direct-ink); }
+
+  .verdict[data-state="taken"] { background: var(--clash-bg); border-color: transparent; }
+  .verdict[data-state="taken"] .mark { background: var(--clash-ink); color: var(--clash-bg); }
+  .verdict[data-state="taken"] .detail,
+  .verdict[data-state="taken"] .detail b { color: var(--clash-ink); }
+
+  .verdict[data-state="idle"] .mark { background: var(--rule); color: var(--ink-soft); }
+
+  /* ---- calendar strip ---- */
+
+  .strip-scroll { overflow-x: auto; margin-top: 20px; padding-bottom: 4px; }
+
+  .strip { display: flex; gap: 3px; min-width: max-content; }
+
+  .cell {
+    width: 28px;
+    border-radius: 2px;
+    border: 1px solid var(--rule-soft);
+    background: var(--free-bg);
+    padding: 6px 0 7px;
+    text-align: center;
+    transition: background-color .15s ease, border-color .15s ease;
+  }
+
+  .cell .dow {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .06em;
+    color: var(--ink-faint);
+    display: block;
+  }
+
+  .cell .num {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-soft);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .cell[data-hold="airbnb"] { background: var(--airbnb-bg); border-color: transparent; }
+  .cell[data-hold="airbnb"] .num,
+  .cell[data-hold="airbnb"] .dow { color: var(--airbnb-ink); }
+
+  .cell[data-hold="direct"] { background: var(--direct-bg); border-color: transparent; }
+  .cell[data-hold="direct"] .num,
+  .cell[data-hold="direct"] .dow { color: var(--direct-ink); }
+
+  .cell[data-hold="clash"] { background: var(--clash-bg); border-color: transparent; }
+  .cell[data-hold="clash"] .num,
+  .cell[data-hold="clash"] .dow { color: var(--clash-ink); font-weight: 500; }
+
+  .key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 16px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .06em;
+    color: var(--ink-faint);
+  }
+
+  .key span { display: inline-flex; align-items: center; gap: 6px; }
+
+  .swatch {
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+    border: 1px solid var(--rule-soft);
+    display: inline-block;
+  }
+
+  /* ---- preset buttons ---- */
+
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+
+  .presets button {
+    font-family: var(--body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 7px 12px;
+    cursor: pointer;
+    transition: border-color .15s ease, color .15s ease;
+  }
+
+  .presets button:hover { border-color: var(--accent); color: var(--accent); }
+  .presets button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  /* ---- steps ---- */
+
+  .steps { display: flex; flex-direction: column; gap: 0; margin-top: 24px; }
+
+  .step {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    gap: 16px;
+    padding: 18px 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .step:last-child { border-bottom: 1px solid var(--rule); }
+
+  .step .n {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+    padding-top: 2px;
+  }
+
+  .step p { margin: 0; font-size: 14.5px; color: var(--ink-soft); }
+
+  /* ---- rules list ---- */
+
+  .rules { display: flex; flex-direction: column; gap: 22px; margin-top: 26px; }
+  .rules p { margin: 0; font-size: 14.5px; color: var(--ink-soft); }
+
+  .note {
+    border-left: 2px solid var(--accent);
+    padding: 2px 0 2px 16px;
+    margin-top: 26px;
+  }
+
+  .note p { margin: 0; font-size: 14.5px; color: var(--ink-soft); }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  footer a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 40px 18px 64px; }
+    .panel { padding: 18px 16px; }
+  }
+</style>
+
+<div class="wrap">
+
+  <p class="eyebrow">Kito Oak Haven · Booking operations</p>
+  <h1>Two calendars sell one apartment. Here is what stops them colliding.</h1>
+  <p class="lede">Your Airbnb listing and the website both sell the same nights. Neither knows about the other by default. This is the part that makes sure a website guest can never take a night you have already sold.</p>
+
+  <div class="panel">
+    <div class="panel-head">
+      <p class="eyebrow">Try it yourself</p>
+      <p class="scenario">Example: Airbnb holds 6–10 September</p>
+    </div>
+
+    <p style="font-size:14px;color:var(--ink-soft);margin-bottom:18px;">Pretend a guest messages asking for dates. Pick them and see what the system answers.</p>
+
+    <div class="controls">
+      <div class="field">
+        <label for="in">Guest arrives</label>
+        <input type="date" id="in" value="2026-09-08" min="2026-09-01" max="2026-09-20">
+      </div>
+      <div class="field">
+        <label for="out">Guest leaves</label>
+        <input type="date" id="out" value="2026-09-12" min="2026-09-02" max="2026-09-21">
+      </div>
+    </div>
+
+    <div class="verdict" id="verdict" data-state="idle">
+      <span class="mark" id="mark">—</span>
+      <span class="detail" id="detail">Pick dates above.</span>
+    </div>
+
+    <div class="strip-scroll">
+      <div class="strip" id="strip"></div>
+    </div>
+
+    <div class="key">
+      <span><i class="swatch" style="background:var(--free-bg)"></i>Free</span>
+      <span><i class="swatch" style="background:var(--airbnb-bg);border-color:transparent"></i>Your Airbnb</span>
+      <span><i class="swatch" style="background:var(--direct-bg);border-color:transparent"></i>Website booking</span>
+      <span><i class="swatch" style="background:var(--clash-bg);border-color:transparent"></i>Collision</span>
+    </div>
+
+    <div class="presets">
+      <button type="button" data-in="2026-09-08" data-out="2026-09-12">A guest who overlaps you</button>
+      <button type="button" data-in="2026-09-10" data-out="2026-09-14">One arriving the day yours leaves</button>
+      <button type="button" data-in="2026-09-14" data-out="2026-09-18">A clear week</button>
+    </div>
+  </div>
+
+  <div class="note">
+    <p>Try the middle one. A guest arriving on the 10th and your guest leaving on the 10th share a date, but not a night — so that booking is <strong>free to take</strong>. Systems that get this wrong quietly turn away a real booking every time a stay ends.</p>
+  </div>
+
+  <hr class="divider">
+
+  <section>
+    <h2>How it knows</h2>
+    <p>Airbnb publishes every listing's booked nights as a calendar link. It is generated once and keeps working — you never open it again.</p>
+    <p>A program reads that link every three hours and writes your booked nights into the same sheet as the website bookings. Three hours is not a guess: Airbnb rebuilds its own calendar file on a three-hour cycle, so checking more often reads the same thing twice.</p>
+    <p>Both channels then sit in one place, and the question <em>are these nights free?</em> gets answered by looking, instead of by someone remembering to ask.</p>
+  </section>
+
+  <section>
+    <h2>What you would do</h2>
+    <p>Once, and then never again.</p>
+
+    <div class="steps">
+      <div class="step">
+        <span class="n">01</span>
+        <div>
+          <h3>Send one link</h3>
+          <p>In Airbnb: Calendar → Availability → Connect calendars → Export calendar. Copy what it gives you and send it over. That is the whole setup.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="n">02</span>
+        <div>
+          <h3>Nothing else</h3>
+          <p>Your team keeps working exactly as they do now. Nothing changes on their side, and nobody has to tell anyone about a booking.</p>
+        </div>
+      </div>
+      <div class="step">
+        <span class="n">03</span>
+        <div>
+          <h3>Look whenever you want</h3>
+          <p>You get view access to the sheet. Ninety days ahead, one row per night, colour-coded exactly like the strip above.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The rules it follows</h2>
+
+    <div class="rules">
+      <p><strong>An enquiry does not hold a night.</strong> Only a confirmed booking blocks dates. Otherwise every person who ever tapped the WhatsApp button would be blocking nights they were never going to take.</p>
+
+      <p><strong>A calendar that fails to load is treated as a failure, not as an empty calendar.</strong> Airbnb's export sometimes returns an error page instead of your dates. A careless version would read that as "everything was cancelled" and release every night you have sold. This one changes nothing and records a warning.</p>
+
+      <p><strong>Nothing is ever deleted.</strong> A booking that disappears is marked released, not removed, so there is always a record of what was held and when.</p>
+
+      <p><strong>Every check is written down.</strong> Every run leaves a line, including the ones that found nothing. A system that fails silently is the only way this hurts anyone.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>What it does not do</h2>
+    <p>It does not confirm bookings on its own. It makes a collision visible and raises an alert — the decision stays with a person.</p>
+    <p>It also cannot see a booking your team takes outside Airbnb. If a stay is sold over the phone and blocked on Airbnb afterwards, this sees it the moment they do. If it is never blocked there, nothing can see it. That is worth knowing about rather than discovering later.</p>
+  </section>
+
+  <footer>
+    Built for Kito Oak Haven by Alex Maingi · <a href="tel:+254740180214">+254&nbsp;740&nbsp;180&nbsp;214</a><br>
+    The calendar above is a worked example, not live data.
+  </footer>
+</div>
+
+<script>
+  // The example calendar. Half-open, exactly like the real thing: the 6th, 7th,
+  // 8th and 9th are held, and the 10th is free for someone else to arrive.
+  var AIRBNB = { start: '2026-09-06', end: '2026-09-10' };
+
+  var DAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  var FIRST = '2026-09-01';
+  var SPAN = 20;
+
+  var inEl = document.getElementById('in');
+  var outEl = document.getElementById('out');
+  var strip = document.getElementById('strip');
+  var verdict = document.getElementById('verdict');
+  var mark = document.getElementById('mark');
+  var detail = document.getElementById('detail');
+
+  // The same one line the server-side script uses. Check-in counts, check-out
+  // does not, so two stays that meet on one date do not collide.
+  function overlaps(aIn, aOut, bIn, bOut) {
+    return aIn < bOut && bIn < aOut;
+  }
+
+  function covers(range, day) {
+    return range.start <= day && day < range.end;
+  }
+
+  function utcNoon(ymd) {
+    var p = ymd.split('-');
+    return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2], 12, 0, 0));
+  }
+
+  function addDays(ymd, n) {
+    var d = utcNoon(ymd);
+    d.setUTCDate(d.getUTCDate() + n);
+    return d.toISOString().slice(0, 10);
+  }
+
+  function nights(a, b) {
+    return Math.round((utcNoon(b) - utcNoon(a)) / 86400000);
+  }
+
+  function pretty(ymd) {
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var d = utcNoon(ymd);
+    return d.getUTCDate() + ' ' + months[d.getUTCMonth()];
+  }
+
+  function build() {
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < SPAN; i++) {
+      var day = addDays(FIRST, i);
+      var d = utcNoon(day);
+      var cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.setAttribute('data-day', day);
+      cell.innerHTML = '<span class="dow">' + DAYS[d.getUTCDay()] + '</span>' +
+                       '<span class="num">' + d.getUTCDate() + '</span>';
+      frag.appendChild(cell);
+    }
+    strip.appendChild(frag);
+  }
+
+  function render() {
+    var a = inEl.value;
+    var b = outEl.value;
+    var guest = null;
+
+    if (a && b && b > a) guest = { start: a, end: b };
+
+    var cells = strip.children;
+    for (var i = 0; i < cells.length; i++) {
+      var day = cells[i].getAttribute('data-day');
+      var onAirbnb = covers(AIRBNB, day);
+      var onGuest = guest ? covers(guest, day) : false;
+
+      if (onAirbnb && onGuest) cells[i].setAttribute('data-hold', 'clash');
+      else if (onAirbnb) cells[i].setAttribute('data-hold', 'airbnb');
+      else if (onGuest) cells[i].setAttribute('data-hold', 'direct');
+      else cells[i].removeAttribute('data-hold');
+    }
+
+    if (!guest) {
+      verdict.setAttribute('data-state', 'idle');
+      mark.textContent = '—';
+      detail.textContent = b && a && b <= a
+        ? 'The leaving date has to be after the arriving date.'
+        : 'Pick both dates above.';
+      return;
+    }
+
+    var clash = overlaps(guest.start, guest.end, AIRBNB.start, AIRBNB.end);
+    var n = nights(guest.start, guest.end);
+
+    if (clash) {
+      verdict.setAttribute('data-state', 'taken');
+      mark.textContent = 'TAKEN';
+      detail.innerHTML = 'Those nights run into your Airbnb booking of <b>' +
+        pretty(AIRBNB.start) + ' – ' + pretty(AIRBNB.end) +
+        '</b>. The booking is stopped and an alert goes out.';
+    } else {
+      verdict.setAttribute('data-state', 'free');
+      mark.textContent = 'FREE';
+      detail.innerHTML = '<b>' + n + (n === 1 ? ' night' : ' nights') +
+        '</b> and nothing else holds them. Safe to confirm.';
+    }
+  }
+
+  build();
+  render();
+
+  inEl.addEventListener('change', render);
+  outEl.addEventListener('change', render);
+  inEl.addEventListener('input', render);
+  outEl.addEventListener('input', render);
+
+  var presets = document.querySelectorAll('.presets button');
+  for (var p = 0; p < presets.length; p++) {
+    presets[p].addEventListener('click', function () {
+      inEl.value = this.getAttribute('data-in');
+      outEl.value = this.getAttribute('data-out');
+      render();
+    });
+  }
+</script>

@@ -44,6 +44,14 @@ export type BookingIntent = {
   nights?: number;
   /** The Airbnb figure the guest typed in, where they typed one. */
   quoteKsh?: number;
+  /**
+   * Dates the guest picked on the calendar, ISO. These used to be typed into
+   * the sheet by hand on confirmation, which is why a confirmed booking could
+   * sit there with dates nothing could read. When the guest picks them here
+   * they arrive already parsed, and the collision check can see them.
+   */
+  checkIn?: string;
+  checkOut?: string;
 };
 
 /**
@@ -65,6 +73,8 @@ export function logIntent(intent: BookingIntent): string {
       source: intent.source,
       nights: intent.nights ?? null,
       quoteKsh: intent.quoteKsh ?? null,
+      checkIn: intent.checkIn ?? null,
+      checkOut: intent.checkOut ?? null,
       nightlyKsh: site.nightlyKsh ?? null,
       commissionKsh: intent.nights ? intent.nights * 1000 : null,
       at: new Date().toISOString(),

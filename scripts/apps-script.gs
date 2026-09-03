@@ -104,8 +104,13 @@ function doPost(e) {
       num_(data.nightlyKsh, 0, 10000000),
       num_(data.commissionKsh, 0, 10000000),
       safe_(String(data.referrer || '').slice(0, 200)),
-      '', // Check-in  — filled by hand on confirmation
-      '', // Check-out — filled by hand on confirmation
+      // Dates arrive from the calendar on the site when the guest picked them.
+      // They used to be typed in by hand on confirmation, which is how a
+      // confirmed booking could sit here holding nothing because its dates
+      // were unreadable. Anything that is not a plain ISO date is dropped
+      // rather than written, so the collision check never reads a guess.
+      ymd_(data.checkIn),
+      ymd_(data.checkOut),
       '', // Guest name — filled by hand on confirmation
       'enquiry',
       ''
@@ -133,6 +138,21 @@ function doGet() {
 function safe_(value) {
   var s = String(value == null ? '' : value);
   if (/^[=+\-@\t\r]/.test(s)) return "'" + s;
+  return s;
+}
+
+/**
+ * A plain ISO date or nothing. The calendar on the site sends yyyy-mm-dd; a
+ * request that sends anything else did not come from it, and writing a
+ * half-parsed date into the booking calendar is worse than writing none.
+ */
+function ymd_(value) {
+  var s = String(value == null ? '' : value).trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return '';
+  var d = new Date(s + 'T12:00:00Z');
+  if (isNaN(d.getTime())) return '';
+  // Rejects 2026-02-31, which passes the pattern and then rolls into March.
+  if (Utilities.formatDate(d, 'UTC', 'yyyy-MM-dd') !== s) return '';
   return s;
 }
 

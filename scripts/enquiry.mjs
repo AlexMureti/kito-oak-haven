@@ -110,13 +110,17 @@ async function candidateModels(key) {
   const { data } = await api("/models", key);
   const ids = data.map((m) => m.id);
 
+  // Probed against this account on 2026-09-03, because /models is not a
+  // guide to what will answer. minimax-m3 was the only one that returned a
+  // completion; gpt-oss-20b responds but is a reasoning model and leaves
+  // message.content null; mistral-nemotron 500s; the nemotron and
+  // mistral-large ids 404 as not-deployed. Re-probe rather than trust this
+  // list — meta/llama-3.3-70b-instruct reached end of life on 2026-08-26 and
+  // now answers 410, which is what sent me looking in the first place.
   const preferred = [
-    "meta/llama-3.3-70b-instruct",
-    "nvidia/llama-3.1-nemotron-70b-instruct",
-    "meta/llama-3.1-70b-instruct",
-    "meta/llama-3.1-8b-instruct",
-    "mistralai/mistral-nemo-12b-instruct",
-    "microsoft/phi-3-mini-4k-instruct",
+    "minimaxai/minimax-m3",
+    "openai/gpt-oss-20b",
+    "mistralai/mistral-nemotron",
   ];
 
   const ordered = [
@@ -140,10 +144,22 @@ async function complete(key, models, messages) {
         method: "POST",
         body: JSON.stringify({ model, temperature: 0, max_tokens: 300, messages }),
       });
-      return { model, content: out.choices[0].message.content };
+
+      // Reasoning models answer with content null and put the text in
+      // reasoning_content. Treating that as an empty reply throws on .trim()
+      // and looks like the model failed when it actually answered.
+      const msg = out.choices?.[0]?.message ?? {};
+      const content = msg.content ?? msg.reasoning_content ?? "";
+      if (!content.trim()) {
+        refused.push(`${model} (empty reply)`);
+        continue;
+      }
+      return { model, content };
     } catch (err) {
-      if (err.status === 404 || err.status === 403) {
-        refused.push(model);
+      // 404 not deployed for this account, 403 not entitled, 500 the model is
+      // listed but broken today. All three mean "try the next one", not "stop".
+      if (err.status === 404 || err.status === 403 || err.status === 500) {
+        refused.push(`${model} (${err.status})`);
         continue;
       }
       throw err;

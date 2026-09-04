@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { site } from "@/lib/site";
 import { plainHref } from "@/lib/booking";
 import { longDate, type Selection } from "@/lib/availability";
 import { Icon } from "./Icon";
@@ -47,18 +46,12 @@ export function Chat({ onDates }: Props) {
     setThinking(true);
 
     try {
-      // text/plain dodges the CORS preflight, which Apps Script cannot answer.
-      // The key never comes near this bundle — it lives in Script Properties
-      // and only Google's side ever sees it.
-      const res = await fetch(site.bookingLogUrl, {
+      // Same origin, so no CORS and no token to ship. The key lives in the
+      // Vercel project's environment and never reaches this bundle.
+      const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=UTF-8" },
-        body: JSON.stringify({
-          type: "chat",
-          token: site.bookingLogToken,
-          message,
-          history,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, history }),
       });
 
       const data = await res.json();

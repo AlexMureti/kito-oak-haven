@@ -5,7 +5,8 @@ const nextConfig: NextConfig = {
   // request-time APIs. Exporting to plain HTML means it can sit on Cloudflare
   // Pages (or any static host) with no adapter and no cold starts, which also
   // keeps hosting free while the client is still deciding.
-  output: "export",
+  // No output:"export" — the chat needs a server route so the NVIDIA key
+  // stays out of the browser bundle. Pages are still statically rendered.
   images: { unoptimized: true },
 };
 

@@ -381,6 +381,120 @@ check('addDays crosses a month boundary', () => {
 });
 
 // ---------------------------------------------------------------------------
+// The same rules now live twice: inline in docs/booking-system.html, and in
+// src/lib/availability.ts, which is what actually ships to guests. Everything
+// above tests the demo copy. Without what follows, the copy on the live site
+// has no coverage at all and the two can drift apart in silence.
+//
+// So rather than assert the site copy separately — which would only ever test
+// the cases I thought of twice — this runs both implementations over a spread
+// of inputs and fails if they ever disagree.
 
-console.log('\n' + passed + ' passed, ' + failed + ' failed');
-process.exit(failed ? 1 : 0);
+/** Only the fields both implementations promise. The TS Hold carries a label. */
+function shape(v) {
+  if (!v || v.state !== 'clash') return { state: v && v.state, nights: v && v.nights };
+  return {
+    state: v.state,
+    nights: v.nights,
+    clashNights: v.clashNights,
+    alt: v.alternative ? { start: v.alternative.start, end: v.alternative.end } : null,
+  };
+}
+
+(async () => {
+  let ts;
+  try {
+    ts = await import('../src/lib/availability.ts');
+  } catch (err) {
+    failed++;
+    console.log('\n  FAIL  could not load src/lib/availability.ts');
+    console.log('        ' + err.message);
+    console.log('\n' + passed + ' passed, ' + failed + ' failed');
+    process.exit(1);
+  }
+
+  console.log('\nthe shipped copy agrees with the demo copy');
+
+  // A spread wide enough to cross months, a year end, and a leap February.
+  const anchors = [
+    '2026-09-04', '2026-09-28', '2026-10-01', '2026-12-29',
+    '2027-01-02', '2028-02-27', '2028-03-01',
+  ];
+  const spans = [1, 2, 3, 5, 9, 14, 30];
+
+  const holdSets = [
+    [],
+    [{ start: '2026-09-06', end: '2026-09-10', label: 'Airbnb' }],
+    [
+      { start: '2026-09-06', end: '2026-09-10', label: 'Airbnb' },
+      { start: '2026-09-10', end: '2026-09-14', label: 'Airbnb' },
+    ],
+    [{ start: '2026-12-20', end: '2027-01-05', label: 'Airbnb' }],
+    [{ start: '2028-02-26', end: '2028-03-02', label: 'Airbnb' }],
+  ];
+
+  let compared = 0;
+  let mismatch = null;
+
+  for (const holds of holdSets) {
+    for (const a of anchors) {
+      for (const n of spans) {
+        for (const offset of [-3, 0, 4]) {
+          const checkIn = ts.addDays(a, offset);
+          const checkOut = ts.addDays(checkIn, n);
+          const today = '2026-09-04';
+
+          const mine = shape(assess(checkIn, checkOut, today, holds));
+          const theirs = shape(ts.assess(checkIn, checkOut, today, holds));
+          compared++;
+
+          if (JSON.stringify(mine) !== JSON.stringify(theirs) && !mismatch) {
+            mismatch = { checkIn, checkOut, holds, demo: mine, site: theirs };
+          }
+        }
+      }
+    }
+  }
+
+  check('assess() gives identical answers in both copies', () => {
+    ok(!mismatch, 'diverged on ' + JSON.stringify(mismatch));
+  });
+
+  check('nextSelection() behaves identically in both copies', () => {
+    let sA = { checkIn: null, checkOut: null };
+    let sB = { checkIn: null, checkOut: null };
+    for (const a of anchors) {
+      for (const offset of [0, 3, -2, 11, 1]) {
+        const day = ts.addDays(a, offset);
+        sA = nextSelection(sA, day);
+        sB = ts.nextSelection(sB, day);
+        eq(sA, sB, 'after tapping ' + day);
+      }
+    }
+  });
+
+  check('date maths agrees in both copies', () => {
+    for (const a of anchors) {
+      for (const n of [-40, -1, 0, 1, 27, 400]) {
+        eq(addDays(a, n), ts.addDays(a, n), `addDays(${a}, ${n})`);
+      }
+      for (const n of [1, 2, 6, 12]) {
+        eq(addMonths(a, n), ts.addMonths(a, n), `addMonths(${a}, ${n})`);
+      }
+      eq(nightsBetween(a, addDays(a, 9)), ts.nightsBetween(a, ts.addDays(a, 9)), 'nightsBetween');
+    }
+  });
+
+  check('month layout agrees in both copies', () => {
+    for (const y of [2026, 2027, 2028]) {
+      for (let m = 0; m < 12; m++) {
+        eq(monthCells(y, m), ts.monthCells(y, m), `monthCells(${y}, ${m})`);
+      }
+    }
+  });
+
+  console.log('  ' + compared + ' assess() cases compared across ' + holdSets.length + ' hold sets');
+
+  console.log('\n' + passed + ' passed, ' + failed + ' failed');
+  process.exit(failed ? 1 : 0);
+})();

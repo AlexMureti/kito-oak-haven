@@ -110,17 +110,17 @@ async function candidateModels(key) {
   const { data } = await api("/models", key);
   const ids = data.map((m) => m.id);
 
-  // Probed against this account on 2026-09-03, because /models is not a
-  // guide to what will answer. minimax-m3 was the only one that returned a
-  // completion; gpt-oss-20b responds but is a reasoning model and leaves
-  // message.content null; mistral-nemotron 500s; the nemotron and
-  // mistral-large ids 404 as not-deployed. Re-probe rather than trust this
-  // list — meta/llama-3.3-70b-instruct reached end of life on 2026-08-26 and
-  // now answers 410, which is what sent me looking in the first place.
+  // Probed against this account, because /models is not a guide to what will
+  // answer. kimi-k3 is the pick; minimax-m3 is the proven fallback.
+  // gpt-oss-20b responds but leaves message.content null, mistral-nemotron
+  // 500s, and the nemotron and mistral-large ids 404 as not-deployed.
+  // Re-probe rather than trust this list: meta/llama-3.3-70b-instruct reached
+  // end of life on 2026-08-26 and now answers 410, which is what sent me
+  // looking in the first place.
   const preferred = [
+    "moonshotai/kimi-k3",
     "minimaxai/minimax-m3",
     "openai/gpt-oss-20b",
-    "mistralai/mistral-nemotron",
   ];
 
   const ordered = [
@@ -134,6 +134,26 @@ async function candidateModels(key) {
   return ordered;
 }
 
+/**
+ * Request settings per model.
+ *
+ * kimi-k3 has thinking permanently on, so it spends tokens reasoning before it
+ * answers and those count against max_tokens — a 300-token budget that is
+ * ample for a normal model gets consumed by the thinking and returns nothing.
+ * Effort is set low on purpose: pulling two dates out of a sentence is not a
+ * reasoning problem, and max effort only buys latency here.
+ *
+ * Temperature 1 with a fixed seed follows NVIDIA's own sample. The determinism
+ * that matters comes from the seed and a strict schema, not from temperature 0,
+ * which some reasoning models refuse outright.
+ */
+function paramsFor(model) {
+  if (/kimi|gpt-oss|reason/i.test(model)) {
+    return { temperature: 1, seed: 0, max_tokens: 8192, reasoning_effort: "low" };
+  }
+  return { temperature: 0, max_tokens: 400 };
+}
+
 /** Tries each candidate until one is actually deployed for this account. */
 async function complete(key, models, messages) {
   const refused = [];
@@ -142,7 +162,7 @@ async function complete(key, models, messages) {
     try {
       const out = await api("/chat/completions", key, {
         method: "POST",
-        body: JSON.stringify({ model, temperature: 0, max_tokens: 300, messages }),
+        body: JSON.stringify({ model, ...paramsFor(model), messages }),
       });
 
       // Reasoning models answer with content null and put the text in

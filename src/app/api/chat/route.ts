@@ -47,6 +47,9 @@ Building: heated indoor pool and a full gym on the second floor, open 6am to
 seconds, so wifi, lights, water pump and lifts stay on through an outage.
 Dedicated fiber line and a real desk — video calls hold.
 
+No pets and no smoking — both are declared in the site's own structured data,
+so this is settled, not a guess.
+
 Check-in is contactless by smart keypad lock, from 2:00 PM; check-out by 11:00
 AM. Because there is no key to hand over, early arrival and late departure are
 usually possible if asked in advance. There is a caretaker on site and the
@@ -62,6 +65,9 @@ Bolt work — set the destination to Oak Classic Residence.
 
 Nearby: Yaya Centre and Adlife Plaza 8 minutes on foot. Carrefour and Chandarana
 10 minutes on foot. Nairobi Hospital 8 minutes by car. The CBD 12 minutes by car.
+
+NOT KNOWN — say you will check and point to WhatsApp, never guess:
+parking, exact wifi speed in Mbps, air conditioning.
 `.trim();
 
 function systemPrompt(today: string): string {

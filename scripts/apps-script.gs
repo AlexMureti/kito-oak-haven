@@ -86,6 +86,14 @@ function doPost(e) {
 
   if (!data || data.token !== SHARED_TOKEN) return json_({ ok: false });
 
+  // The chat asks a question and waits for an answer; the booking log only
+  // ever appends and returns nothing useful. Different shapes, so they route
+  // apart here rather than one pretending to be the other.
+  if (data.type === 'chat') {
+    if (typeof handleChat_ !== 'function') return json_({ ok: false, reply: '' });
+    return json_(handleChat_(data));
+  }
+
   // Shape check. Our own form always produces KOH- plus four characters
   // from an unambiguous alphabet; anything else did not come from us.
   var ref = String(data.ref || '');

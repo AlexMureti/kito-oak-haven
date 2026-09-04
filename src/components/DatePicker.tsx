@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   addDays,
   addMonths,
@@ -30,10 +30,16 @@ type Props = {
    * when nothing has actually checked.
    */
   holds?: Hold[];
-  onChange?: (sel: Selection) => void;
+  /**
+   * Controlled from the parent so the chat can move it. A guest who types
+   * "the 14th to the 18th" should watch the calendar fill in, rather than
+   * being told the dates were understood and then having to enter them again.
+   */
+  value: Selection;
+  onChange: (sel: Selection) => void;
 };
 
-export function DatePicker({ holds = [], onChange }: Props) {
+export function DatePicker({ holds = [], value: sel, onChange }: Props) {
   const today = useMemo(() => todayInNairobi(), []);
   const horizon = useMemo(() => addMonths(today, HORIZON_MONTHS), [today]);
 
@@ -41,8 +47,14 @@ export function DatePicker({ holds = [], onChange }: Props) {
     y: Number(today.slice(0, 4)),
     m: Number(today.slice(5, 7)) - 1,
   }));
-  const [sel, setSel] = useState<Selection>({ checkIn: null, checkOut: null });
   const [hovering, setHovering] = useState<Ymd | null>(null);
+
+  // Follow the selection when something else sets it — otherwise the chat
+  // fills October while the guest is still looking at September.
+  useEffect(() => {
+    if (!sel.checkIn) return;
+    setView({ y: Number(sel.checkIn.slice(0, 4)), m: Number(sel.checkIn.slice(5, 7)) - 1 });
+  }, [sel.checkIn]);
 
   const minKey = Number(today.slice(0, 4)) * 12 + (Number(today.slice(5, 7)) - 1);
   const key = view.y * 12 + view.m;
@@ -62,17 +74,13 @@ export function DatePicker({ holds = [], onChange }: Props) {
   const verdict = assess(sel.checkIn, sel.checkOut, today, holds);
 
   function pick(day: Ymd) {
-    const next = nextSelection(sel, day);
-    setSel(next);
+    onChange(nextSelection(sel, day));
     setHovering(null);
-    onChange?.(next);
   }
 
   function clear() {
-    const next = { checkIn: null, checkOut: null };
-    setSel(next);
+    onChange({ checkIn: null, checkOut: null });
     setHovering(null);
-    onChange?.(next);
   }
 
   return (

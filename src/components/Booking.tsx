@@ -5,6 +5,7 @@ import { onBookingClick, plainHref } from "@/lib/booking";
 import { site } from "@/lib/site";
 import { longDate, nightsBetween, type Hold, type Selection } from "@/lib/availability";
 import { DatePicker } from "./DatePicker";
+import { Chat } from "./Chat";
 import { Photo } from "./Photo";
 import { Icon } from "./Icon";
 
@@ -76,7 +77,7 @@ export function Booking() {
         </p>
 
         <div className="reveal d3 mt-10">
-          <DatePicker holds={HOLDS} onChange={setSel} />
+          <DatePicker holds={HOLDS} value={sel} onChange={setSel} />
         </div>
 
         <div className="reveal d3 mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -123,6 +124,11 @@ export function Booking() {
           ))}
         </ul>
       </div>
+
+      {/* Fixed to the viewport, so its position here in the tree does not
+          matter — but it stays out of any .reveal wrapper, whose transform
+          would make "fixed" resolve against that element instead of the page. */}
+      <Chat onDates={setSel} />
     </section>
   );
 }

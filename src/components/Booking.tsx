@@ -125,9 +125,11 @@ export function Booking() {
         </ul>
       </div>
 
-      {/* Fixed to the viewport, so its position here in the tree does not
-          matter — but it stays out of any .reveal wrapper, whose transform
-          would make "fixed" resolve against that element instead of the page. */}
+      {/* Mounted here so it can hand typed dates to the calendar, but it
+          renders through a portal to <body> — this section is `isolate`, and a
+          fixed child of a stacking context still cannot out-layer the sticky
+          bar. It also stays out of any .reveal wrapper, whose transform would
+          make "fixed" resolve against that element instead of the page. */}
       <Chat onDates={setSel} />
     </section>
   );

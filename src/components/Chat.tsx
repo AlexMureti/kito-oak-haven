@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { plainHref } from "@/lib/booking";
 import { longDate, type Selection } from "@/lib/availability";
 import { Icon } from "./Icon";
@@ -24,6 +25,14 @@ export function Chat({ onDates }: Props) {
   const [draft, setDraft] = useState("");
   const [thinking, setThinking] = useState(false);
   const [caught, setCaught] = useState<Selection | null>(null);
+
+  /* This lives inside Booking's <section id="book">, which is `isolate` — its
+     own stacking context. A z-50 in there is trapped at the section's level and
+     loses to the sticky bar's root-level z-40, so on phones the bar covered the
+     launcher. Portalling to <body> puts both on the same ladder and keeps the
+     onDates wiring exactly where it is. */
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const scroller = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
@@ -83,7 +92,9 @@ export function Chat({ onDates }: Props) {
     }
   }
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <>
       {/* The trigger is the lozenge from the wordmark, not a speech bubble.
           One gold mark that catches light, sitting quietly until it is wanted. */}
@@ -92,7 +103,7 @@ export function Chat({ onDates }: Props) {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-label={open ? "Close the desk" : "Ask about the apartment"}
-        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-gold-500/40 bg-pine-950/95 shadow-[0_10px_36px_-10px_rgba(6,19,16,.8)] backdrop-blur transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400 sm:bottom-7 sm:right-7"
+        className="fixed bottom-24 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-gold-500/40 bg-pine-950/95 shadow-[0_10px_36px_-10px_rgba(6,19,16,.8)] backdrop-blur transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400 sm:right-7 lg:bottom-7"
       >
         <span
           className={`block transition-transform duration-500 ${open ? "rotate-[135deg]" : ""}`}
@@ -107,7 +118,7 @@ export function Chat({ onDates }: Props) {
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-5 z-50 flex max-h-[min(560px,72vh)] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-sm border border-gold-500/40 bg-cream-50 text-left shadow-[0_30px_70px_-24px_rgba(6,19,16,.7)] sm:bottom-28 sm:right-7">
+        <div className="fixed bottom-44 right-5 z-50 flex max-h-[min(560px,72vh)] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-sm border border-gold-500/40 bg-cream-50 text-left shadow-[0_30px_70px_-24px_rgba(6,19,16,.7)] sm:right-7 lg:bottom-28">
           <div className="border-b border-gold-600/25 px-5 py-4">
             <p className="font-display text-xl leading-none text-ink-900">The desk</p>
             <p className="mt-1.5 text-[11.5px] leading-snug text-ink-500">
@@ -206,6 +217,7 @@ export function Chat({ onDates }: Props) {
           50%      { opacity: 1;   transform: rotate(45deg) scale(1); }
         }
       `}</style>
-    </>
+    </>,
+    document.body
   );
 }

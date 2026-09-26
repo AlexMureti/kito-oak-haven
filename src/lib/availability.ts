@@ -83,8 +83,8 @@ function hitsAny(start: Ymd, end: Ymd, holds: Hold[]): Hold | null {
 }
 
 /** Nairobi is UTC+3 with no daylight saving, so today there is UTC shifted three hours. */
-export function todayInNairobi(): Ymd {
-  return toYmd(new Date(Date.now() + 3 * 3600000));
+export function todayInNairobi(now: number = Date.now()): Ymd {
+  return toYmd(new Date(now + 3 * 3600000));
 }
 
 /** The cells of one month, Monday first, with leading nulls for the blanks. */
@@ -107,6 +107,71 @@ export function monthCells(year: number, month: number): (Ymd | null)[] {
 export function nextSelection(sel: Selection, day: Ymd): Selection {
   if (!sel.checkIn || day < sel.checkIn) return { checkIn: day, checkOut: null };
   return { checkIn: sel.checkIn, checkOut: addDays(day, 1) };
+}
+
+// ---------------------------------------------------------------------------
+// The live calendar. Site only: the standalone demo has no feed, so nothing
+// below has a twin there. scripts/test-calendar-sync.mjs covers it.
+
+/** live: both calendars read. partial: one of them. unknown: neither. */
+export type AvailabilityStatus = "live" | "partial" | "unknown";
+
+/** What the picker knows. "checking" exists only in the browser, while the first answer is on its way. */
+export type Knowledge = "checking" | AvailabilityStatus;
+
+/** A tap on a taken night, and where the guest could arrive instead. */
+export type Notice = { day: Ymd; nextFree: Ymd | null };
+
+/** The first night at or after `from` that nobody holds, looking no further than `horizon`. */
+export function nextFreeNight(from: Ymd, holds: Hold[], horizon: Ymd): Ymd | null {
+  for (let d = from; d < horizon; d = addDays(d, 1)) {
+    if (!heldOn(d, holds)) return d;
+  }
+  return null;
+}
+
+/**
+ * What a tap does once the calendar knows which nights are taken.
+ *
+ * Only an arrival is refused: a stay cannot begin on a night somebody else is
+ * sleeping in. Stretching a stay across a taken night is allowed on purpose.
+ * The verdict then names the taken nights and offers the nearest stretch that
+ * fits, which helps more than a tap that silently does nothing.
+ */
+export function tapNight(
+  sel: Selection,
+  day: Ymd,
+  holds: Hold[],
+  horizon: Ymd
+): { sel: Selection; notice: Notice | null } {
+  const next = nextSelection(sel, day);
+  if (next.checkOut === null && heldOn(day, holds)) {
+    return { sel, notice: { day, nextFree: nextFreeNight(addDays(day, 1), holds, horizon) } };
+  }
+  return { sel: next, notice: null };
+}
+
+/** "just now", "4 min ago", "2 h ago". Empty when the time cannot be read. */
+export function freshness(checkedAt: string, now: number): string {
+  const t = Date.parse(checkedAt);
+  if (Number.isNaN(t)) return "";
+  const mins = Math.floor((now - t) / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins} min ago`;
+  return `${Math.floor(mins / 60)} h ago`;
+}
+
+/** A check older than this is still shown, but no longer trusted to promise a night is free. */
+const TRUST_MS = 6 * 3600000;
+
+export function trustedStatus(
+  status: AvailabilityStatus,
+  checkedAt: string,
+  now: number
+): AvailabilityStatus {
+  if (status !== "live") return status;
+  const t = Date.parse(checkedAt);
+  return Number.isNaN(t) || now - t > TRUST_MS ? "partial" : "live";
 }
 
 /**

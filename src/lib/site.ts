@@ -233,15 +233,23 @@ export const neighbourhood = [
 ];
 
 // ---- Social proof ----
-// ⚠️ NEEDS ALEX: paste your real Airbnb guest reviews here, in any format.
-// Deliberately empty. Inventing testimonials for a real, bookable property
-// would be fraud, and the Reviews section hides itself while this is empty.
+// Real Airbnb guest reviews go here once there are some. On 26 Sep 2026 the
+// listing was brand new: "★New", 0 reviews. Deliberately empty until then.
+// Inventing testimonials for a real, bookable property would be fraud, and
+// the Reviews section hides itself while this is empty.
 export type Review = { quote: string; name: string; origin: string; nights: string };
 export const reviews: Review[] = [];
 
-// ⚠️ NEEDS ALEX: public Airbnb listing URL + review count, for the "verified
-// elsewhere" trust link. Empty = that badge is not rendered.
-export const airbnb = { url: "", reviewCount: 0, rating: 0 };
+// The owner's public listing, sent by her on 26 Sep 2026, with the share
+// tracking removed. It feeds `sameAs` in the structured data. The "verified on
+// Airbnb" badge also needs a review count, so it stays hidden until the
+// listing has reviews; a link to a page saying "New, no reviews" would weaken
+// this one rather than vouch for it.
+export const airbnb = {
+  url: "https://www.airbnb.com/rooms/1775403865986005744",
+  reviewCount: 0,
+  rating: 0,
+};
 
 // `pending: true` hides an entry from both the page and the FAQ schema. Use it
 // rather than writing a placeholder answer — a collapsed <details> still ships

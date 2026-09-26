@@ -182,6 +182,24 @@
   );
 }
 
+/* ============================ booking calendar ============================ */
+/* A taken night is the fluting of the mark drawn into the cell: it recedes.
+   A solid fill would read as a selected night, which is the opposite. */
+.night-taken {
+  background-color: color-mix(in srgb, var(--color-cream-100) 45%, transparent);
+  background-image: repeating-linear-gradient(
+    to right,
+    color-mix(in srgb, var(--color-pine-700) 17%, transparent) 0 1px,
+    transparent 1px 5px
+  );
+}
+/* The guest's own nights are struck foil, never a flat gold. */
+.night-picked {
+  background: var(--gold-metal);
+  background-size: 220% 100%;
+  background-position: 78% 0;
+}
+
 /* ============================ buttons ============================ */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;

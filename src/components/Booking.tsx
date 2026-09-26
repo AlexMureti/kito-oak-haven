@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { onBookingClick, plainHref } from "@/lib/booking";
 import { site } from "@/lib/site";
-import { longDate, nightsBetween, type Hold, type Selection } from "@/lib/availability";
+import { longDate, nightsBetween, overlaps, type Selection } from "@/lib/availability";
+import { useAvailability } from "@/lib/use-availability";
 import { DatePicker } from "./DatePicker";
 import { Chat } from "./Chat";
 import { Photo } from "./Photo";
@@ -14,15 +15,6 @@ const trust = [
   { icon: "check", label: "Unit & caretaker details", note: "Sent before you travel" },
   { icon: "calendar", label: "Flexible dates", note: "Early and late check-out usually fine" },
 ];
-
-/**
- * Nights already sold. Empty until the owner's Airbnb calendar is connected —
- * see scripts/apps-script-calendar.gs. Deliberately not faked: an empty list
- * makes the picker say "we'll confirm these are free", and a populated one
- * makes it say "free on both calendars". Only one of those is a promise, and
- * we do not get to make it until something has actually checked.
- */
-const HOLDS: Hold[] = [];
 
 function whatsappMessage(sel: Selection, ref?: string): string {
   const lines = ["Hi! I'd like to book Kito Oak Haven."];
@@ -41,6 +33,12 @@ function whatsappMessage(sel: Selection, ref?: string): string {
 export function Booking() {
   const [sel, setSel] = useState<Selection>({ checkIn: null, checkOut: null });
   const picked = Boolean(sel.checkIn && sel.checkOut);
+
+  // Taken nights from both calendars. What "free" may promise, and when, is
+  // the picker's call; see src/lib/calendar-sync.ts for where they come from.
+  const calendar = useAvailability();
+  const clashing =
+    picked && calendar.holds.some((h) => overlaps(sel.checkIn!, sel.checkOut!, h.start, h.end));
 
   return (
     <section id="book" className="relative isolate overflow-hidden on-white grain">
@@ -77,12 +75,13 @@ export function Booking() {
         </p>
 
         <div className="reveal d3 mt-10">
-          <DatePicker holds={HOLDS} value={sel} onChange={setSel} />
+          <DatePicker calendar={calendar} value={sel} onChange={setSel} />
         </div>
 
         <div className="reveal d3 mt-8 flex flex-wrap items-center justify-center gap-3">
           <a
             className="btn btn-gold"
+            data-keep-clear=""
             href={plainHref(whatsappMessage(sel))}
             onClick={onBookingClick(
               {
@@ -97,9 +96,13 @@ export function Booking() {
             rel="noopener noreferrer"
           >
             <Icon name="whatsapp" className="h-4 w-4" />
-            {picked ? "Send these dates on WhatsApp" : "Message on WhatsApp"}
+            {picked
+              ? clashing
+                ? "Ask about these dates"
+                : "Send these dates on WhatsApp"
+              : "Message on WhatsApp"}
           </a>
-          <a className="btn btn-ink" href={`tel:${site.phone.replace(/\s/g, "")}`}>
+          <a className="btn btn-ink" data-keep-clear="" href={`tel:${site.phone.replace(/\s/g, "")}`}>
             Call {site.phone}
           </a>
         </div>

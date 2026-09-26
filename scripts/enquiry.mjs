@@ -23,18 +23,38 @@ import { fileURLToPath } from "node:url";
 import {
   assess,
   addDays,
+  freshness,
   longDate,
   nightsBetween,
   todayInNairobi,
+  trustedStatus,
 } from "../src/lib/availability.ts";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENDPOINT = "https://integrate.api.nvidia.com/v1";
 
-// Nights already sold. Empty until the owner's Airbnb feed is connected —
-// see scripts/apps-script-calendar.gs. Kept here rather than invented so this
-// tool never claims a night is free on the strength of nothing.
-const HOLDS = [];
+// Nights already sold, read from the site's own /api/availability, which
+// checks the owner's Airbnb calendar and the confirmed direct bookings (see
+// CALENDAR.md). The draft reply only calls a stay free when both were read,
+// recently. Anything less says "let me confirm", so this tool never claims a
+// night is free on the strength of nothing.
+const AVAILABILITY_URL =
+  process.env.KITO_AVAILABILITY_URL || "https://kito-oak-haven.vercel.app/api/availability";
+
+async function readCalendar() {
+  try {
+    const res = await fetch(AVAILABILITY_URL, { signal: AbortSignal.timeout(10000) });
+    const data = await res.json();
+    if (!res.ok || !Array.isArray(data.holds) || typeof data.checkedAt !== "string") throw new Error();
+    return {
+      status: trustedStatus(data.status, data.checkedAt, Date.now()),
+      checkedAt: data.checkedAt,
+      holds: data.holds.map((h) => ({ start: h.start, end: h.end, label: "Taken" })),
+    };
+  } catch {
+    return { status: "unknown", checkedAt: null, holds: [] };
+  }
+}
 
 function loadKey() {
   if (process.env.NVIDIA_API_KEY) return process.env.NVIDIA_API_KEY.trim();
@@ -261,9 +281,12 @@ async function main() {
       return;
     }
 
-    const verdict = assess(checkIn, checkOut, today, HOLDS);
+    const calendar = await readCalendar();
+    const verdict = assess(checkIn, checkOut, today, calendar.holds);
     const nights = nightsBetween(checkIn, checkOut);
+    const checked = calendar.checkedAt ? `, checked ${freshness(calendar.checkedAt, Date.now())}` : "";
 
+    console.log(`calendar   ${calendar.status}${checked}`);
     console.log(`arriving   ${longDate(checkIn)}`);
     console.log(`leaving    ${longDate(checkOut)}`);
     console.log(`nights     ${nights}`);
@@ -277,7 +300,7 @@ async function main() {
     }
 
     console.log("\n--- draft reply ---");
-    if (verdict.state === "free" && HOLDS.length === 0) {
+    if (verdict.state === "free" && calendar.status !== "live") {
       console.log(
         `Hi! ${longDate(checkIn)} to ${longDate(checkOut)}, ${nights} ${nights === 1 ? "night" : "nights"} — let me confirm those are still open and come straight back to you.`
       );
@@ -286,8 +309,14 @@ async function main() {
         `Hi! ${longDate(checkIn)} to ${longDate(checkOut)} is free — ${nights} ${nights === 1 ? "night" : "nights"}. A deposit holds it and the balance is settled on arrival.`
       );
     } else if (verdict.state === "clash" && verdict.alternative) {
+      // The alternative is only as good as the calendars behind it. With one
+      // of the two unread, it could land on a night booked on the other.
+      const alt = `${longDate(verdict.alternative.start)} to ${longDate(verdict.alternative.end)}`;
+      const same = `same ${nights} ${nights === 1 ? "night" : "nights"}`;
       console.log(
-        `Hi! Those nights are taken, but ${longDate(verdict.alternative.start)} to ${longDate(verdict.alternative.end)} is open — same ${nights} ${nights === 1 ? "night" : "nights"}. Would that work?`
+        calendar.status === "live"
+          ? `Hi! Those nights are taken, but ${alt} is open — ${same}. Would that work?`
+          : `Hi! Those nights are taken, but ${alt} looks open — ${same}. Let me confirm and come straight back to you.`
       );
     } else {
       console.log(`Hi! Let me check those dates and come back to you shortly.`);

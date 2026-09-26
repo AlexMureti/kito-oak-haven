@@ -1,4 +1,9 @@
 /**
+ * SUPERSEDED 26 Sep 2026. Not in use: do not add this to the Apps Script
+ * project. The calendar now runs on Vercel, beside the chat, in
+ * src/lib/calendar-sync.ts. See CALENDAR.md for why and how. Kept for its
+ * reasoning, which carried over.
+ *
  * Kito Oak Haven — external calendar ingest and collision check.
  *
  * Add this as a SECOND file inside the same Apps Script project as the

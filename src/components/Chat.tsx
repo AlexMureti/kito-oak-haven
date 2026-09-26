@@ -36,6 +36,50 @@ export function Chat({ onDates }: Props) {
 
   const scroller = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
+  const launcher = useRef<HTMLButtonElement>(null);
+
+  /* The launcher is fixed to the corner of the screen, and on a phone that
+     corner passes over the booking controls: the calendar's right-hand
+     column, its status line, the WhatsApp button. While it would sit on any
+     of them it steps aside, and it is back the moment they scroll clear.
+     Measured rather than guessed from a breakpoint, because on a wide screen
+     they never reach the corner at all. Each is marked data-keep-clear. */
+  const [overCalendar, setOverCalendar] = useState(false);
+  useEffect(() => {
+    if (!mounted) return;
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
+      const btn = launcher.current;
+      if (!btn) return;
+      const b = btn.getBoundingClientRect();
+      // Looked up each time: the calendar swaps its placeholder for the real
+      // grid after hydration, so a node kept from earlier can be a dead one.
+      const covers = Array.from(document.querySelectorAll("[data-keep-clear]")).some((el) => {
+        const a = el.getBoundingClientRect();
+        return a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+      });
+      setOverCalendar(covers);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+    // The section, not the calendar: it outlives that swap, and it grows
+    // whenever the verdict under the calendar does.
+    const grows = new ResizeObserver(schedule);
+    const book = document.getElementById("book");
+    if (book) grows.observe(book);
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      grows.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [mounted]);
+  const stepAside = overCalendar && !open;
 
   useEffect(() => {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" });
@@ -99,11 +143,13 @@ export function Chat({ onDates }: Props) {
       {/* The trigger is the lozenge from the wordmark, not a speech bubble.
           One gold mark that catches light, sitting quietly until it is wanted. */}
       <button
+        ref={launcher}
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-label={open ? "Close the desk" : "Ask about the apartment"}
-        className="fixed bottom-24 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-gold-500/40 bg-pine-950/95 shadow-[0_10px_36px_-10px_rgba(6,19,16,.8)] backdrop-blur transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400 sm:right-7 lg:bottom-7"
+        inert={stepAside || undefined}
+        className={`fixed bottom-24 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-gold-500/40 bg-pine-950/95 shadow-[0_10px_36px_-10px_rgba(6,19,16,.8)] backdrop-blur transition-[transform,opacity] duration-300 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400 sm:right-7 lg:bottom-7 ${stepAside ? "pointer-events-none opacity-0" : ""}`}
       >
         <span
           className={`block transition-transform duration-500 ${open ? "rotate-[135deg]" : ""}`}

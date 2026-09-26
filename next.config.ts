@@ -1,12 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // The site is entirely static — no server actions, no route handlers, no
-  // request-time APIs. Exporting to plain HTML means it can sit on Cloudflare
-  // Pages (or any static host) with no adapter and no cold starts, which also
-  // keeps hosting free while the client is still deciding.
-  // No output:"export" — the chat needs a server route so the NVIDIA key
-  // stays out of the browser bundle. Pages are still statically rendered.
+  // The page itself is static: prerendered to HTML, no server actions. Three
+  // route handlers run on the server, which is why this is not
+  // output:"export": /api/chat (keeps the NVIDIA key out of the browser),
+  // and /api/availability plus /direct-bookings.ics (keep the owner's calendar
+  // links out of it; see CALENDAR.md).
   images: { unoptimized: true },
 };
 

@@ -10,7 +10,7 @@ import { Booking } from "@/components/Booking";
 import { Faq } from "@/components/Faq";
 import { Footer } from "@/components/Footer";
 import { StickyBar } from "@/components/StickyBar";
-import { faqs, reviews, airbnb, site } from "@/lib/site";
+import { faqs, airbnb, site } from "@/lib/site";
 
 // Two graphs: the property itself, and the FAQ. Both are eligible for rich
 // results, which is most of the available SEO upside for a single-property site.
@@ -22,6 +22,9 @@ const lodging = {
   description:
     `A privately hosted one-bedroom apartment on the seventh floor in Kilimani, Nairobi. Heated pool and gym, automatic backup power, fiber Wi-Fi and self check-in, eight minutes' walk from Yaya Centre. ${site.currency} ${site.nightlyKsh?.toLocaleString("en-KE")} a night, booked direct.`,
   url: site.url,
+  // The same apartment's Airbnb listing, so a search engine can tell the two
+  // are one place rather than two competing ones.
+  ...(airbnb.url ? { sameAs: [airbnb.url] } : {}),
   telephone: site.phone,
   address: {
     "@type": "PostalAddress",
@@ -87,16 +90,10 @@ const lodging = {
     name,
     value: true,
   })),
-  // Only claim a rating when there is a real one behind it.
-  ...(airbnb.reviewCount > 0 && reviews.length
-    ? {
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: airbnb.rating,
-          reviewCount: airbnb.reviewCount,
-        },
-      }
-    : {}),
+  // No aggregateRating, deliberately. The only rating this apartment will
+  // have is Airbnb's, and Google's review-snippet rules say "Don't aggregate
+  // reviews or ratings from other websites" (checked 26 Sep 2026). Airbnb's
+  // stars can be shown to guests on the page; they cannot be marked up as ours.
 };
 
 const faqSchema = {

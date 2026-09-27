@@ -57,8 +57,9 @@ The code is `src/lib/calendar-sync.ts`. The tests are `node scripts/test-calenda
 
 ### 1. The Airbnb export link, into Vercel
 
-The link comes from Airbnb: Calendar → the listing → Availability → Connect calendars →
-Connect to another website → export.
+The owner already sent this link on 26 Sep 2026: her listing's own calendar link, ending in
+`.ics?t=…`. Airbnb keeps it in the same Availability → Connect calendars section as the
+import. I did not verify the exact export wording on a live host account.
 
 Put it in Vercel → the project → Settings → Environment Variables:
 
@@ -152,14 +153,17 @@ Skipping this check is how a feed that silently reads nothing would go unnoticed
 
 ### 5. The owner imports the site's calendar
 
-In her Airbnb: Calendar → the listing → Availability → Connect calendars → Connect to another
-website → import. Use this URL:
+In her Airbnb: Calendar → the listing → Availability → under Connect calendars, "Connect to
+another website". Paste this URL into the calendar address field:
 
 ```
 https://kito-oak-haven.vercel.app/direct-bookings.ics
 ```
 
-Name it `Kito direct bookings`.
+Name it `Kito direct bookings` and press **Add calendar**. These are the steps on airbnb.com,
+quoted from Airbnb Help Center article 99 on 27 Sep 2026. The app's steps could not be read
+that day. Airbnb has no "import" button: an earlier version of this file said there was, from
+memory, and it was wrong.
 
 ---
 

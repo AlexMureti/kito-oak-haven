@@ -30,10 +30,11 @@ export const site = {
   phoneAlt: "",
   whatsapp: "254740180214",
   email: "", // ⚠️ NEEDS: real inbox. Empty = email links hidden.
-  // The live URL. kitooakhaven.com does not resolve — pointing canonical,
-  // sitemap and LodgingBusiness structured data at a dead domain sends Google
-  // to nothing. Swap this the day a real domain is bought and pointed.
-  url: "https://kito-oak-haven.vercel.app",
+  // The live URL: kitooakhaven.com, bought 29 Sep 2026; the bare domain 308s
+  // to www. Canonical, sitemap and LodgingBusiness data all point here.
+  // kito-oak-haven.vercel.app still serves: Airbnb imports its calendar feed
+  // from that address, so never remove it from the Vercel project.
+  url: "https://www.kitooakhaven.com",
 
   // Hours you actually answer messages. Promising 24/7 and missing one is
   // worse than promising a window and keeping it.

@@ -34,7 +34,7 @@ Oak Classic Residence, George Padmore Road, Kilimani, Nairobi, Kenya
 
 **Website**
 ```
-https://kito-oak-haven.vercel.app
+https://www.kitooakhaven.com
 ```
 Swap this everywhere the day a real domain exists. Note which sites let you edit
 after submission — some do not, and those should wait for the domain.

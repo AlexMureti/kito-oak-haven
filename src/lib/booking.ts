@@ -22,6 +22,24 @@
 // ============================================================
 
 import { site } from "./site";
+import { longDate, nightsBetween } from "./availability";
+
+/**
+ * The WhatsApp message for a stay, word for word the same from the calendar
+ * and from the chat: the dates written out, the night count, and the reference
+ * on its own line when there is one.
+ */
+export function stayMessage(checkIn: string | null, checkOut: string | null, ref?: string): string {
+  const lines = ["Hi! I'd like to book Kito Oak Haven."];
+  if (checkIn && checkOut) {
+    const n = nightsBetween(checkIn, checkOut);
+    lines.push("", `${longDate(checkIn)} to ${longDate(checkOut)} — ${n} ${n === 1 ? "night" : "nights"}`);
+  } else {
+    lines.push("", "My dates are: ");
+  }
+  if (ref) lines.push("", `Ref: ${ref}`);
+  return lines.join("\n");
+}
 
 // Ambiguous glyphs removed — this reference gets read aloud, retyped, and
 // squinted at on a phone screen. No 0/O, no 1/I/L.

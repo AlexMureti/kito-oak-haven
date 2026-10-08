@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { onBookingClick, plainHref } from "@/lib/booking";
+import { onBookingClick, plainHref, stayMessage } from "@/lib/booking";
 import { site } from "@/lib/site";
-import { longDate, nightsBetween, overlaps, type Selection } from "@/lib/availability";
+import { nightsBetween, overlaps, type Selection } from "@/lib/availability";
 import { useAvailability } from "@/lib/use-availability";
 import { DatePicker } from "./DatePicker";
 import { Chat } from "./Chat";
@@ -16,19 +16,7 @@ const trust = [
   { icon: "calendar", label: "Flexible dates", note: "Early and late check-out usually fine" },
 ];
 
-function whatsappMessage(sel: Selection, ref?: string): string {
-  const lines = ["Hi! I'd like to book Kito Oak Haven."];
-
-  if (sel.checkIn && sel.checkOut) {
-    const n = nightsBetween(sel.checkIn, sel.checkOut);
-    lines.push("", `${longDate(sel.checkIn)} to ${longDate(sel.checkOut)} — ${n} ${n === 1 ? "night" : "nights"}`);
-  } else {
-    lines.push("", "My dates are: ");
-  }
-
-  if (ref) lines.push("", `Ref: ${ref}`);
-  return lines.join("\n");
-}
+const whatsappMessage = (sel: Selection, ref?: string) => stayMessage(sel.checkIn, sel.checkOut, ref);
 
 export function Booking() {
   const [sel, setSel] = useState<Selection>({ checkIn: null, checkOut: null });
@@ -133,7 +121,7 @@ export function Booking() {
           fixed child of a stacking context still cannot out-layer the sticky
           bar. It also stays out of any .reveal wrapper, whose transform would
           make "fixed" resolve against that element instead of the page. */}
-      <Chat onDates={setSel} />
+      <Chat onDates={setSel} holds={calendar.holds} />
     </section>
   );
 }

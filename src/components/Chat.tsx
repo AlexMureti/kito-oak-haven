@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { plainHref } from "@/lib/booking";
-import { longDate, type Selection } from "@/lib/availability";
+import { onBookingClick, plainHref, stayMessage } from "@/lib/booking";
+import { longDate, nightsBetween, overlaps, type Hold, type Selection } from "@/lib/availability";
 import { Icon } from "./Icon";
 
 type Turn = { role: "user" | "assistant"; content: string };
@@ -11,6 +11,8 @@ type Turn = { role: "user" | "assistant"; content: string };
 type Props = {
   /** Lets a typed stay move the calendar, instead of asking the guest to enter it twice. */
   onDates?: (sel: Selection) => void;
+  /** Taken nights, so the chat's button says "ask" rather than "send" when the stay clashes. */
+  holds?: Hold[];
 };
 
 const OPENERS = [
@@ -19,7 +21,7 @@ const OPENERS = [
   "Is the pool actually heated?",
 ];
 
-export function Chat({ onDates }: Props) {
+export function Chat({ onDates, holds = [] }: Props) {
   const [open, setOpen] = useState(false);
   const [turns, setTurns] = useState<Turn[]>([]);
   const [draft, setDraft] = useState("");
@@ -215,9 +217,33 @@ export function Chat({ onDates }: Props) {
             )}
 
             {caught?.checkIn && caught?.checkOut && (
-              <p className="border-l-2 border-gold-500 bg-cream-100 py-2 pl-3 text-[12px] leading-snug text-ink-700">
-                {longDate(caught.checkIn)} &rarr; {longDate(caught.checkOut)} is on the calendar above.
-              </p>
+              <div className="space-y-2.5 border-l-2 border-gold-500 bg-cream-100 py-2.5 pl-3 pr-3">
+                <p className="text-[12px] leading-snug text-ink-700">
+                  {longDate(caught.checkIn)} &rarr; {longDate(caught.checkOut)} is on the calendar above.
+                </p>
+                {/* Booking from the chat: the same pre-written message, with a
+                    reference, as the calendar's own button. A person confirms. */}
+                <a
+                  className="btn btn-gold w-full justify-center text-[12.5px]"
+                  href={plainHref(stayMessage(caught.checkIn, caught.checkOut))}
+                  onClick={onBookingClick(
+                    {
+                      source: "chat",
+                      nights: nightsBetween(caught.checkIn, caught.checkOut),
+                      checkIn: caught.checkIn,
+                      checkOut: caught.checkOut,
+                    },
+                    (ref) => stayMessage(caught.checkIn, caught.checkOut, ref)
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon name="whatsapp" className="h-4 w-4" />
+                  {holds.some((h) => overlaps(caught.checkIn!, caught.checkOut!, h.start, h.end))
+                    ? "Ask about these dates"
+                    : "Send these dates on WhatsApp"}
+                </a>
+              </div>
             )}
           </div>
 

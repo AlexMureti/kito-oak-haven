@@ -6,10 +6,10 @@ import { NextRequest, NextResponse } from "next/server";
 // requests that never reliably fired — and would have blocked the calendar
 // ingest for the same reason.
 //
-// The keys come from the Vercel project's environment and are never sent to
-// the client or logged. GEMINI_API_KEY (the "kito-agent" key, 8 Oct 2026) is
-// tried first. NVIDIA_API_KEY, the original provider, is a fallback only when
-// it is still set.
+// The key comes from GEMINI_API_KEY in the Vercel project's environment (the
+// "kito-agent" key, 8 Oct 2026). It is never sent to the client and never
+// logged. Gemini replaced NVIDIA entirely on 8 Oct: the NVIDIA fallback once
+// leaked a reasoning model's raw thinking to a guest as gibberish.
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,13 +21,6 @@ const GEMINI = "https://generativelanguage.googleapis.com/v1beta/models";
 // Stable ids on ai.google.dev/gemini-api/docs/models (updated 6 Oct 2026).
 // Flash-Lite first: fast and cheap, and enough for a hospitality desk.
 const GEMINI_MODELS = ["gemini-3.5-flash-lite", "gemini-3.8-flash"];
-
-const ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions";
-
-// Probed against this account. A listed model is not a deployed one, and ids
-// go stale without warning — meta/llama-3.3-70b-instruct answered 410 eight
-// days after its end of life.
-const MODELS = ["moonshotai/kimi-k3", "minimaxai/minimax-m3"];
 
 const MAX_CHARS = 600;
 const MAX_TURNS = 8;
@@ -131,21 +124,21 @@ function tooMany(ip: string): boolean {
   return rec.n > 12;
 }
 
-/** Reasoning models spend tokens thinking, and those count against the budget. */
-function paramsFor(model: string) {
-  return /kimi|gpt-oss/i.test(model)
-    ? { temperature: 1, seed: 0, max_tokens: 4096, reasoning_effort: "low" }
-    : { temperature: 0.3, max_tokens: 500 };
-}
-
 type Msg = { role: string; content: string };
 
-/** Gemini: the system prompt rides as systemInstruction; "assistant" is "model". */
-async function completeGemini(key: string, messages: Msg[]) {
+/**
+ * Gemini: the system prompt rides as systemInstruction; "assistant" is "model".
+ * Returns the reply and which model gave it, or null plus what each model did
+ * (an HTTP status, "timeout", "empty"), which goes out in a response header so
+ * a failure can be seen from outside without logging anything a guest typed.
+ */
+async function complete(messages: Msg[]) {
+  const key = process.env.GEMINI_API_KEY ?? "";
   const system = messages.filter((m) => m.role === "system").map((m) => m.content).join("\n\n");
   const contents = messages
     .filter((m) => m.role !== "system")
     .map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] }));
+  const tried: string[] = [];
   for (const model of GEMINI_MODELS) {
     try {
       const res = await fetch(`${GEMINI}/${model}:generateContent`, {
@@ -154,49 +147,26 @@ async function completeGemini(key: string, messages: Msg[]) {
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: system }] },
           contents,
-          // Room for thinking tokens as well as the reply.
-          generationConfig: { temperature: 0.3, maxOutputTokens: 2048 },
+          generationConfig: { temperature: 0.3, maxOutputTokens: 1024 },
         }),
+        // A guest waiting more than ~12 s is better served by WhatsApp.
+        signal: AbortSignal.timeout(12_000),
       });
-      if (!res.ok) continue;
+      if (!res.ok) {
+        tried.push(`${model}:${res.status}`);
+        continue;
+      }
       const body = await res.json();
+      // Thought parts are the model thinking aloud: never shown to a guest.
       const parts: { text?: string; thought?: boolean }[] = body?.candidates?.[0]?.content?.parts ?? [];
       const text = parts.filter((p) => !p.thought).map((p) => p.text ?? "").join("");
-      if (text.trim()) return text;
-    } catch {
-      // Next model rather than failing the guest.
+      if (text.trim()) return { text, via: model };
+      tried.push(`${model}:empty`);
+    } catch (e) {
+      tried.push(`${model}:${e instanceof Error && e.name === "TimeoutError" ? "timeout" : "error"}`);
     }
   }
-  return null;
-}
-
-async function complete(messages: Msg[]) {
-  const gemini = process.env.GEMINI_API_KEY;
-  if (gemini) {
-    const text = await completeGemini(gemini, messages);
-    if (text) return text;
-  }
-  const key = process.env.NVIDIA_API_KEY;
-  if (!key) return null;
-  for (const model of MODELS) {
-    try {
-      const res = await fetch(ENDPOINT, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model, messages, ...paramsFor(model) }),
-      });
-
-      if (!res.ok) continue;
-
-      const body = await res.json();
-      const msg = body?.choices?.[0]?.message ?? {};
-      const text: string = msg.content || msg.reasoning_content || "";
-      if (text.trim()) return text;
-    } catch {
-      // Next model rather than failing the guest.
-    }
-  }
-  return null;
+  return { text: null, via: tried.join(" ") || "none" };
 }
 
 /** Splits the visible reply from the DATES line the model appends. */
@@ -228,8 +198,11 @@ function split(raw: string) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!process.env.GEMINI_API_KEY && !process.env.NVIDIA_API_KEY) {
-    return NextResponse.json({ ok: false, reply: "The assistant is not configured yet." });
+  if (!process.env.GEMINI_API_KEY) {
+    return NextResponse.json(
+      { ok: false, reply: "The assistant is not configured yet." },
+      { headers: { "x-kito-ai": "no-key" } },
+    );
   }
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
@@ -257,19 +230,20 @@ export async function POST(req: NextRequest) {
       content: String(t.content ?? "").slice(0, MAX_CHARS),
     }));
 
-  const raw = await complete([
+  const { text, via } = await complete([
     { role: "system", content: systemPrompt(todayInNairobi()) },
     ...history,
     { role: "user", content: message },
   ]);
+  const headers = { "x-kito-ai": via };
 
-  if (raw === null) {
-    return NextResponse.json({
-      ok: false,
-      reply: "I could not reach the desk just then. WhatsApp is the fastest route from here.",
-    });
+  if (text === null) {
+    return NextResponse.json(
+      { ok: false, reply: "I could not reach the desk just then. WhatsApp is the fastest route from here." },
+      { headers },
+    );
   }
 
-  const { reply, dates } = split(raw);
-  return NextResponse.json({ ok: true, reply, dates });
+  const { reply, dates } = split(text);
+  return NextResponse.json({ ok: true, reply, dates }, { headers });
 }

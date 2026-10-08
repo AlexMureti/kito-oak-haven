@@ -6,11 +6,21 @@ import { NextRequest, NextResponse } from "next/server";
 // requests that never reliably fired — and would have blocked the calendar
 // ingest for the same reason.
 //
-// The key comes from NVIDIA_API_KEY in the Vercel project's environment. It is
-// never sent to the client and never logged.
+// The keys come from the Vercel project's environment and are never sent to
+// the client or logged. GEMINI_API_KEY (the "kito-agent" key, 8 Oct 2026) is
+// tried first. NVIDIA_API_KEY, the original provider, is a fallback only when
+// it is still set.
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+// Gemini's native endpoint, not its OpenAI-compatible one: Google documents
+// auth keys (AQ...) with the x-goog-api-key header on this endpoint
+// (ai.google.dev/gemini-api/docs/api-key, updated 6 Oct 2026).
+const GEMINI = "https://generativelanguage.googleapis.com/v1beta/models";
+// Stable ids on ai.google.dev/gemini-api/docs/models (updated 6 Oct 2026).
+// Flash-Lite first: fast and cheap, and enough for a hospitality desk.
+const GEMINI_MODELS = ["gemini-3.5-flash-lite", "gemini-3.8-flash"];
 
 const ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions";
 
@@ -128,7 +138,46 @@ function paramsFor(model: string) {
     : { temperature: 0.3, max_tokens: 500 };
 }
 
-async function complete(key: string, messages: unknown[]) {
+type Msg = { role: string; content: string };
+
+/** Gemini: the system prompt rides as systemInstruction; "assistant" is "model". */
+async function completeGemini(key: string, messages: Msg[]) {
+  const system = messages.filter((m) => m.role === "system").map((m) => m.content).join("\n\n");
+  const contents = messages
+    .filter((m) => m.role !== "system")
+    .map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] }));
+  for (const model of GEMINI_MODELS) {
+    try {
+      const res = await fetch(`${GEMINI}/${model}:generateContent`, {
+        method: "POST",
+        headers: { "x-goog-api-key": key, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: system }] },
+          contents,
+          // Room for thinking tokens as well as the reply.
+          generationConfig: { temperature: 0.3, maxOutputTokens: 2048 },
+        }),
+      });
+      if (!res.ok) continue;
+      const body = await res.json();
+      const parts: { text?: string; thought?: boolean }[] = body?.candidates?.[0]?.content?.parts ?? [];
+      const text = parts.filter((p) => !p.thought).map((p) => p.text ?? "").join("");
+      if (text.trim()) return text;
+    } catch {
+      // Next model rather than failing the guest.
+    }
+  }
+  return null;
+}
+
+async function complete(messages: Msg[]) {
+  const gemini = process.env.GEMINI_API_KEY;
+  if (gemini) {
+    const text = await completeGemini(gemini, messages);
+    if (text) return text;
+  }
+  const key = process.env.NVIDIA_API_KEY;
+  if (!key) return null;
   for (const model of MODELS) {
     try {
       const res = await fetch(ENDPOINT, {
@@ -179,8 +228,7 @@ function split(raw: string) {
 }
 
 export async function POST(req: NextRequest) {
-  const key = process.env.NVIDIA_API_KEY;
-  if (!key) {
+  if (!process.env.GEMINI_API_KEY && !process.env.NVIDIA_API_KEY) {
     return NextResponse.json({ ok: false, reply: "The assistant is not configured yet." });
   }
 
@@ -209,7 +257,7 @@ export async function POST(req: NextRequest) {
       content: String(t.content ?? "").slice(0, MAX_CHARS),
     }));
 
-  const raw = await complete(key, [
+  const raw = await complete([
     { role: "system", content: systemPrompt(todayInNairobi()) },
     ...history,
     { role: "user", content: message },

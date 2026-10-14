@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kito Oak Haven
 
-## Getting Started
+Direct-booking website for a one-bedroom short-stay apartment in Kilimani, Nairobi. A guest picks dates on a calendar that already knows which nights are taken, types in the quote Airbnb gave them to see the direct price, and sends the stay on WhatsApp with a booking reference attached.
 
-First, run the development server:
+## Live
+
+https://www.kitooakhaven.com
+
+## Stack
+
+- Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4
+- Framer Motion and Lenis for the scroll-driven walkthrough
+- Three server routes: `/api/availability` reads the owner's Airbnb iCal feed and the confirmed direct bookings; `/direct-bookings.ics` publishes the direct bookings back to Airbnb; `/api/chat` answers guest questions through the Gemini API, with the key kept on the server
+- Google Apps Script logs each enquiry to a Google Sheet (`scripts/apps-script/`)
+- Hosted on Vercel
+
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The calendar needs `AIRBNB_ICAL_URL` and `DIRECT_HOLDS_CSV_URL` in `.env.local`, and the chat needs `GEMINI_API_KEY`. Without them the date picker stops promising free nights and the chat says it is not configured; every WhatsApp button still works. Setup is in `CALENDAR.md`. Tests: `node scripts/test-calendar-sync.mjs`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Status
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Live, with the Airbnb sync running in both directions (checked 14 October 2026); the reviews section stays hidden until the listing has reviews.

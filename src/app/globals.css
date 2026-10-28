@@ -358,54 +358,59 @@ details[open] .chev { rotate: 45deg; }
 }
 
 /* ============================ december ============================
-   A string of lights tangled round the headline, never over the photograph
-   (Alex, 28 Oct 2026). The wire is one SVG path in a box a little larger
-   than the words, stretched to fit them, so it follows the type at every
-   size; the bulbs are elements placed along that path by Hero.tsx, each with
-   its own glow and its own twinkle (sizes and the dim-to-40% cycle from the
-   classic web lightrope; the colours from the logo). Everything sits behind
-   the letters, so no word is covered and the glow comes through the gaps.
-   Under reduced motion every bulb stays lit. On by date (src/lib/season.ts).
+   Lights climbing each letter of "Kilimani" (Climbers.tsx). The wire is two
+   SVG paths over the word, one for the half-turns in front of a stroke and
+   one for those behind it; the bulbs are elements at every turn, sized in em
+   so they scale with the type. Bulb look and the dim-to-40% twinkle are
+   taken from the classic web lightrope; the colours from the logo. Under
+   reduced motion every bulb stays lit. On by date (src/lib/season.ts).
    ================================================================== */
-.garland {
-  position: absolute; left: -8%; right: -8%; top: -14%; bottom: -10%;
-  z-index: -1; pointer-events: none;
-}
-.garland svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.garland path { fill: none; stroke: #0f2620; stroke-opacity: .55; stroke-width: 1.2px; vector-effect: non-scaling-stroke; }
-.garland i {
-  position: absolute; display: block; width: 8px; height: 13px;
-  margin-left: -4px; border-radius: 50%;
+.climb { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+.climb-back { z-index: -1; }
+.climb-front { z-index: 1; }
+.climb-bulbs { z-index: 2; }
+.climb path { fill: none; stroke: #0f2620; stroke-opacity: .6; stroke-width: 1.1px; stroke-linecap: round; }
+.climb-bulbs i {
+  position: absolute; display: block; width: max(.07em, 4px); height: max(.11em, 6px);
+  margin-left: max(-.035em, -2px); border-radius: 50%;
   background: radial-gradient(circle at 50% 35%, #fff4d2 0%, #f3c25c 55%, #d9a03c 100%);
-  box-shadow: 0 2px 14px 3px rgba(255, 196, 92, .85), 0 0 4px 1px rgba(255, 232, 170, .9);
+  box-shadow: 0 .01em .08em .012em rgba(255, 196, 92, .8), 0 0 .03em .006em rgba(255, 232, 170, .9);
   animation: kito-twinkle 2.3s ease-in-out infinite both;
 }
-/* Every other bulb is warm white, the way a real string mixes. */
-.garland i:nth-child(2n) {
+/* Five colours in turn, the way a Christmas string runs: warm white, red,
+   green, gold, blue, each glowing in its own colour. Muted, not neon. */
+.climb-bulbs i:nth-child(5n+1) {
   background: radial-gradient(circle at 50% 35%, #ffffff 0%, #ffe9b3 55%, #f0c76f 100%);
-  box-shadow: 0 2px 14px 3px rgba(255, 221, 150, .9), 0 0 4px 1px rgba(255, 245, 215, .95);
+  box-shadow: 0 .01em .08em .012em rgba(255, 221, 150, .85), 0 0 .03em .006em rgba(255, 245, 215, .95);
 }
-/* The socket: a dark cap where the bulb meets the wire. */
-.garland i::before {
-  content: ""; position: absolute; left: 1px; top: -2px;
-  width: 6px; height: 4px; border-radius: 2px; background: #1c2a24;
+.climb-bulbs i:nth-child(5n+2) {
+  background: radial-gradient(circle at 50% 35%, #ffd6d3 0%, #e2524f 55%, #b8302f 100%);
+  box-shadow: 0 .01em .08em .012em rgba(226, 82, 79, .75), 0 0 .03em .006em rgba(255, 190, 186, .9);
 }
-/* Not in lockstep: three cycle lengths and five phase offsets. */
-.garland i:nth-child(3n+1) { animation-duration: 1.7s; }
-.garland i:nth-child(3n+2) { animation-duration: 2.9s; }
-.garland i:nth-child(5n+2) { animation-delay: -.4s; }
-.garland i:nth-child(5n+3) { animation-delay: -.9s; }
-.garland i:nth-child(5n+4) { animation-delay: -1.3s; }
-.garland i:nth-child(5n)   { animation-delay: -1.9s; }
+.climb-bulbs i:nth-child(5n+3) {
+  background: radial-gradient(circle at 50% 35%, #d9ffe9 0%, #3fb27f 55%, #237a56 100%);
+  box-shadow: 0 .01em .08em .012em rgba(63, 178, 127, .75), 0 0 .03em .006em rgba(190, 255, 220, .9);
+}
+.climb-bulbs i:nth-child(5n+5) {
+  background: radial-gradient(circle at 50% 35%, #dce9ff 0%, #4f8ee8 55%, #2d5fb4 100%);
+  box-shadow: 0 .01em .08em .012em rgba(79, 142, 232, .75), 0 0 .03em .006em rgba(200, 220, 255, .9);
+}
+.climb-bulbs i::before {
+  content: ""; position: absolute; left: .01em; top: -.018em;
+  width: .05em; height: .035em; border-radius: .018em; background: #1c2a24;
+}
+.climb-bulbs i:nth-child(3n+1) { animation-duration: 1.7s; }
+.climb-bulbs i:nth-child(3n+2) { animation-duration: 2.9s; }
+.climb-bulbs i:nth-child(5n+2) { animation-delay: -.4s; }
+.climb-bulbs i:nth-child(5n+3) { animation-delay: -.9s; }
+.climb-bulbs i:nth-child(5n+4) { animation-delay: -1.3s; }
+.climb-bulbs i:nth-child(5n)   { animation-delay: -1.9s; }
 @keyframes kito-twinkle {
   0%, 100% { opacity: 1; }
   50%      { opacity: .38; }
 }
-@media (max-width: 639px) {
-  .garland i { width: 7px; height: 11px; margin-left: -3.5px; }
-}
 @media (prefers-reduced-motion: reduce) {
-  .garland i { animation: none; opacity: 1; }
+  .climb-bulbs i { animation: none; opacity: 1; }
 }
 
 /* ============================ reduced motion ============================ */

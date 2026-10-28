@@ -5,25 +5,13 @@ import { Photo } from "./Photo";
 import { onBookingClick, plainHref } from "@/lib/booking";
 import { site, heroFacts } from "@/lib/site";
 import { Icon } from "./Icon";
+import { Climbers } from "./Climbers";
 
 // The cinematic pass through the home. A cross-fading still sequence rather
 // than video: same walkthrough feel for ~250KB instead of a multi-MB MP4 on
 // Kenyan mobile data, and the first frame is there instantly with no buffering.
 const SEQUENCE = ["hero-bedroom", "living-wide", "balcony"] as const;
 const HOLD = 5200;
-
-// The December garland, drawn in a box a little larger than the headline
-// (0-100 on each axis, stretched to the words): in over the top of "Your key
-// to", round its end, back between the lines, round the left, out under
-// "Kilimani". The bulbs sit at even steps along that path.
-const GARLAND =
-  "M-5 20C25 30 60 30 95 18C110 14 110 44 92 50C70 58 35 58 10 48C-8 44 -8 78 10 86C35 94 60 94 85 84C95 80 102 78 108 70";
-const BULBS: [number, number][] = [
-  [1.4, 22], [13.6, 24.8], [26.2, 26.6], [38.6, 27.3], [51.3, 26.9], [63.6, 25.6], [76.1, 23.3], [88.7, 20],
-  [100.9, 18.4], [93.1, 49.6], [80.9, 53.1], [68.1, 55.1], [55.6, 55.8], [43.3, 55.3], [30.7, 53.7], [18.2, 50.8],
-  [6, 47.7], [3.5, 81.3], [15.6, 87.7], [28, 90.3], [40.4, 91.7], [53.1, 91.5], [65.5, 89.8], [77.9, 86.6],
-  [90.3, 81.9], [102.4, 75.7],
-];
 
 export function Hero({ december = false, lights = december }: { december?: boolean; lights?: boolean }) {
   const [i, setI] = useState(0);
@@ -113,23 +101,14 @@ export function Hero({ december = false, lights = december }: { december?: boole
           </p>
 
           <h1 className="t-display balance mt-4 text-ink-900 sm:mt-5">
-            {/* The words are wrapped so the garland's box is the size of the
-                words themselves, not the column. It renders behind them. */}
-            <span className="relative isolate inline-block">
-              {lights && (
-                <span className="garland" aria-hidden="true">
-                  <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path d={GARLAND} />
-                  </svg>
-                  {BULBS.map(([x, y]) => (
-                    <i key={`${x},${y}`} style={{ left: `${x}%`, top: `${y}%` }} />
-                  ))}
-                </span>
-              )}
-              Your key to
-              <br />
+            Your key to
+            <br />
+            {lights ? (
+              /* December: the lights climb each letter (Climbers.tsx). */
+              <Climbers className="gold-metal-ink">Kilimani</Climbers>
+            ) : (
               <span className="gold-metal-ink">Kilimani</span>
-            </span>
+            )}
           </h1>
 
           <p className="t-lead pretty mt-5 max-w-xl text-ink-700 reveal d1 sm:mt-7">

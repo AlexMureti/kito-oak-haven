@@ -4,7 +4,9 @@ import fs from "node:fs";
 
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
 const OUT = process.argv[2];
-const PORT = process.argv[3] || "3011";
+// A port for a local `next start`, or a full URL for a Vercel preview.
+const AT = process.argv[3] || "3011";
+const BASE = AT.startsWith("http") ? AT.replace(/\/$/, "") : `http://localhost:${AT}`;
 fs.mkdirSync(OUT, { recursive: true });
 
 const browser = await puppeteer.launch({
@@ -18,7 +20,7 @@ async function shoot(path, tag, { reduce = false, wide = false } = {}) {
   await p.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: reduce ? "reduce" : "no-preference" }]);
   if (wide) await p.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 });
   else await p.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
-  await p.goto(`http://localhost:${PORT}${path}`, { waitUntil: "networkidle0", timeout: 60000 });
+  await p.goto(`${BASE}${path}`, { waitUntil: "networkidle0", timeout: 60000 });
   await new Promise((r) => setTimeout(r, 1200));
   await p.screenshot({ path: `${OUT}/${tag}-hero.png` });
   const strip = await p.$("#december");

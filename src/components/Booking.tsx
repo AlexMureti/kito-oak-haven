@@ -18,7 +18,7 @@ const trust = [
 
 const whatsappMessage = (sel: Selection, ref?: string) => stayMessage(sel.checkIn, sel.checkOut, ref);
 
-export function Booking() {
+export function Booking({ december = false }: { december?: boolean }) {
   const [sel, setSel] = useState<Selection>({ checkIn: null, checkOut: null });
   const picked = Boolean(sel.checkIn && sel.checkOut);
 
@@ -121,7 +121,7 @@ export function Booking() {
           fixed child of a stacking context still cannot out-layer the sticky
           bar. It also stays out of any .reveal wrapper, whose transform would
           make "fixed" resolve against that element instead of the page. */}
-      <Chat onDates={setSel} holds={calendar.holds} />
+      <Chat onDates={setSel} holds={calendar.holds} december={december} />
     </section>
   );
 }

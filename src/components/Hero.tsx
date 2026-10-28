@@ -12,7 +12,7 @@ import { Icon } from "./Icon";
 const SEQUENCE = ["hero-bedroom", "living-wide", "balcony"] as const;
 const HOLD = 5200;
 
-export function Hero() {
+export function Hero({ december = false }: { december?: boolean }) {
   const [i, setI] = useState(0);
   // Gated in JS, not CSS. A `hidden` <video> still downloads, and the entire
   // reason the loop is desktop-only is to keep ~2MB off Kenyan mobile data.
@@ -90,6 +90,23 @@ export function Hero() {
             "linear-gradient(to bottom, rgba(250,247,241,.22) 0%, rgba(250,247,241,.02) 24%, rgba(250,247,241,.14) 55%, rgba(250,247,241,.86) 100%)",
           }}
         />
+
+        {/* December: the same rooms, an hour later in the day. A warm cast
+            multiplied over the bottom of the frame, and a string of lights
+            hung under the nav, drawn in CSS from the logo's own gold. */}
+        {december && (
+          <>
+            <div
+              className="absolute inset-0"
+              style={{
+                mixBlendMode: "multiply",
+                background:
+                  "linear-gradient(to top, rgba(198,161,91,.16) 0%, rgba(198,161,91,.06) 45%, rgba(198,161,91,0) 100%)",
+              }}
+            />
+            <div className="lights" aria-hidden="true" />
+          </>
+        )}
       </div>
 
       <div className="shell flex flex-1 items-end pb-8 pt-[34svh] md:items-center md:pb-10 md:pt-32">
@@ -99,9 +116,19 @@ export function Hero() {
           </p>
 
           <h1 className="t-display balance mt-4 text-ink-900 sm:mt-5">
-            Your key to
-            <br />
-            <span className="gold-metal-ink">Kilimani</span>
+            {december ? (
+              <>
+                Home for the holidays,
+                <br />
+                <span className="gold-metal-ink">seven floors up.</span>
+              </>
+            ) : (
+              <>
+                Your key to
+                <br />
+                <span className="gold-metal-ink">Kilimani</span>
+              </>
+            )}
           </h1>
 
           <p className="t-lead pretty mt-5 max-w-xl text-ink-700 reveal d1 sm:mt-7">

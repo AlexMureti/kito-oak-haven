@@ -13,6 +13,8 @@ type Props = {
   onDates?: (sel: Selection) => void;
   /** Taken nights, so the chat's button says "ask" rather than "send" when the stay clashes. */
   holds?: Hold[];
+  /** December: the first questions a family asks, instead of the everyday ones. */
+  december?: boolean;
 };
 
 const OPENERS = [
@@ -21,7 +23,16 @@ const OPENERS = [
   "Is the pool actually heated?",
 ];
 
-export function Chat({ onDates, holds = [] }: Props) {
+// What the desk can actually answer. Availability is not on the list on
+// purpose: the assistant cannot see the calendar, and the December strip can.
+const DECEMBER_OPENERS = [
+  "Three of us for Christmas, does that work?",
+  "Can I check in on Christmas Eve?",
+  "What happens when the power goes out?",
+];
+
+export function Chat({ onDates, holds = [], december = false }: Props) {
+  const openers = december ? DECEMBER_OPENERS : OPENERS;
   const [open, setOpen] = useState(false);
   const [turns, setTurns] = useState<Turn[]>([]);
   const [draft, setDraft] = useState("");
@@ -177,7 +188,7 @@ export function Chat({ onDates, holds = [] }: Props) {
           <div ref={scroller} className="flex-1 space-y-4 overflow-y-auto px-5 py-4">
             {turns.length === 0 && (
               <div className="space-y-2">
-                {OPENERS.map((q) => (
+                {openers.map((q) => (
                   <button
                     key={q}
                     type="button"

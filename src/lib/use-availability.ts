@@ -37,6 +37,31 @@ function read(json: unknown): LiveCalendar {
   return { status, checkedAt, holds: clean };
 }
 
+/** The ask in flight, shared: two components mounting together make one request, not two. */
+let inflight: Promise<LiveCalendar> | null = null;
+
+function fetchCalendar(): Promise<LiveCalendar> {
+  if (!inflight) {
+    inflight = (async () => {
+      try {
+        // No cache option on purpose: the route tells the browser to keep
+        // nothing (max-age=0) and tells Vercel's edge to keep five minutes, so
+        // every ask reaches the edge and none reaches Airbnb directly.
+        // Ten seconds, then "Calendar offline": a stalled connection must not
+        // leave "Checking the calendar…" on screen for good.
+        const res = await fetch("/api/availability", { signal: AbortSignal.timeout(10000) });
+        return res.ok ? read(await res.json()) : UNKNOWN;
+      } catch {
+        // Offline, or the route is down. Falls through as "unknown".
+        return UNKNOWN;
+      } finally {
+        inflight = null;
+      }
+    })();
+  }
+  return inflight;
+}
+
 /**
  * Which nights are taken, from /api/availability.
  *
@@ -53,18 +78,7 @@ export function useAvailability(): LiveCalendar {
 
     async function ask() {
       askedAt = Date.now();
-      let next = UNKNOWN;
-      try {
-        // No cache option on purpose: the route tells the browser to keep
-        // nothing (max-age=0) and tells Vercel's edge to keep five minutes, so
-        // every ask reaches the edge and none reaches Airbnb directly.
-        // Ten seconds, then "Calendar offline": a stalled connection must not
-        // leave "Checking the calendar…" on screen for good.
-        const res = await fetch("/api/availability", { signal: AbortSignal.timeout(10000) });
-        if (res.ok) next = read(await res.json());
-      } catch {
-        // Offline, or the route is down. Falls through as "unknown".
-      }
+      const next = await fetchCalendar();
       if (!alive) return;
       setCalendar((prev) =>
         // A failed refresh keeps the nights already known to be taken, but

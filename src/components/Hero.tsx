@@ -12,15 +12,18 @@ import { Icon } from "./Icon";
 const SEQUENCE = ["hero-bedroom", "living-wide", "balcony"] as const;
 const HOLD = 5200;
 
-// December bulbs, one per stem of the wire tile in globals.css (.lights). The
-// 240px tile is centred, so its left edge is 120px left of centre and stem j
-// (at 15 + 30j into the tile) lands 15 + 30(j - 4) from centre: bulb m hangs
-// from stem (m + 4) mod 8, where that stem ends on the scallop.
-const STEM_Y = [17.3, 27.5, 34.2, 37.6, 37.6, 34.2, 27.5, 17.3];
-const BULBS = Array.from({ length: 64 }, (_, i) => {
-  const m = i - 32;
-  return { m, x: 15 + 30 * m, y: STEM_Y[(((m + 4) % 8) + 8) % 8] };
-});
+// The December garland, drawn in a box a little larger than the headline
+// (0-100 on each axis, stretched to the words): in over the top of "Your key
+// to", round its end, back between the lines, round the left, out under
+// "Kilimani". The bulbs sit at even steps along that path.
+const GARLAND =
+  "M-5 20C25 30 60 30 95 18C110 14 110 44 92 50C70 58 35 58 10 48C-8 44 -8 78 10 86C35 94 60 94 85 84C95 80 102 78 108 70";
+const BULBS: [number, number][] = [
+  [1.4, 22], [13.6, 24.8], [26.2, 26.6], [38.6, 27.3], [51.3, 26.9], [63.6, 25.6], [76.1, 23.3], [88.7, 20],
+  [100.9, 18.4], [93.1, 49.6], [80.9, 53.1], [68.1, 55.1], [55.6, 55.8], [43.3, 55.3], [30.7, 53.7], [18.2, 50.8],
+  [6, 47.7], [3.5, 81.3], [15.6, 87.7], [28, 90.3], [40.4, 91.7], [53.1, 91.5], [65.5, 89.8], [77.9, 86.6],
+  [90.3, 81.9], [102.4, 75.7],
+];
 
 export function Hero({ december = false, lights = december }: { december?: boolean; lights?: boolean }) {
   const [i, setI] = useState(0);
@@ -101,26 +104,6 @@ export function Hero({ december = false, lights = december }: { december?: boole
           }}
         />
 
-        {/* December: the same rooms, an hour later in the day. A warm cast
-            multiplied over the bottom of the frame, and a string of lights
-            hung under the nav, drawn in CSS from the logo's own gold. */}
-        {lights && (
-          <>
-            <div
-              className="absolute inset-0"
-              style={{
-                mixBlendMode: "multiply",
-                background:
-                  "linear-gradient(to top, rgba(198,161,91,.16) 0%, rgba(198,161,91,.06) 45%, rgba(198,161,91,0) 100%)",
-              }}
-            />
-            <div className="lights" aria-hidden="true">
-              {BULBS.map((b) => (
-                <i key={b.m} className={Math.abs(b.m) > 8 ? "far" : undefined} style={{ left: `calc(50% + ${b.x}px)`, top: b.y }} />
-              ))}
-            </div>
-          </>
-        )}
       </div>
 
       <div className="shell flex flex-1 items-end pb-8 pt-[34svh] md:items-center md:pb-10 md:pt-32">
@@ -130,9 +113,23 @@ export function Hero({ december = false, lights = december }: { december?: boole
           </p>
 
           <h1 className="t-display balance mt-4 text-ink-900 sm:mt-5">
-            Your key to
-            <br />
-            <span className="gold-metal-ink">Kilimani</span>
+            {/* The words are wrapped so the garland's box is the size of the
+                words themselves, not the column. It renders behind them. */}
+            <span className="relative isolate inline-block">
+              {lights && (
+                <span className="garland" aria-hidden="true">
+                  <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path d={GARLAND} />
+                  </svg>
+                  {BULBS.map(([x, y]) => (
+                    <i key={`${x},${y}`} style={{ left: `${x}%`, top: `${y}%` }} />
+                  ))}
+                </span>
+              )}
+              Your key to
+              <br />
+              <span className="gold-metal-ink">Kilimani</span>
+            </span>
           </h1>
 
           <p className="t-lead pretty mt-5 max-w-xl text-ink-700 reveal d1 sm:mt-7">

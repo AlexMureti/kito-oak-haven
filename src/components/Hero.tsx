@@ -12,6 +12,15 @@ import { Icon } from "./Icon";
 const SEQUENCE = ["hero-bedroom", "living-wide", "balcony"] as const;
 const HOLD = 5200;
 
+// December bulbs, one per stem of the wire tile in globals.css (.lights): the
+// tile is 240px, centred, with stems at 15 + 30j, so bulb m sits at
+// 15 + 30m from the centre and hangs where that stem ends on the scallop.
+const STEM_Y = [17.3, 27.5, 34.2, 37.6, 37.6, 34.2, 27.5, 17.3];
+const BULBS = Array.from({ length: 64 }, (_, i) => {
+  const m = i - 32;
+  return { m, x: 15 + 30 * m, y: STEM_Y[((m % 8) + 8) % 8] };
+});
+
 export function Hero({ december = false }: { december?: boolean }) {
   const [i, setI] = useState(0);
   // Gated in JS, not CSS. A `hidden` <video> still downloads, and the entire
@@ -104,7 +113,11 @@ export function Hero({ december = false }: { december?: boolean }) {
                   "linear-gradient(to top, rgba(198,161,91,.16) 0%, rgba(198,161,91,.06) 45%, rgba(198,161,91,0) 100%)",
               }}
             />
-            <div className="lights" aria-hidden="true" />
+            <div className="lights" aria-hidden="true">
+              {BULBS.map((b) => (
+                <i key={b.m} className={Math.abs(b.m) > 8 ? "far" : undefined} style={{ left: `calc(50% + ${b.x}px)`, top: b.y }} />
+              ))}
+            </div>
           </>
         )}
       </div>

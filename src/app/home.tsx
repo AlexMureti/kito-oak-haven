@@ -109,7 +109,7 @@ const faqSchema = {
     })),
 };
 
-export function HomePage({ december = false }: { december?: boolean }) {
+export function HomePage({ december = false, lights = december }: { december?: boolean; lights?: boolean }) {
   return (
     <>
       <a
@@ -121,7 +121,7 @@ export function HomePage({ december = false }: { december?: boolean }) {
 
       <Nav />
       <main>
-        <Hero december={december} />
+        <Hero december={december} lights={lights || december} />
         {december && <DecemberStays />}
         <Direct />
         <Walkthrough />

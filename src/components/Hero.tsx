@@ -22,7 +22,7 @@ const BULBS = Array.from({ length: 64 }, (_, i) => {
   return { m, x: 15 + 30 * m, y: STEM_Y[(((m + 4) % 8) + 8) % 8] };
 });
 
-export function Hero({ december = false }: { december?: boolean }) {
+export function Hero({ december = false, lights = december }: { december?: boolean; lights?: boolean }) {
   const [i, setI] = useState(0);
   // Gated in JS, not CSS. A `hidden` <video> still downloads, and the entire
   // reason the loop is desktop-only is to keep ~2MB off Kenyan mobile data.
@@ -104,7 +104,7 @@ export function Hero({ december = false }: { december?: boolean }) {
         {/* December: the same rooms, an hour later in the day. A warm cast
             multiplied over the bottom of the frame, and a string of lights
             hung under the nav, drawn in CSS from the logo's own gold. */}
-        {december && (
+        {lights && (
           <>
             <div
               className="absolute inset-0"

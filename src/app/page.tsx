@@ -1,5 +1,5 @@
 import { HomePage } from "./home";
-import { isDecemberSeason } from "@/lib/season";
+import { isDecemberSeason, isLightsSeason } from "@/lib/season";
 
 // Rendered again at most once an hour, so the December layer (src/lib/season.ts)
 // switches itself on and off by date without a deploy. The page is otherwise
@@ -7,5 +7,5 @@ import { isDecemberSeason } from "@/lib/season";
 export const revalidate = 3600;
 
 export default function Home() {
-  return <HomePage december={isDecemberSeason()} />;
+  return <HomePage december={isDecemberSeason()} lights={isLightsSeason()} />;
 }

@@ -4,6 +4,9 @@
 
 export const DECEMBER = { from: "2026-12-01", to: "2027-01-02" } as const;
 
+/** The string of lights alone, up early: Alex, 28 Oct 2026, "put the lights on the website home". */
+export const LIGHTS = { from: "2026-10-28", to: "2027-01-02" } as const;
+
 /** The three stays people actually book in December, as check-in and check-out. */
 export const decemberStays = [
   { name: "Jamhuri weekend", checkIn: "2026-12-11", checkOut: "2026-12-14" },
@@ -24,4 +27,9 @@ export function todayInNairobi(now = new Date()): string {
 export function isDecemberSeason(now = new Date()): boolean {
   const today = todayInNairobi(now);
   return today >= DECEMBER.from && today <= DECEMBER.to;
+}
+
+export function isLightsSeason(now = new Date()): boolean {
+  const today = todayInNairobi(now);
+  return today >= LIGHTS.from && today <= LIGHTS.to;
 }

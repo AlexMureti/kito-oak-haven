@@ -128,7 +128,7 @@ export function HomePage({ december = false }: { december?: boolean }) {
         <Assurances />
         <Neighbourhood />
         <Reviews />
-        <Booking december={december} />
+        <Booking />
         <Faq />
       </main>
       <Footer />

@@ -12,13 +12,14 @@ import { Icon } from "./Icon";
 const SEQUENCE = ["hero-bedroom", "living-wide", "balcony"] as const;
 const HOLD = 5200;
 
-// December bulbs, one per stem of the wire tile in globals.css (.lights): the
-// tile is 240px, centred, with stems at 15 + 30j, so bulb m sits at
-// 15 + 30m from the centre and hangs where that stem ends on the scallop.
+// December bulbs, one per stem of the wire tile in globals.css (.lights). The
+// 240px tile is centred, so its left edge is 120px left of centre and stem j
+// (at 15 + 30j into the tile) lands 15 + 30(j - 4) from centre: bulb m hangs
+// from stem (m + 4) mod 8, where that stem ends on the scallop.
 const STEM_Y = [17.3, 27.5, 34.2, 37.6, 37.6, 34.2, 27.5, 17.3];
 const BULBS = Array.from({ length: 64 }, (_, i) => {
   const m = i - 32;
-  return { m, x: 15 + 30 * m, y: STEM_Y[((m % 8) + 8) % 8] };
+  return { m, x: 15 + 30 * m, y: STEM_Y[(((m + 4) % 8) + 8) % 8] };
 });
 
 export function Hero({ december = false }: { december?: boolean }) {
@@ -125,23 +126,13 @@ export function Hero({ december = false }: { december?: boolean }) {
       <div className="shell flex flex-1 items-end pb-8 pt-[34svh] md:items-center md:pb-10 md:pt-32">
         <div className="max-w-3xl">
           <p className="eyebrow eyebrow-on-light reveal">
-            {site.area} · {site.city}
+            {december ? "Happy holidays" : `${site.area} · ${site.city}`}
           </p>
 
           <h1 className="t-display balance mt-4 text-ink-900 sm:mt-5">
-            {december ? (
-              <>
-                Home for the holidays,
-                <br />
-                <span className="gold-metal-ink">seven floors up.</span>
-              </>
-            ) : (
-              <>
-                Your key to
-                <br />
-                <span className="gold-metal-ink">Kilimani</span>
-              </>
-            )}
+            Your key to
+            <br />
+            <span className="gold-metal-ink">Kilimani</span>
           </h1>
 
           <p className="t-lead pretty mt-5 max-w-xl text-ink-700 reveal d1 sm:mt-7">

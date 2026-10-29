@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { runLights } from "@/lib/lights";
 
 /**
  * A string of lights climbing each letter of a word, like a creeper up a post
@@ -16,12 +17,37 @@ import { useEffect, useRef, useState } from "react";
  * for the half-turns behind it, and a bulb hangs at every turn. Positions are
  * taken from the laid-out text (one DOM Range per letter), so kerning and the
  * viewport size are already accounted for; a resize re-measures.
+ *
+ * The colours are dealt afresh on every visit, and src/lib/lights.ts plays
+ * the string.
  */
 
 type Stem = { x: number; top: number; bottom: number }; // em, relative to the glyph origin and the baseline
-type Helix = { front: string; back: string; bulbs: { x: number; y: number }[] };
+type Bulb = { x: number; y: number; rise: number; across: number; colour: string };
+type Helix = { front: string; back: string; bulbs: Bulb[] };
 
 const SAMPLE = 256; // canvas px per em while reading the glyphs
+
+const COLOURS = ["white", "red", "green", "gold", "blue"]; // as in globals.css
+
+/**
+ * Colours dealt from shuffled packs of five: every visit gets its own order,
+ * each colour still comes round once in every five bulbs, and no two
+ * neighbours match where one pack meets the next.
+ */
+function deal(n: number): string[] {
+  const out: string[] = [];
+  while (out.length < n) {
+    const pack = [...COLOURS];
+    for (let i = pack.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pack[i], pack[j]] = [pack[j], pack[i]];
+    }
+    if (pack[0] === out[out.length - 1]) pack.push(pack.shift()!);
+    out.push(...pack);
+  }
+  return out;
+}
 
 function readStems(letter: string, font: string): Stem[] {
   const c = document.createElement("canvas");
@@ -107,7 +133,8 @@ function wind(cx: number, top: number, bottom: number, em: number, into: Helix) 
   }
   for (let k = 0; k < n; k++) {
     const side = k % 2 === 0 ? 1 : -1;
-    into.bulbs.push({ x: cx + A * side, y: bottom - ((k + 0.5) / n) * h });
+    const rise = (k + 0.5) / n;
+    into.bulbs.push({ x: cx + A * side, y: bottom - rise * h, rise, across: 0, colour: "" });
   }
   into.front += front;
   into.back += back;
@@ -117,6 +144,7 @@ export function Climbers({ children, className }: { children: string; className?
   const box = useRef<HTMLSpanElement>(null);
   const text = useRef<HTMLSpanElement>(null);
   const probe = useRef<HTMLSpanElement>(null);
+  const bulbs = useRef<HTMLSpanElement>(null);
   const [helix, setHelix] = useState<Helix | null>(null);
 
   useEffect(() => {
@@ -126,6 +154,7 @@ export function Climbers({ children, className }: { children: string; className?
     let alive = true;
     const stemsByLetter = new Map<string, Stem[]>();
     let fontKey = "";
+    const colours = deal(60); // kept through re-measures, so a resize doesn't reshuffle
 
     const measure = () => {
       if (!alive) return;
@@ -165,6 +194,13 @@ export function Climbers({ children, className }: { children: string; className?
           wind(left + s.x * em, baseline + s.top * em, baseline + s.bottom * em, em, out);
         }
       }
+      const xs = out.bulbs.map((b) => b.x);
+      const x0 = Math.min(...xs);
+      const width = Math.max(...xs) - x0 || 1;
+      out.bulbs.forEach((b, i) => {
+        b.across = (b.x - x0) / width;
+        b.colour = colours[i % colours.length];
+      });
       setHelix(out);
     };
 
@@ -176,6 +212,15 @@ export function Climbers({ children, className }: { children: string; className?
       ro.disconnect();
     };
   }, [children]);
+
+  // The controller plays the string, restarted whenever the bulbs move.
+  useEffect(() => {
+    const wrap = box.current;
+    const row = bulbs.current;
+    if (!helix || !wrap || !row) return;
+    const els = Array.from(row.children) as HTMLElement[];
+    return runLights(wrap, helix.bulbs.map((b, i) => ({ el: els[i], rise: b.rise, across: b.across })));
+  }, [helix]);
 
   return (
     <span ref={box} className="relative isolate inline-block">
@@ -189,9 +234,9 @@ export function Climbers({ children, className }: { children: string; className?
       <svg className="climb climb-front" aria-hidden="true">
         {helix && <path d={helix.front} />}
       </svg>
-      <span className="climb climb-bulbs" aria-hidden="true">
+      <span ref={bulbs} className="climb climb-bulbs" aria-hidden="true">
         {helix?.bulbs.map((b, i) => (
-          <i key={i} style={{ left: b.x, top: b.y }} />
+          <i key={i} data-c={b.colour} style={{ left: b.x, top: b.y }} />
         ))}
       </span>
     </span>

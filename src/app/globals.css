@@ -361,9 +361,10 @@ details[open] .chev { rotate: 45deg; }
    Lights climbing each letter of "Kilimani" (Climbers.tsx). The wire is two
    SVG paths over the word, one for the half-turns in front of a stroke and
    one for those behind it; the bulbs are elements at every turn, sized in em
-   so they scale with the type. Bulb look and the dim-to-40% twinkle are
-   taken from the classic web lightrope; the colours from the logo. Under
-   reduced motion every bulb stays lit. On by date (src/lib/season.ts).
+   so they scale with the type. Bulb look taken from the classic web
+   lightrope; the colours from the logo. The twinkling is src/lib/lights.ts,
+   which draws its next lighting at random; under reduced motion it never
+   starts and every bulb stays lit. On by date (src/lib/season.ts).
    ================================================================== */
 .climb { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
 .climb-back { z-index: -1; }
@@ -375,42 +376,29 @@ details[open] .chev { rotate: 45deg; }
   margin-left: max(-.035em, -2px); border-radius: 50%;
   background: radial-gradient(circle at 50% 35%, #fff4d2 0%, #f3c25c 55%, #d9a03c 100%);
   box-shadow: 0 .01em .08em .012em rgba(255, 196, 92, .8), 0 0 .03em .006em rgba(255, 232, 170, .9);
-  animation: kito-twinkle 2.3s ease-in-out infinite both;
 }
-/* Five colours in turn, the way a Christmas string runs: warm white, red,
-   green, gold, blue, each glowing in its own colour. Muted, not neon. */
-.climb-bulbs i:nth-child(5n+1) {
+/* Five colours, the way a Christmas string runs: warm white, red, green,
+   gold (above), blue, each glowing in its own colour. Muted, not neon. The
+   order is dealt afresh on every visit (Climbers.tsx). */
+.climb-bulbs i[data-c="white"] {
   background: radial-gradient(circle at 50% 35%, #ffffff 0%, #ffe9b3 55%, #f0c76f 100%);
   box-shadow: 0 .01em .08em .012em rgba(255, 221, 150, .85), 0 0 .03em .006em rgba(255, 245, 215, .95);
 }
-.climb-bulbs i:nth-child(5n+2) {
+.climb-bulbs i[data-c="red"] {
   background: radial-gradient(circle at 50% 35%, #ffd6d3 0%, #e2524f 55%, #b8302f 100%);
   box-shadow: 0 .01em .08em .012em rgba(226, 82, 79, .75), 0 0 .03em .006em rgba(255, 190, 186, .9);
 }
-.climb-bulbs i:nth-child(5n+3) {
+.climb-bulbs i[data-c="green"] {
   background: radial-gradient(circle at 50% 35%, #d9ffe9 0%, #3fb27f 55%, #237a56 100%);
   box-shadow: 0 .01em .08em .012em rgba(63, 178, 127, .75), 0 0 .03em .006em rgba(190, 255, 220, .9);
 }
-.climb-bulbs i:nth-child(5n+5) {
+.climb-bulbs i[data-c="blue"] {
   background: radial-gradient(circle at 50% 35%, #dce9ff 0%, #4f8ee8 55%, #2d5fb4 100%);
   box-shadow: 0 .01em .08em .012em rgba(79, 142, 232, .75), 0 0 .03em .006em rgba(200, 220, 255, .9);
 }
 .climb-bulbs i::before {
   content: ""; position: absolute; left: .01em; top: -.018em;
   width: .05em; height: .035em; border-radius: .018em; background: #1c2a24;
-}
-.climb-bulbs i:nth-child(3n+1) { animation-duration: 1.7s; }
-.climb-bulbs i:nth-child(3n+2) { animation-duration: 2.9s; }
-.climb-bulbs i:nth-child(5n+2) { animation-delay: -.4s; }
-.climb-bulbs i:nth-child(5n+3) { animation-delay: -.9s; }
-.climb-bulbs i:nth-child(5n+4) { animation-delay: -1.3s; }
-.climb-bulbs i:nth-child(5n)   { animation-delay: -1.9s; }
-@keyframes kito-twinkle {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: .38; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .climb-bulbs i { animation: none; opacity: 1; }
 }
 
 /* ============================ reduced motion ============================ */

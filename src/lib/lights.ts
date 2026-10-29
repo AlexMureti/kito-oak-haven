@@ -9,6 +9,10 @@
  * random time, and draws every timing inside it afresh: the string never plays
  * the same minute twice.
  *
+ * Then: "how about bulbs changing into different colors?" A shop-bought
+ * string can't; an RGB one can, and so can this: a bulb fades down and comes
+ * back in another colour. Three of the lightings do that.
+ *
  * Only opacity, filter and transform move, through the Web Animations API, so
  * the page does no layout for it. It stops under reduced motion, when the
  * headline is off screen and when the tab is hidden.
@@ -22,7 +26,29 @@ export type Light = {
   across: number;
 };
 
-type Lighting = "twinkle" | "glints" | "climb" | "waves" | "glow";
+/** The five colours of the string, as in globals.css (`data-c` on each bulb). */
+export const COLOURS = ["white", "red", "green", "gold", "blue"];
+
+/**
+ * Colours dealt from shuffled packs of five: every visit gets its own order,
+ * each colour still comes round once in every five bulbs, and no two
+ * neighbours match where one pack meets the next.
+ */
+export function deal(n: number): string[] {
+  const out: string[] = [];
+  while (out.length < n) {
+    const pack = [...COLOURS];
+    for (let i = pack.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pack[i], pack[j]] = [pack[j], pack[i]];
+    }
+    if (pack[0] === out[out.length - 1]) pack.push(pack.shift()!);
+    out.push(...pack);
+  }
+  return out.slice(0, n);
+}
+
+type Lighting = "twinkle" | "glints" | "climb" | "waves" | "glow" | "drift" | "stepround" | "solid";
 
 /** How often each is drawn: twinkling is the string's resting state. */
 const ODDS: [Lighting, number][] = [
@@ -31,9 +57,13 @@ const ODDS: [Lighting, number][] = [
   ["climb", 2],
   ["waves", 1.5],
   ["glow", 1],
+  ["drift", 2],
+  ["stepround", 1.5],
+  ["solid", 1],
 ];
 
 const rand = (lo: number, hi: number) => lo + Math.random() * (hi - lo);
+const oneOf = <T,>(xs: T[]) => xs[Math.floor(Math.random() * xs.length)];
 
 /** Any lighting but the last one. */
 function draw(last: Lighting | null): Lighting {
@@ -69,6 +99,27 @@ export function runLights(box: HTMLElement, lights: Light[]): () => void {
     );
     playing.add(a);
     a.onfinish = () => playing.delete(a);
+  };
+
+  const colourOf = (i: number) => lights[i]?.el.dataset.c ?? "";
+
+  // A bulb fades almost out, takes its new colour while it is dark, and comes back.
+  const swap = (el: HTMLElement, colour: string, delay = 0) => {
+    const ms = rand(700, 1000);
+    play(el, [{ opacity: 1 }, { opacity: 0.06, offset: 0.42 }, { opacity: 0.06, offset: 0.52 }, { opacity: 1 }], ms, delay);
+    after(delay + ms * 0.47, () => {
+      el.dataset.c = colour;
+    });
+  };
+
+  // Every bulb takes the colour `to(i)`, in a wave along the word. Returns its length.
+  const wash = (to: (i: number) => string, delay = 0) => {
+    const span = rand(1200, 1800);
+    const leftward = Math.random() < 0.5;
+    lights.forEach((l, i) => {
+      swap(l.el, to(i), delay + (leftward ? 1 - l.across : l.across) * span + l.rise * 120);
+    });
+    return span + 1240;
   };
 
   /** Each starts its lighting and says how long it runs, in ms. */
@@ -164,6 +215,38 @@ export function runLights(box: HTMLElement, lights: Light[]): () => void {
       const low = rand(0.4, 0.6);
       for (const { el } of lights) play(el, [{ opacity: 1 }, { opacity: low }, { opacity: 1 }], ms, 0, breaths);
       return ms * breaths;
+    },
+
+    // Colour: one bulb at a time turns to a colour its neighbours aren't.
+    drift() {
+      const length = rand(6000, 11000);
+      const end = performance.now() + length;
+      const turn = () => {
+        const i = Math.floor(Math.random() * lights.length);
+        const taken = [colourOf(i), colourOf(i - 1), colourOf(i + 1)];
+        swap(lights[i].el, oneOf(COLOURS.filter((c) => !taken.includes(c))));
+        const wait = rand(300, 900);
+        if (performance.now() + wait < end) after(wait, turn);
+      };
+      turn();
+      return length;
+    },
+
+    // Colour: every bulb steps round to its next colour together, in a wave,
+    // so neighbours still never match.
+    stepround() {
+      const step = 1 + Math.floor(Math.random() * (COLOURS.length - 1));
+      const now = lights.map((_, i) => colourOf(i));
+      return wash((i) => COLOURS[(COLOURS.indexOf(now[i]) + step) % COLOURS.length]);
+    },
+
+    // Colour: the whole string goes one colour for a while, then a fresh mix.
+    solid() {
+      const colour = oneOf(COLOURS);
+      const fresh = deal(lights.length);
+      const into = wash(() => colour);
+      const hold = rand(3000, 6000);
+      return into + hold + wash((i) => fresh[i], into + hold);
     },
   };
 

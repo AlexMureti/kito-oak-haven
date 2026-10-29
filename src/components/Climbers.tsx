@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { runLights } from "@/lib/lights";
+import { deal, runLights } from "@/lib/lights";
 
 /**
  * A string of lights climbing each letter of a word, like a creeper up a post
@@ -19,7 +19,7 @@ import { runLights } from "@/lib/lights";
  * viewport size are already accounted for; a resize re-measures.
  *
  * The colours are dealt afresh on every visit, and src/lib/lights.ts plays
- * the string.
+ * the string, changing them as it goes.
  */
 
 type Stem = { x: number; top: number; bottom: number }; // em, relative to the glyph origin and the baseline
@@ -27,27 +27,6 @@ type Bulb = { x: number; y: number; rise: number; across: number; colour: string
 type Helix = { front: string; back: string; bulbs: Bulb[] };
 
 const SAMPLE = 256; // canvas px per em while reading the glyphs
-
-const COLOURS = ["white", "red", "green", "gold", "blue"]; // as in globals.css
-
-/**
- * Colours dealt from shuffled packs of five: every visit gets its own order,
- * each colour still comes round once in every five bulbs, and no two
- * neighbours match where one pack meets the next.
- */
-function deal(n: number): string[] {
-  const out: string[] = [];
-  while (out.length < n) {
-    const pack = [...COLOURS];
-    for (let i = pack.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [pack[i], pack[j]] = [pack[j], pack[i]];
-    }
-    if (pack[0] === out[out.length - 1]) pack.push(pack.shift()!);
-    out.push(...pack);
-  }
-  return out;
-}
 
 function readStems(letter: string, font: string): Stem[] {
   const c = document.createElement("canvas");

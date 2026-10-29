@@ -379,7 +379,8 @@ details[open] .chev { rotate: 45deg; }
 }
 /* Five colours, the way a Christmas string runs: warm white, red, green,
    gold (above), blue, each glowing in its own colour. Muted, not neon. The
-   order is dealt afresh on every visit (Climbers.tsx). */
+   order is dealt afresh on every visit, and the controller changes a bulb's
+   colour while it is dimmed (src/lib/lights.ts). */
 .climb-bulbs i[data-c="white"] {
   background: radial-gradient(circle at 50% 35%, #ffffff 0%, #ffe9b3 55%, #f0c76f 100%);
   box-shadow: 0 .01em .08em .012em rgba(255, 221, 150, .85), 0 0 .03em .006em rgba(255, 245, 215, .95);

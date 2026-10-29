@@ -28,6 +28,7 @@ const state = (p) => p.evaluate(() => {
     lighting: box.dataset.lights || null,
     running: document.getAnimations().filter((a) => is.includes(a.effect?.target)).length,
     dim: is.map((i) => parseFloat(getComputedStyle(i).opacity) < 0.9),
+    colours: is.map((i) => i.dataset.c),
   };
 });
 
@@ -37,11 +38,17 @@ const first = await colours(p);
 const seen = [];
 const dips = first.map(() => []);
 const wasDim = first.map(() => false);
+let was = first;
+let turned = 0;
+let solid = false;
 const t0 = Date.now();
 while (Date.now() - t0 < seconds * 1000) {
   const s = await state(p);
   if (s.lighting && seen[seen.length - 1] !== s.lighting) seen.push(s.lighting);
   s.dim.forEach((d, i) => { if (d && !wasDim[i]) dips[i].push(Date.now() - t0); wasDim[i] = d; });
+  turned += s.colours.filter((c, i) => c !== was[i]).length;
+  if (new Set(s.colours).size === 1) solid = true;
+  was = s.colours;
   await new Promise((r) => setTimeout(r, 120));
 }
 const gaps = dips.flatMap((ts) => ts.slice(1).map((t, k) => t - ts[k]));
@@ -49,6 +56,7 @@ const mean = gaps.reduce((a, g) => a + g, 0) / (gaps.length || 1);
 const sd = Math.sqrt(gaps.reduce((a, g) => a + (g - mean) ** 2, 0) / (gaps.length || 1));
 console.log("bulbs", first.length, "| colours", first.join(" "));
 console.log("lightings drawn, in order:", seen.join(" > "));
+console.log(`colour changes: ${turned}; whole string one colour at some point: ${solid}; colours now: ${was.join(" ")}`);
 console.log(`dips: ${dips.flat().length} in ${seconds}s; gap between a bulb's dips: mean ${Math.round(mean)} ms, spread ${Math.round(sd)} ms (0 would be a metronome)`);
 
 // 2. Off screen: it should stop, and start again on the way back.
